@@ -1,48 +1,32 @@
-import mongoose from "mongoose";
-import User from "./User";
-import Product from "./Product";
-
-
-const OrderSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
+export interface OrderSchema {
+    user: string,
     orderItems: [
         {
-            qty: { type: Number, required: true },
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Products",
-            },
+            qty: number,
+            product: string,
 
         }
     ],
     shippingAddress: {
-        fullName: { type: String, required: true },
-        address: { type: String, required: true },
-        city: { type: String, required: true },
-        postalCode: { type: Number, required: true },
-        country: { type: String, required: true },
+        fullName: string,
+        address: string,
+        city: string,
+        postalCode: number,
+        country: string,
     },
-    paymentMethod: { type: String, required: true , default : "Paypal" },
+    paymentMethod: string, // default : "Paypal"
     paymentResult: {
-        id: String,
-        status: String,
-        update_time: String,
-        email_address: String,
+        id: string,
+        status: string,
+        update_time: string,
+        email_address: string,
     },
-    itemsPrice: { type: Number, required: true },
-    shippingPrice: { type: Number, required: true },
-    taxPrice: { type: Number, required: true },
-    totalPrice: { type: Number, required: true },
-    isPaid: { type: Boolean, default: false },
-    paidAt: { type: Date },
-    isDelivered: { type: Boolean, default: false },
-    deliveredAt: { type: Date },
-},{timestamps : true});
-
-const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
-
-export default Order;
+    itemsPrice: number,
+    shippingPrice: number,
+    taxPrice: number,
+    totalPrice: number,
+    isPaid: boolean, // default: false
+    paidAt?: Date,
+    isDelivered: boolean, // default: false
+    deliveredAt: Date,
+}
