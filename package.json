@@ -1,0 +1,31 @@
+{
+  "name": "next_ecommerce_tx",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@hookform/error-message": "^2.0.1",
+    "@types/node": "18.16.3",
+    "bcryptjs": "^2.4.3",
+    "encoding": "^0.1.13",
+    "eslint": "8.39.0",
+    "firebase": "^9.23.0",
+    "joi": "^17.11.0",
+    "js-cookie": "^3.0.5",
+    "js-cookies": "^1.0.4",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.2",
+    "next": "13.3.2",
+    "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.4",
+    "@types/js-cookie": "^3.0.4",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/react": "18.2.28"
+  }
+}
