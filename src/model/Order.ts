@@ -1,9 +1,12 @@
+import { UserSchema } from "./User";
+import { ProductSchema } from "./Product";
+
 export interface OrderSchema {
-    user: string,
+    user: UserSchema,
     orderItems: [
         {
             qty: number,
-            product: string,
+            product: ProductSchema,
 
         }
     ],

@@ -1,4 +1,5 @@
 export interface ProductSchema {
+    _id:string,
     productName : string,
     productDescription :string ,
     productImage : string ,

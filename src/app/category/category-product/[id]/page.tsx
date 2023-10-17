@@ -38,7 +38,8 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     if (data?.success !== true) toast.error(data?.message)
 
     useEffect(() => {
-        setThisProdData(data?.data)
+        if (data)
+            setThisProdData(data.data)
     }, [data])
 
     const CategoryName  =  thisProduct?.map((item) => {
