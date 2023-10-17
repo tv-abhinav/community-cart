@@ -126,7 +126,7 @@ export default function AddProduct() {
 
         const finalData = { productName: data.name, productDescription: data.description, productImage: uploadImageToFirebase, productSlug: data.slug , productFeatured  : data.feature , productPrice : data.price , productQuantity : data.quantity , productCategory : data.categoryID}
         const res = await add_new_product(finalData)
-        if (res.success) {
+        if (res?.success) {
             toast.success(res?.message);
             setTimeout(() => {
                 Router.push('/Dashboard')
