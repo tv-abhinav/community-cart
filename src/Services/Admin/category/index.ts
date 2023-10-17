@@ -22,7 +22,8 @@ export const get_all_categories = async () => {
     // const data = await res.json();
     return data;
   } catch (error) {
-    console.log('Error in getting all Categories (service) =>', error)
+    throw new Error('Error in getting all Categories (service) =>' + error)
+    // console.log('Error in getting all Categories (service) =>', error)
   }
 }
 
@@ -45,7 +46,8 @@ export const add_new_category = async (formData: any) => {
     // const data = await res.json();
     return data;
   } catch (error) {
-    console.log('Error in Add New Category (service) =>', error);
+    throw new Error('Error in Add New Category (service) =>' + error);
+    // console.log('Error in Add New Category (service) =>', error);
   }
 }
 
@@ -71,7 +73,8 @@ export const get_category_by_id = async (id: string) => {
 
     return data;
   } catch (error) {
-    console.log('Error in getting Categories by ID (service) =>', error)
+    throw new Error('Error in getting Categories by ID (service) =>' + error);
+    // console.log('Error in getting Categories by ID (service) =>', error)
   }
 }
 
@@ -93,7 +96,8 @@ export const delete_a_category = async (id: string) => {
 
     return data;
   } catch (error) {
-    console.log('Error in deleting Categories (service) =>', error)
+    throw new Error('Error in deleting Categories (service) =>' + error);
+    // console.log('Error in deleting Categories (service) =>', error)
   }
 }
 
@@ -117,7 +121,8 @@ export const update_a_category = async (formData: any) => {
     }
     return data;
   } catch (error) {
-    console.log('Error in updating Categories (service) =>', error)
+    throw new Error('Error in updating Categories (service) =>' + error);
+    // console.log('Error in updating Categories (service) =>', error)
   }
 }
 

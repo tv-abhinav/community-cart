@@ -8,4 +8,3 @@ export interface ProductSchema {
     productFeatured : boolean,
     productCategory: string
 }
-
