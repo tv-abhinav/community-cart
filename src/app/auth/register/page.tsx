@@ -47,7 +47,7 @@ export default function  Register (){
     }
 
     const data = await register_me(formData);
-    if (data.success) {
+    if (data?.success) {
       setLoding(false);
       toast.success(data.message);
       setTimeout(() => {
@@ -56,7 +56,7 @@ export default function  Register (){
     }
     else {
       setLoding(false);
-      toast.error(data.message);
+      toast.error(data?.message);
     }
   }
 
