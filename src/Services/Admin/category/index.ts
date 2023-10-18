@@ -13,7 +13,7 @@ export const get_all_categories = async () => {
       data: [{
         categoryName: "Test Cat 1",
         categoryDescription: "Test Description 1",
-        categoryImage: "public\\images98.jpg",
+        categoryImage: "/public/images98.jpg",
         categorySlug: "\\testcat1"
       }],
       message: "Got all categories",
@@ -64,7 +64,7 @@ export const get_category_by_id = async (id: string) => {
       data: {
         categoryName: "Test Cat 1",
         categoryDescription: "Test Description 1",
-        categoryImage: "public\\images98.jpg",
+        categoryImage: "/public/images98.jpg",
         categorySlug: "\\testcat1"
       },
       message: "get_category_by_id success",

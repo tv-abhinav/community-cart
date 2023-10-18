@@ -1,4 +1,4 @@
 export interface BookmarkSchema {
-    userID: string,
+    customerID: string,
     productID: string,
 }

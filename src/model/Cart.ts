@@ -1,5 +1,5 @@
 export interface CartSchema {
-    userID: string,
+    customerID: string,
     productID: string,
     quantity: number,
 }

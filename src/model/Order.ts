@@ -1,8 +1,15 @@
-import { UserSchema } from "./User";
+import { AddressSchema } from "./User";
 import { ProductSchema } from "./Product";
 
+enum StatusEnum {
+    packed,
+    shipped,
+    delivered
+}
+
 export interface OrderSchema {
-    user: UserSchema,
+    customerID: string,
+    shopID: string,
     orderItems: [
         {
             qty: number,
@@ -10,13 +17,7 @@ export interface OrderSchema {
 
         }
     ],
-    shippingAddress: {
-        fullName: string,
-        address: string,
-        city: string,
-        postalCode: number,
-        country: string,
-    },
+    shippingAddress: AddressSchema,
     paymentMethod: string, // default : "Paypal"
     paymentResult: {
         id: string,
@@ -30,6 +31,6 @@ export interface OrderSchema {
     totalPrice: number,
     isPaid: boolean, // default: false
     paidAt?: Date,
-    isDelivered: boolean, // default: false
+    status: StatusEnum, // default: false
     deliveredAt: Date,
 }

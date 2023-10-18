@@ -7,5 +7,6 @@ export interface ProductSchema {
     productPrice : number,
     productQuantity : number,
     productFeatured : boolean,
-    productCategory: string
+    productCategory: string,
+    shopID: string,
 }
