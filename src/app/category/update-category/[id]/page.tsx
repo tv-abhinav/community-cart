@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { setNavActive } from '@/utils/AdminNavSlice';
 import Cookies from 'js-cookie';
+import { UpdateCategorySchema } from '@/model/Category';
 
 
 type Inputs = {
@@ -23,13 +24,13 @@ type Inputs = {
 
 
 type CategoryData = {
-    _id: string;
+    _id?: string;
     categoryName: string;
     categoryDescription: string;
     categoryImage: string;
     categorySlug: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 
@@ -105,11 +106,11 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
         setLoader(false)
 
 
-        const updatedData: Inputs = {
+        const updatedData: UpdateCategorySchema = {
             _id: params.id,
-            name: data.name !== catData?.categoryName ? data.name : catData?.categoryName,
-            description: data.description !== catData?.categoryDescription ? data.description : catData?.categoryDescription,
-            slug: data.slug !== catData?.categorySlug ? data.slug : catData?.categorySlug,
+            categoryName: data.name !== catData?.categoryName ? data.name : catData?.categoryName,
+            categoryDescription: data.description !== catData?.categoryDescription ? data.description : catData?.categoryDescription,
+            categorySlug: data.slug !== catData?.categorySlug ? data.slug : catData?.categorySlug,
         };
 
         const res = await update_a_category(updatedData)

@@ -1,5 +1,6 @@
 
 
+import { CategorySchema, UpdateCategorySchema, CreateCategorySchema } from "@/model/Category";
 import Cookies from "js-cookie";
 
 
@@ -8,9 +9,16 @@ export const get_all_categories = async () => {
     // const res = await fetch('/api/common/category/getCategory', {
     //   method: 'GET',
     // });
-    const data =
+    const data:{
+      data: CategorySchema[],
+      message: string,
+      success: boolean
+    } =
     {
       data: [{
+        _id:"123",
+        createdAt: "2023-10-25",
+        updatedAt: "2023-10-25",
         categoryName: "Test Cat 1",
         categoryDescription: "Test Description 1",
         categoryImage: "/public/images98.jpg",
@@ -27,7 +35,7 @@ export const get_all_categories = async () => {
   }
 }
 
-export const add_new_category = async (formData: any) => {
+export const add_new_category = async (formData: CreateCategorySchema) => {
   try {
     // const res = await fetch(`/api/Admin/category/add-category`, {
     //   method: 'POST',
@@ -59,9 +67,16 @@ export const get_category_by_id = async (id: string) => {
     // })
 
     // const data = await res.json();
-    const data =
+    const data:{
+      data: CategorySchema,
+      message: string,
+      success: boolean
+    } =
     {
       data: {
+        _id:"123",
+        createdAt: "2023-10-25",
+        updatedAt: "2023-10-25",
         categoryName: "Test Cat 1",
         categoryDescription: "Test Description 1",
         categoryImage: "/public/images98.jpg",
@@ -102,7 +117,7 @@ export const delete_a_category = async (id: string) => {
 }
 
 
-export const update_a_category = async (formData: any) => {
+export const update_a_category = async (formData: UpdateCategorySchema) => {
   try {
     // const res = await fetch(`/api/Admin/category/update-category`, {
     //   method: 'PUT',

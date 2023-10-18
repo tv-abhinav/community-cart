@@ -1,13 +1,8 @@
 import { AddressSchema } from "./User";
 import { ProductSchema } from "./Product";
 
-enum StatusEnum {
-    packed,
-    shipped,
-    delivered
-}
-
-export interface OrderSchema {
+export type StatusEnum = "packed" | "shipped" | "delivered"
+export interface CreateOrderSchema {
     customerID: string,
     shopID: string,
     orderItems: [
@@ -33,4 +28,16 @@ export interface OrderSchema {
     paidAt?: Date,
     status: StatusEnum, // default: false
     deliveredAt: Date,
+}
+
+export interface OrderSchema extends CreateOrderSchema {
+    _id: string,
+}
+
+export interface UpdateOrderSchema {
+    _id: string,
+    status?: StatusEnum,
+    isPaid?: boolean,
+    shippingAddress?: AddressSchema,
+    deliveredAt?: Date,
 }

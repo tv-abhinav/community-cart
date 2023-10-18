@@ -10,6 +10,7 @@ import { TailSpin } from 'react-loader-spinner';
 import { useRouter } from 'next/navigation';
 import { add_new_category } from '@/Services/Admin/category';
 import Cookies from 'js-cookie';
+import { CreateCategorySchema } from '@/model/Category';
 
 
 
@@ -41,21 +42,20 @@ const uploadImages = async (file: File) => {
     const fileName = createFileName();
     const storageRef = ref(storage, `ecommerce/category/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
+    let imgUrl = ""
 
-    return new Promise((resolve, reject) => {
-        uploadTask.on('state_changed', (snapshot) => {
-        }, (error) => {
+    uploadTask.on('state_changed', (snapshot) => {
+    }, (error) => {
+        console.log(error)
+    }, () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            imgUrl = downloadURL;
+        }).catch((error) => {
             console.log(error)
-            reject(error);
-        }, () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                resolve(downloadURL);
-            }).catch((error) => {
-                console.log(error)
-                reject(error);
-            });
         });
     });
+
+    return imgUrl;
 }
 
 
@@ -105,7 +105,7 @@ export default function AddCategory() {
         const uploadImageToFirebase = await uploadImages(data.image[0]);
         // const uploadImageToFirebase = 'https://firebasestorage.googleapis.com/v0/b/socialapp-9b83f.appspot.com/o/ecommerce%2Fcategory%2Fimages131.jpg-1683339363348-c4vcab?alt=media&token=f9303ff9-7d34-4514-a53f-832f72814337';
 
-        const finalData = { categoryName: data.name, categoryDescription: data.description, categoryImage: uploadImageToFirebase, categorySlug: data.slug }
+        const finalData:CreateCategorySchema = { categoryName: data.name, categoryDescription: data.description, categoryImage: uploadImageToFirebase, categorySlug: data.slug }
 
         const res = await add_new_category(finalData)
         if (res?.success) {

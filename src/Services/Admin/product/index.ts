@@ -1,8 +1,9 @@
+import { CreateProductSchema, ProductSchema } from "@/model/Product";
 import Cookies from "js-cookie";
 
 
 
-export const add_new_product = async (formData: any) => {
+export const add_new_product = async (formData: CreateProductSchema) => {
   try {
     // const res = await fetch(`/api/Admin/product/add-product`, {
     //     method: 'POST',
@@ -31,9 +32,14 @@ export const get_all_products = async () => {
     //   method: 'GET',
     // });
 
-    const data = {
+    const data:{
+      data: ProductSchema[],
+      message: string,
+      success: boolean
+    } = {
       data: [{
         _id:"100",
+        shopID:"123",
         productName : "Macbook Pro",
         productDescription :"2023 latest Macbook" ,
         productImage : "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg" ,

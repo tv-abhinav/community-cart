@@ -1,5 +1,6 @@
 
 
+import { CreateOrderSchema, StatusEnum } from "@/model/Order";
 import Cookies from "js-cookie";
 
 
@@ -14,20 +15,21 @@ export const get_all_orders = async () => {
     // });
     //const data = await res.json();
 
-    const data =
+    const data:{
+      data: CreateOrderSchema[],
+      message: string,
+      success: boolean
+    } =
     {
       data: [{
-        user: {
-          name: "Test Name",
-          email: "abc@gmail.com",
-          password: "testpass",
-          role: "user" // default: 'user', enum: ['user', 'admin']
-      },
+        customerID: "123",
+        shopID:"123",
         orderItems: [
           {
             qty: 1,
             product: {
               _id:"100",
+              shopID:"123",
               productName : "Macbook Pro",
               productDescription :"2023 latest Macbook" ,
               productImage : "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg" ,
@@ -41,11 +43,15 @@ export const get_all_orders = async () => {
           }
         ],
         shippingAddress: {
-          fullName: "Saurav S",
-          address: "Kerala",
+          address1: "Kerala",
+          address2: "Kerala 2",
           city: "Palakkad",
           postalCode: 12345,
           country: "India",
+          district:"",
+          state:"",
+          latitude:123,
+          longitude:456
         },
         paymentMethod: "GPay", // default : "Paypal"
         paymentResult: {
@@ -59,9 +65,9 @@ export const get_all_orders = async () => {
         taxPrice: 100,
         totalPrice: 15000,
         isPaid: true, // default: false
-        paidAt: "2023-10-15",
-        isDelivered: false, // default: false
-        deliveredAt: "2023-10-25",
+        paidAt: new Date("2023-10-15"),
+        status: "packed", // default: false
+        deliveredAt: new Date("2023-10-25"),
       }],
 
       message: "Got all orders",
@@ -75,7 +81,7 @@ export const get_all_orders = async () => {
 
 
 
-export const update_order_status = async (id: any) => {
+export const update_order_status = async (id: string, status: StatusEnum) => {
   console.log(id)
   try {
     // const res = await fetch(`/api/Admin/order/update-order-status`, {
@@ -88,7 +94,7 @@ export const update_order_status = async (id: any) => {
     // })
 
     const data = {
-      message: "Status Updated",
+      message: `Status Updated to ${status}`,
       success: true
     }
     return data;

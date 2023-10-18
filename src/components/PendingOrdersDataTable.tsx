@@ -15,77 +15,78 @@ import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
 import { setBookmark } from '@/utils/Bookmark';
 import { update_order_status } from '@/Services/Admin/order';
+import { OrderSchema, StatusEnum } from '@/model/Order';
 
 
-interface Order {
-    createdAt: string;
-    deliveredAt: string;
-    isDelivered: boolean;
-    isPaid: boolean;
-    itemsPrice: number;
-    orderItems: {
-      qty: number;
-      product: {
-        createdAt: string;
-        productCategory: string;
-        productDescription: string;
-        productFeatured: boolean;
-        productImage: string;
-        productName: string;
-        productPrice: number;
-        productQuantity: number;
-        productSlug: string;
-        updatedAt: string;
-        __v: number;
-        _id: string;
-      };
-      _id: string;
-    }[];
-    paidAt: string;
-    paymentMethod: string;
-    shippingAddress: {
-      address: string;
-      city: string;
-      country: string;
-      fullName: string;
-      postalCode: number;
-    };
-    shippingPrice: number;
-    taxPrice: number;
-    totalPrice: number;
-    updatedAt: string;
-    user: {
-      email: string;
-      name: string;
-      password: string;
-      role: string;
-      __v: number;
-      _id: string;
-    };
-    __v: number;
-    _id: string;
-  }
+// interface Order {
+//     createdAt: string;
+//     deliveredAt: string;
+//     isDelivered: boolean;
+//     isPaid: boolean;
+//     itemsPrice: number;
+//     orderItems: {
+//       qty: number;
+//       product: {
+//         createdAt: string;
+//         productCategory: string;
+//         productDescription: string;
+//         productFeatured: boolean;
+//         productImage: string;
+//         productName: string;
+//         productPrice: number;
+//         productQuantity: number;
+//         productSlug: string;
+//         updatedAt: string;
+//         __v: number;
+//         _id: string;
+//       };
+//       _id: string;
+//     }[];
+//     paidAt: string;
+//     paymentMethod: string;
+//     shippingAddress: {
+//       address: string;
+//       city: string;
+//       country: string;
+//       fullName: string;
+//       postalCode: number;
+//     };
+//     shippingPrice: number;
+//     taxPrice: number;
+//     totalPrice: number;
+//     updatedAt: string;
+//     user: {
+//       email: string;
+//       name: string;
+//       password: string;
+//       role: string;
+//       __v: number;
+//       _id: string;
+//     };
+//     __v: number;
+//     _id: string;
+//   }
 
 
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-}
+// interface userData {
+//     email: String,
+//     role: String,
+//     _id: String,
+//     name: String
+// }
 
 
 export default function PendingOrdersDataTable() {
-    const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig()
   const router = useRouter();
-  const [orderData, setOrderData] = useState<Order[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.Order) as Order[] | [];
+  const [orderData, setOrderData] = useState<OrderSchema[] | []>([]);
+  const data = useSelector((state: RootState) => state.Admin.Order) as OrderSchema[] | [];
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<Order[] | []>([]);
+  const [filteredData, setFilteredData] = useState<OrderSchema[] | []>([]);
 
 
   useEffect(() => {
-    const filterPendingOrder =  data?.filter((item) => item?.isDelivered === false)
+    const filterPendingOrder = data?.filter((item) => item?.status !== 'delivered')
     setOrderData(filterPendingOrder)
   }, [data])
 
@@ -93,14 +94,33 @@ export default function PendingOrdersDataTable() {
     setFilteredData(orderData);
   }, [orderData])
 
+  const getNextStatus = (currentStatus: StatusEnum) => {
+    let updatedStatus = currentStatus;
+    switch (currentStatus) {
+      case 'packed': {
+        updatedStatus = 'shipped'
+        break;
+      }
+      case 'shipped': {
+        updatedStatus = 'delivered'
+        break;
+      }
+    }
+    return updatedStatus;
+  }
 
+  const updateOrderStatus = async (id: string, status: StatusEnum) => {
+    let updatedStatus = getNextStatus(status);
+    if (status == 'delivered') {
+      return
+    }
+    
 
-  const updateOrderStatus =  async (id: string) => {
-    const res =  await update_order_status(id);
-    if(res?.success){
+    const res = await update_order_status(id, updatedStatus);
+    if (res?.success) {
       toast.success(res?.message)
       mutate('gettingAllOrdersForAdmin')
-    }else{
+    } else {
       toast.error(res?.message)
     }
   }
@@ -110,26 +130,27 @@ export default function PendingOrdersDataTable() {
   const columns = [
     {
       name: 'Order ID',
-      selector: (row: Order) => row?._id,
+      selector: (row: OrderSchema) => row?._id,
       sortable: true,
     },
     {
       name: 'Total Price',
-      selector: (row: Order) => row?.totalPrice,
+      selector: (row: OrderSchema) => row?.totalPrice,
       sortable: true,
     },
     {
-      name: 'Delivered',
-      selector: (row: Order) => row?.isDelivered ? 'Yes' : 'No',
+      name: 'Status',
+      selector: (row: OrderSchema) => row?.status,
       sortable: true,
     },
     {
       name: 'Action',
-      cell: (row: Order) => (
-
-        <button onClick={() => updateOrderStatus(row?._id)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Delivered</button>
-
-      )
+      cell: (row: OrderSchema) => {
+        let btnText = getNextStatus(row?.status)
+        return (
+          <button onClick={() => updateOrderStatus(row?._id, row?.status)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>{btnText}</button>
+        )
+      }
     },
 
   ];
