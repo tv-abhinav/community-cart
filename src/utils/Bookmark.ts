@@ -21,7 +21,7 @@ interface BookmarkItem {
 }
 
 interface Data {
-    bookmark: [];
+    bookmark: BookmarkItem[];
 }
 
 

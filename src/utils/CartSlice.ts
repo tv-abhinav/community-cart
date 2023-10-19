@@ -9,19 +9,14 @@ interface Product {
     productQuantity: number;
 }
 
-interface User {
-    email: string;
-    _id: string;
-}
-
 interface CartItem {
-    productID: Product;
-    userID: User;
     _id: string;
+    userID: string;
+    product: Product;
 }
 
 interface Data {
-    cart: null;
+    cart: CartItem[] | null;
     total: number;
 }
 
@@ -36,7 +31,7 @@ export const cartSlice = createSlice({
     name: 'Cart',
     initialState,
     reducers: {
-        setCart: (state, action) => {
+        setCart: (state, action:{payload: CartItem[], type:string}) => {
             state.cart =  action.payload
         },
         setTotalPrice: (state, action) => {

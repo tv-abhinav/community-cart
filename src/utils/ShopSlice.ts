@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-interface NavState {
+interface ShopState {
     category : any[],
     catLoading : boolean,
     productLoading : boolean,
@@ -9,7 +9,7 @@ interface NavState {
     orderLoading : boolean,
 }
 
-const initialState : NavState = {
+const initialState : ShopState = {
     category : [],
     catLoading : false,
     productLoading : false,
@@ -18,8 +18,8 @@ const initialState : NavState = {
     orderLoading : false,
 }
 
-export const Admin = createSlice({
-  name: 'AdminData',
+export const Shop = createSlice({
+  name: 'ShopData',
   initialState,
   reducers: {
     setCategoryData : (state, action) => {
@@ -45,6 +45,6 @@ export const Admin = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setCategoryData ,setCatLoading , setProdLoading  , setProductData , setOrderData , setOrderLoading} = Admin.actions
+export const { setCategoryData ,setCatLoading , setProdLoading  , setProductData , setOrderData , setOrderLoading} = Shop.actions
 
-export const AdminReducer =  Admin.reducer
+export const ShopReducer =  Shop.reducer

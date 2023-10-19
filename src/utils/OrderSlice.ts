@@ -1,8 +1,9 @@
+import { OrderSchema } from '@/model/Order';
 import { createSlice } from '@reduxjs/toolkit'
 
 
 interface Data {
-    order: [];
+    order: OrderSchema[];
 }
 
 
@@ -15,7 +16,7 @@ export const OrderSlice = createSlice({
     name: 'Order',
     initialState,
     reducers: {
-        setOrder: (state, action) => {
+        setOrder: (state, action:{payload: OrderSchema[], type: string}) => {
             state.order =  action.payload
         },
     },
