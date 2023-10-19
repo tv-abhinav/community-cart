@@ -1,15 +1,30 @@
-export interface UserSchema {
+export interface CreateUserSchema {
     email: string,
     password: string,
     phoneNumber: string,
     customerID: string,
     shopID: string, // will be populated if user is a seller.
-    addressID: string,
+    address: AddressSchema,
 }
 
-export interface CustomerSchema {
+export interface UserSchema extends CreateUserSchema {
+    _id: string,
+}
+
+export interface UserSessionSchema {
+    email: string,
+    role: string,
+    _id: string,
+    name: string
+}
+
+export interface CreateCustomerSchema {
     name: string,
     profilePhoto: string,
+}
+
+export interface CustomerSchema extends CreateCustomerSchema {
+    _id: string,
 }
 
 export interface AddressSchema {

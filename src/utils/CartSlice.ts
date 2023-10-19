@@ -1,22 +1,8 @@
+import { CartViewSchema } from '@/model/Cart';
 import { createSlice } from '@reduxjs/toolkit'
 
-
-interface Product {
-    productName: string;
-    productPrice: string;
-    _id: string;
-    productImage: string;
-    productQuantity: number;
-}
-
-interface CartItem {
-    _id: string;
-    userID: string;
-    product: Product;
-}
-
 interface Data {
-    cart: CartItem[] | null;
+    cart: CartViewSchema[] | null;
     total: number;
 }
 
@@ -31,7 +17,7 @@ export const cartSlice = createSlice({
     name: 'Cart',
     initialState,
     reducers: {
-        setCart: (state, action:{payload: CartItem[], type:string}) => {
+        setCart: (state, action:{payload: CartViewSchema[], type:string}) => {
             state.cart =  action.payload
         },
         setTotalPrice: (state, action) => {

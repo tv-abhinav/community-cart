@@ -13,46 +13,17 @@ import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
 import { setBookmark } from '@/utils/Bookmark';
-
-
-interface Product {
-    productName: string;
-    productPrice: string;
-    _id: string;
-    productImage: string;
-    productQuantity: number;
-}
-
-interface User {
-    email: string;
-    _id: string;
-}
-
-interface BookmarkItem {
-    productID: Product;
-    userID: User;
-    _id: string;
-}
-
-
-
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-}
-
+import { BookmarkSchema } from '@/model/Bookmark';
+import { UserSessionSchema } from '@/model/User';
 
 export default function FavouriteProductDataTable() {
     const Router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.User.userData) as userData | null
-    const [bookmarkData, setBookmarkData] = useState<BookmarkItem[] | []>([]);
+    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
+    const [bookmarkData, setBookmarkData] = useState<BookmarkSchema[] | []>([]);
     const data = useSelector((state: RootState) => state.Bookmark.bookmark)
     const [search, setSearch] = useState('');
-    const [filteredData, setFilteredData] = useState<BookmarkItem[] | []>([]);
-
+    const [filteredData, setFilteredData] = useState<BookmarkSchema[] | []>([]);
 
     useEffect(() => {
         setBookmarkData(data)
@@ -62,30 +33,24 @@ export default function FavouriteProductDataTable() {
         setFilteredData(bookmarkData);
     }, [bookmarkData])
 
-
-
-
-
-
-
     const columns = [
         {
             name: 'Product Name',
-            selector: (row: BookmarkItem) => row?.productID?.productName,
+            selector: (row: BookmarkSchema) => row?.product?.productName,
             sortable: true,
         },
         {
             name: 'Price',
-            selector: (row: BookmarkItem) => row?.productID?.productPrice,
+            selector: (row: BookmarkSchema) => row?.product?.productPrice,
             sortable: true,
         },
         {
             name: 'Image',
-            cell: (row: BookmarkItem) => <Image src={row?.productID?.productImage} alt='No Image Found' className='py-2' width={100} height={100} />
+            cell: (row: BookmarkSchema) => <Image src={row?.product?.productImage} alt='No Image Found' className='py-2' width={100} height={100} />
         },
         {
             name: 'Action',
-            cell: (row: BookmarkItem) => (
+            cell: (row: BookmarkSchema) => (
                 <div className='flex items-start justify-start px-2 h-20'>
                     <button onClick={() => handleDeleteProduct(row?._id)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
                 </div>
@@ -124,7 +89,7 @@ export default function FavouriteProductDataTable() {
             setFilteredData(bookmarkData);
         } else {
             setFilteredData(bookmarkData?.filter((item) => {
-                const itemData = item?.productID?.productName.toUpperCase();
+                const itemData = item?.product?.productName.toUpperCase();
                 const textData = search.toUpperCase();
                 return itemData.indexOf(textData) > -1;
             }))

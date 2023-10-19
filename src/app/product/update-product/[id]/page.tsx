@@ -13,6 +13,7 @@ import { setNavActive } from '@/utils/AdminNavSlice';
 import { RootState } from '@/Store/store';
 import { get_product_by_id, update_a_product } from '@/Services/Admin/product';
 import Cookies from 'js-cookie';
+import { ProductSchema, UpdateProductSchema } from '@/model/Product';
 
 
 
@@ -22,29 +23,11 @@ type Inputs = {
   name: string,
   description: string,
   slug: string,
-  feature: Boolean,
-  price: Number,
-  quantity: Number,
+  feature: boolean,
+  price: number,
+  quantity: number,
   categoryID: string,
 }
-
-
-type ProductData = {
-  _id: string,
-  productName: string,
-  productDescription: string,
-  productImage: string,
-  productSlug: string,
-  productPrice: Number,
-  productQuantity: Number,
-  productFeatured: Boolean,
-  productCategory: string,
-  createdAt: string;
-  updatedAt: string;
-};
-
-
-
 
 type CategoryData = {
   _id: string;
@@ -56,20 +39,15 @@ type CategoryData = {
   updatedAt: string;
 };
 
-
-
-
-
-
 interface pageParam {
   id: string
 }
 
 interface userData {
-  email: String,
-  role: String,
-  _id: String,
-  name: String
+  email: string,
+  role: string,
+  _id: string,
+  name: string
 }
 
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
@@ -78,8 +56,8 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
   const [loader, setLoader] = useState(false)
   const Router = useRouter();
   const dispatch = useDispatch();
-  const [prodData, setprodData] = useState<ProductData | undefined>(undefined);
-  const category = useSelector((state: RootState) => state.Admin.category) as CategoryData[] | undefined
+  const [prodData, setprodData] = useState<ProductSchema | undefined>(undefined);
+  const category = useSelector((state: RootState) => state.Shop.category) as CategoryData[] | undefined
 
 
   useEffect(() => {
@@ -111,7 +89,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
       setValue('description', prodData?.productDescription)
       setValue('slug', prodData?.productSlug)
       setValue('feature', prodData?.productFeatured)
-      setValue('categoryID', prodData?.productCategory)
+      setValue('categoryID', prodData?.productCategory._id)
       setValue('quantity', prodData?.productQuantity)
       setValue('price', prodData?.productPrice)
     }
@@ -125,15 +103,15 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     setLoader(false)
 
 
-    const updatedData: Inputs = {
+    const updatedData: UpdateProductSchema = {
       _id: params.id,
-      name: data.name !== prodData?.productName ? data.name : prodData?.productName,
-      description: data.description !== prodData?.productDescription ? data.description : prodData?.productDescription,
-      slug: data.slug !== prodData?.productSlug ? data.slug : prodData?.productSlug,
-      feature: data.feature !== prodData?.productFeatured ? data.feature : prodData?.productFeatured,
-      quantity: data.quantity !== prodData?.productQuantity ? data.quantity : prodData?.productQuantity,
-      price: data.price !== prodData?.productPrice ? data.price : prodData?.productPrice,
-      categoryID: data.categoryID !== prodData?.productCategory ? data.categoryID : prodData?.productCategory,
+      productName: data.name !== prodData?.productName ? data.name : prodData?.productName,
+      productDescription: data.description !== prodData?.productDescription ? data.description : prodData?.productDescription,
+      productSlug: data.slug !== prodData?.productSlug ? data.slug : prodData?.productSlug,
+      productFeatured: data.feature !== prodData?.productFeatured ? data.feature : prodData?.productFeatured,
+      productQuantity: data.quantity !== prodData?.productQuantity ? data.quantity : prodData?.productQuantity,
+      productPrice: data.price !== prodData?.productPrice ? data.price : prodData?.productPrice,
+      categoryID: data.categoryID !== prodData?.productCategory._id ? data.categoryID : prodData?.productCategory._id,
     };
 
     console.log(updatedData)

@@ -1,7 +1,8 @@
 
+import { BookmarkSchema, CreateBookmarkSchema } from "@/model/Bookmark";
 import Cookies from "js-cookie";
 
-export const bookmark_product = async (formData: any) => {
+export const bookmark_product = async (formData: CreateBookmarkSchema) => {
   try {
     // const res = await fetch(`/api/common/bookmark/bookmark-product`, {
     //   method: 'POST',
@@ -31,11 +32,21 @@ export const get_all_bookmark_items = async (id: any) => {
     //   }
     // });
     // const data = await res.json();
-    const data = {
+    const data:{
+      data: BookmarkSchema[],
+      message: string,
+      success: boolean,
+    } = {
       data: [
         {
-          userID: "1234",
-          productID: "p123",
+          _id:"123",
+          customerID: "456",
+          product: {
+            productImage: "testprdimageurl",
+            productName: "Test Name",
+            productPrice: 1,
+            productQuantity: 1
+          },
         }
       ],
       message: "Bookmarks found",

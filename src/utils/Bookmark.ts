@@ -1,27 +1,8 @@
+import { BookmarkSchema } from '@/model/Bookmark';
 import { createSlice } from '@reduxjs/toolkit'
 
-
-interface Product {
-    productName: string;
-    productPrice: string;
-    _id: string;
-    productImage: string;
-    productQuantity: number;
-}
-
-interface User {
-    email: string;
-    _id: string;
-}
-
-interface BookmarkItem {
-    productID: Product;
-    userID: User;
-    _id: string;
-}
-
 interface Data {
-    bookmark: BookmarkItem[];
+    bookmark: BookmarkSchema[];
 }
 
 

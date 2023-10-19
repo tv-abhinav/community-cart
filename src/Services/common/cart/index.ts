@@ -1,5 +1,6 @@
 
 
+import { CartViewSchema } from "@/model/Cart";
 import Cookies from "js-cookie";
 
 export const add_to_cart = async (formData: any) => {
@@ -23,7 +24,7 @@ export const add_to_cart = async (formData: any) => {
   }
 }
 
-export const get_all_cart_Items = async (id: any) => {
+export const get_all_cart_Items = async (id: string) => {
   try {
     // const res = await fetch(`/api/common/cart/get-cart-items?id=${id}`, {
     //   method: 'GET',
@@ -31,10 +32,21 @@ export const get_all_cart_Items = async (id: any) => {
     //     'Authorization': `Bearer ${Cookies.get('token')}`
     //   }
     // });
-    const data = {
+    const data:{
+      data:CartViewSchema[],
+      message: string,
+      success: boolean,
+    } = {
       data: [{
-        userID: "100",
-        productID: "1000",
+        _id:"",
+        userID: "", // populate product details in backend
+        product: {
+          _id:"",
+          productImage:"",
+          productName:"",
+          productPrice:"1 rs",
+          productQuantity:1
+        },
         quantity: 2,
       }],
       message: "Fetched all Cart Items",

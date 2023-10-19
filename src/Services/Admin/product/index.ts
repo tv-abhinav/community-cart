@@ -32,29 +32,34 @@ export const get_all_products = async () => {
     //   method: 'GET',
     // });
 
-    const data:{
+    const data: {
       data: ProductSchema[],
       message: string,
       success: boolean
     } = {
       data: [{
-        _id:"100",
-        shopID:"123",
-        productName : "Macbook Pro",
-        productDescription :"2023 latest Macbook" ,
-        productImage : "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg" ,
-        productSlug : "6123",
-        productPrice : 130000,
-        productQuantity : 3,
-        productFeatured : true,
-        productCategory: "Laptop"
-    }],
+        _id: "100",
+        shopID: "123",
+        productName: "Macbook Pro",
+        productDescription: "2023 latest Macbook",
+        productImage: "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg",
+        productSlug: "6123",
+        productPrice: 130000,
+        productQuantity: 3,
+        productFeatured: true,
+        productCategory: {
+          _id: "123",
+          categoryName: "abc"
+        },
+        createdAt: "2023-10-25",
+        updatedAt: "2023-10-25",
+      }],
       message: "Fetched all Products",
-      success:true
+      success: true
     }
     return data;
   } catch (error) {
-    throw new Error('Error in getting all products (service) =>'+ error)
+    throw new Error('Error in getting all products (service) =>' + error)
   }
 }
 
@@ -97,7 +102,7 @@ export const update_a_product = async (formData: any) => {
     }
     return data;
   } catch (error) {
-    throw new Error('Error in updating Product (service) =>'+ error)
+    throw new Error('Error in updating Product (service) =>' + error)
   }
 }
 
@@ -107,20 +112,30 @@ export const get_product_by_id = async (id: string) => {
     //   method: 'GET',
     // })
 
-    const data = {
+    const data: {
+      data: ProductSchema,
+      message: string,
+      success: boolean,
+    } = {
       data: {
-        _id:"100",
-        productName : "Macbook Pro",
-        productDescription :"2023 latest Macbook" ,
-        productImage : "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg" ,
-        productSlug : "6123",
-        productPrice : 130000,
-        productQuantity : 3,
-        productFeatured : true,
-        productCategory: "Laptop"
-    },
+        _id: "100",
+        productName: "Macbook Pro",
+        productDescription: "2023 latest Macbook",
+        productImage: "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg",
+        productSlug: "6123",
+        productPrice: 130000,
+        productQuantity: 3,
+        productFeatured: true,
+        productCategory: {
+          _id: "123",
+          categoryName: "abc"
+        },
+        createdAt: "2023-10-25",
+        updatedAt: "2023-10-25",
+        shopID: "123"
+      },
       message: "Fetched all Products",
-      success:true
+      success: true
     }
     return data;
   } catch (error) {
@@ -139,23 +154,23 @@ export const get_product_by_category_id = async (id: string) => {
 
     const data = {
       data: [{
-        productName : "Macbook Pro",
-        productImage : "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg" ,
-        productPrice : 130000,
-        productSlug : "6123",
-        productFeatured : true,
-        productCategory : {
-          categoryName : "Laptop",
-          categoryDescription  :"Personal Computing devices" ,
-          _id : "1000",
+        productName: "Macbook Pro",
+        productImage: "https://images.pexels.com/photos/249538/pexels-photo-249538.jpeg",
+        productPrice: 130000,
+        productSlug: "6123",
+        productFeatured: true,
+        productCategory: {
+          categoryName: "Laptop",
+          categoryDescription: "Personal Computing devices",
+          _id: "1000",
         },
-        _id:"100"
-    }],
+        _id: "100"
+      }],
       message: "Fetched all Products",
-      success:true
+      success: true
     }
     return data;
   } catch (error) {
-    throw new Error('Error in getting product by category ID (service) =>'+ error)
+    throw new Error('Error in getting product by category ID (service) =>' + error)
   }
 }

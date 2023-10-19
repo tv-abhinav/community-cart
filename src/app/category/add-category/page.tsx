@@ -23,7 +23,7 @@ type Inputs = {
 }
 
 interface loaderType {
-    loader: Boolean
+    loader: boolean
 }
 
 
@@ -68,10 +68,10 @@ const maxSize = (value: File) => {
 
 
 interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
+    email: string,
+    role: string,
+    _id: string,
+    name: string
   }
   
 

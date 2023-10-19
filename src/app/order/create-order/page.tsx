@@ -14,46 +14,16 @@ import {  get_all_cart_Items } from '@/Services/common/cart'
 import { setCart } from '@/utils/CartSlice'
 import { setNavActive } from '@/utils/AdminNavSlice'
 import { create_a_new_order } from '@/Services/common/order'
+import { CartViewSchema } from '@/model/Cart'
+import { UserSchema } from '@/model/User'
 
-
-
-type Inputs = {
+type ShippingAddressInput = {
     fullName: string,
     address: string,
     city: string,
-    postalCode: Number,
+    postalCode: number,
     country: string,
 }
-
-
-
-
-
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-}
-
-
-type Data = {
-    productID: {
-        productName: string,
-        productPrice: String,
-        _id: string,
-        productImage: string,
-        productQuantity: number,
-    }
-    userID: {
-        email: string,
-        _id: string,
-    },
-    _id: string,
-    quantity: number,
-}
-
-
 
 export default function Page() {
 
@@ -61,8 +31,8 @@ export default function Page() {
     const [loader, setLoader] = useState(false)
     const Router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.User.userData) as userData | null
-    const cartData = useSelector((state: RootState) => state.Cart.cart) as Data[] | null;
+    const user = useSelector((state: RootState) => state.User.userData) as UserSchema | null
+    const cartData = useSelector((state: RootState) => state.Cart.cart) as CartViewSchema[] | null;
     const [loading, setLoading] = useState(true)
 
 
@@ -98,7 +68,7 @@ export default function Page() {
     }
 
 
-    const { register, formState: { errors }, handleSubmit } = useForm<Inputs>({
+    const { register, formState: { errors }, handleSubmit } = useForm<ShippingAddressInput>({
         criteriaMode: "all"
     });
 
@@ -106,7 +76,7 @@ export default function Page() {
 
  
 
-    const onSubmit: SubmitHandler<Inputs> = async data => {
+    const onSubmit: SubmitHandler<ShippingAddressInput> = async data => {
         setLoader(true)
 
         const finalData = {
@@ -152,7 +122,7 @@ export default function Page() {
     }
 
 
-    function calculateTotalPrice(myCart: Data[]) {
+    function calculateTotalPrice(myCart: CartViewSchema[]) {
         const totalPrice = myCart?.reduce((acc, item) => {
             return acc + (Number(item?.quantity) * Number(item?.productID?.productPrice));
         }, 0);
@@ -160,7 +130,7 @@ export default function Page() {
         return totalPrice;
     }
 
-    const totalPrice = calculateTotalPrice(cartData as Data[])
+    const totalPrice = calculateTotalPrice(cartData as CartViewSchema[])
 
     return (
         <div className='w-full h-full bg-gray-50 px-2'>
@@ -211,7 +181,7 @@ export default function Page() {
                                             <Link href={"/"} className='btn text-white'>Shop Now</Link>
                                         </div>
                                         :
-                                        cartData?.map((item: Data) => {
+                                        cartData?.map((item: CartViewSchema) => {
                                             return <CartCard key={item?._id}
                                                 productID={item?.productID}
                                                 userID={item?.userID}

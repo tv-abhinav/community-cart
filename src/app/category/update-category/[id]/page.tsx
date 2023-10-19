@@ -46,10 +46,10 @@ interface pageParam {
 }
 
 interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
+    email: string,
+    role: string,
+    _id: string,
+    name: string
   }
   
   

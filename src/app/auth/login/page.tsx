@@ -19,7 +19,7 @@ export default function Login() {
 
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState({ email: "", password: "" });
-    const [loading, setLoding] = useState<Boolean>(false);
+    const [loading, setLoding] = useState<boolean>(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 

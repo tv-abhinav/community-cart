@@ -21,15 +21,15 @@ type Inputs = {
     name: string,
     description: string,
     slug: string,
-    feature : Boolean,
-    price : Number,
-    quantity :  Number,
+    feature : boolean,
+    price : number,
+    quantity :  number,
     categoryID : string,
     image: Array<File>,
 }
 
 interface loaderType {
-    loader: Boolean
+    loader: boolean
 }
 
 
@@ -85,10 +85,10 @@ type CategoryData = {
 
 
 interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
+    email: string,
+    role: string,
+    _id: string,
+    name: string
   }
   
 

@@ -17,10 +17,10 @@ import { get_all_orders } from '@/Services/Admin/order';
 
 
 interface userData {
-  email: String,
-  role: String,
-  _id: String,
-  name: String
+  email: string,
+  role: string,
+  _id: string,
+  name: string
 }
 
 

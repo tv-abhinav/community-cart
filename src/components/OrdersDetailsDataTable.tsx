@@ -17,9 +17,9 @@ type ProductData = {
   productDescription: string,
   productImage: string,
   productSlug: string,
-  productPrice: Number,
-  productQuantity: Number,
-  productFeatured: Boolean,
+  productPrice: number,
+  productQuantity: number,
+  productFeatured: boolean,
   productCategory: {
     _id: string,
     categoryName: string,
