@@ -1,7 +1,7 @@
 import { bookmark_product } from '@/Services/common/bookmark';
 import { add_to_cart } from '@/Services/common/cart';
 import { RootState } from '@/Store/store';
-import { setUserData } from '@/utils/UserDataSlice';
+import { setUserData } from '@/utils/resolvers/UserDataSlice';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React from 'react'

@@ -9,18 +9,18 @@ import { get_all_categories } from '@/Services/Admin/category'
 import { get_all_products } from '@/Services/Admin/product'
 import useSWR from 'swr'
 import { toast, ToastContainer } from 'react-toastify'
-import { setCategoryData, setCatLoading, setProdLoading, setProductData } from '@/utils/ShopSlice'
+import { setCategoryData, setCatLoading, setProdLoading, setProductData } from '@/utils/resolvers/ShopSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import Loading from './loading'
-import { setUserData } from '@/utils/UserDataSlice'
+import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { RootState } from '@/Store/store'
 
 
 export default function Home() {
   const dispatch = useDispatch();
-  const categoryLoading = useSelector((state: RootState) => state.Admin.catLoading)
-  const productLoading = useSelector((state: RootState) => state.Admin.productLoading)
+  const categoryLoading = useSelector((state: RootState) => state.Shop.catLoading)
+  const productLoading = useSelector((state: RootState) => state.Shop.productLoading)
   const [loading, setLoading] = useState(true)
   const [ratio, setRatio] = useState(16/9) 
   useEffect(() => {

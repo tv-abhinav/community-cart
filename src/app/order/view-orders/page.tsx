@@ -2,7 +2,7 @@
 import { get_all_orders_of_user } from '@/Services/common/order'
 import { RootState } from '@/Store/store'
 import OrdersDetailsDataTable from '@/components/OrdersDetailsDataTable'
-import { setOrder } from '@/utils/OrderSlice'
+import { setOrder } from '@/utils/resolvers/OrderSlice'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

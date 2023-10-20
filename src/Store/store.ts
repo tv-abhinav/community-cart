@@ -1,14 +1,14 @@
 'use client'
 
 
-import { AdminNavReducer } from '@/utils/AdminNavSlice';
-import { ShopReducer } from '@/utils/ShopSlice';
-import { UserReducer } from '@/utils/UserDataSlice';
-import { CustomerReducer } from '@/utils/CustomerDataSlice';
+import { AdminNavReducer } from '@/utils/resolvers/AdminNavSlice';
+import { ShopReducer } from '@/utils/resolvers/ShopSlice';
+import { UserReducer } from '@/utils/resolvers/UserDataSlice';
+import { CustomerReducer } from '@/utils/resolvers/CustomerDataSlice';
 import { configureStore } from '@reduxjs/toolkit'
-import { cartReducer } from '@/utils/CartSlice';
-import { bookmarkReducer } from '@/utils/Bookmark';
-import { OrderReducer } from '@/utils/OrderSlice';
+import { cartReducer } from '@/utils/resolvers/CartSlice';
+import { bookmarkReducer } from '@/utils/resolvers/Bookmark';
+import { OrderReducer } from '@/utils/resolvers/OrderSlice';
 
 
 

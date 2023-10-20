@@ -1,6 +1,6 @@
 "use client"
 
-import { setNavActive} from '@/utils/AdminNavSlice'
+import { setNavActive} from '@/utils/resolvers/AdminNavSlice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'

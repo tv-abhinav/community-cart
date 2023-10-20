@@ -29,8 +29,8 @@ type ProductData = {
 export default function FeaturedProduct() {
     
 
-    const prodData = useSelector((state: RootState) => state.Admin.product);
-    const prodLoading = useSelector((state: RootState) => state.Admin.productLoading);
+    const prodData = useSelector((state: RootState) => state.Shop.product);
+    const prodLoading = useSelector((state: RootState) => state.Shop.productLoading);
 
 
 

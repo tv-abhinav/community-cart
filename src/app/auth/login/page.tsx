@@ -8,7 +8,7 @@ import { login_me } from '@/Services/auth';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import Navbar from '@/components/Navbar';
-import { setUserData } from '@/utils/UserDataSlice';
+import { setUserData } from '@/utils/resolvers/UserDataSlice';
 import { useRouter } from 'next/navigation';
 import { TailSpin } from 'react-loader-spinner';
 

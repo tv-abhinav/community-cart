@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import useSWR from 'swr'
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { setNavActive } from '@/utils/AdminNavSlice';
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
 import { RootState } from '@/Store/store';
 import { get_product_by_id, update_a_product } from '@/Services/Admin/product';
 import Cookies from 'js-cookie';

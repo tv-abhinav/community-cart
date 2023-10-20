@@ -30,8 +30,8 @@ export default function CategoryDataTable() {
   const { mutate } = useSWRConfig()
   const router = useRouter();
   const [catData, setCatData] = useState<CategoryData[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.category)
-  const isLoading = useSelector((state: RootState) => state.Admin.catLoading);
+  const data = useSelector((state: RootState) => state.Shop.category)
+  const isLoading = useSelector((state: RootState) => state.Shop.catLoading);
 
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<CategoryData[] | []>([]);

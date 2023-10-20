@@ -12,7 +12,7 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/Bookmark';
+import { setBookmark } from '@/utils/resolvers/Bookmark';
 import { BookmarkSchema } from '@/model/Bookmark';
 import { UserSessionSchema } from '@/model/User';
 

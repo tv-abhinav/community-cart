@@ -9,9 +9,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import useSWR from 'swr'
 import { get_all_categories } from '@/Services/Admin/category';
 import { useDispatch } from 'react-redux';
-import { setCatLoading, setCategoryData, setOrderData, setProdLoading, setProductData } from '@/utils/ShopSlice';
+import { setCatLoading, setCategoryData, setOrderData, setProdLoading, setProductData } from '@/utils/resolvers/ShopSlice';
 import Loading from '../loading';
-import { setNavActive } from '@/utils/AdminNavSlice';
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
 import { get_all_products } from '@/Services/Admin/product';
 import { get_all_orders } from '@/Services/Admin/order';
 

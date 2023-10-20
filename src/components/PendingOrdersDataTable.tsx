@@ -13,7 +13,7 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/Bookmark';
+import { setBookmark } from '@/utils/resolvers/Bookmark';
 import { update_order_status } from '@/Services/Admin/order';
 import { OrderSchema, StatusEnum } from '@/model/Order';
 
@@ -80,7 +80,7 @@ export default function PendingOrdersDataTable() {
   const { mutate } = useSWRConfig()
   const router = useRouter();
   const [orderData, setOrderData] = useState<OrderSchema[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.Order) as OrderSchema[] | [];
+  const data = useSelector((state: RootState) => state.Shop.Order) as OrderSchema[] | [];
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<OrderSchema[] | []>([]);
 

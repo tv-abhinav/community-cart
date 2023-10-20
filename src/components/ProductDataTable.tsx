@@ -38,8 +38,8 @@ export default function ProductDataTable() {
   const { mutate } = useSWRConfig()
   const router = useRouter();
   const [prodData, setprodData] = useState<ProductData[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.product)
-  const isLoading = useSelector((state: RootState) => state.Admin.productLoading);
+  const data = useSelector((state: RootState) => state.Shop.product)
+  const isLoading = useSelector((state: RootState) => state.Shop.productLoading);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<ProductData[] | []>([]);
 

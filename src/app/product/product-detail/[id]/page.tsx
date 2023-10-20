@@ -13,7 +13,7 @@ import Loading from '@/app/loading'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/Store/store'
 import { add_to_cart } from '@/Services/common/cart'
-import { setUserData } from '@/utils/UserDataSlice'
+import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { bookmark_product } from '@/Services/common/bookmark'
 import { UserSessionSchema } from '@/model/User'
 

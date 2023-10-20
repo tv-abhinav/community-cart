@@ -4,7 +4,7 @@
 import { delete_a_cart_item, get_all_cart_Items } from '@/Services/common/cart'
 import { RootState } from '@/Store/store'
 import { CartViewSchema } from '@/model/Cart'
-import { setCart } from '@/utils/CartSlice'
+import { setCart } from '@/utils/resolvers/CartSlice'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'

@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import useSWR from 'swr'
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { setNavActive } from '@/utils/AdminNavSlice';
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
 import Cookies from 'js-cookie';
 import { UpdateCategorySchema } from '@/model/Category';
 

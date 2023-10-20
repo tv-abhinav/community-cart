@@ -10,11 +10,11 @@ import { RootState } from "../../Store/store";
 export default function  GettingDatasLength() {
 
    
-  const catData = useSelector((state: RootState) => state.Admin.category);
+  const catData = useSelector((state: RootState) => state.Shop.category);
 
-  const prodData = useSelector((state: RootState) => state.Admin.product);
+  const prodData = useSelector((state: RootState) => state.Shop.product);
 
-  const orderData = useSelector((state: RootState) => state.Admin.Order);
+  const orderData = useSelector((state: RootState) => state.Shop.Order);
 
   return [
     

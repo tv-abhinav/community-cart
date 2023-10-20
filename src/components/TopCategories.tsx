@@ -16,8 +16,8 @@ type CategoryData = {
 };
 
 export default function TopCategories() {
-    const catData = useSelector((state: RootState) => state.Admin.category);
-    const catLoading = useSelector((state: RootState) => state.Admin.catLoading);
+    const catData = useSelector((state: RootState) => state.Shop.category);
+    const catLoading = useSelector((state: RootState) => state.Shop.catLoading);
 
 
     const filteredCategories = catData?.slice(0, 3)

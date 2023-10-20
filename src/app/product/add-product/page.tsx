@@ -97,7 +97,7 @@ export default function AddProduct() {
 
     const [loader, setLoader] = useState(false)
     const Router = useRouter();
-    const category =  useSelector((state : RootState) => state.Admin.category) as CategoryData[] | undefined
+    const category =  useSelector((state : RootState) => state.Shop.category) as CategoryData[] | undefined
 
     useEffect(() => {
         const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
