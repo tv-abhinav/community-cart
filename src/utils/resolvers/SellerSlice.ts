@@ -1,29 +1,37 @@
+import { SellerSchema } from '@/model/Seller'
 import { createSlice } from '@reduxjs/toolkit'
 
-interface ShopState {
-    category : any[],
+interface SellerState {
+    seller: SellerSchema | null,
     catLoading : boolean,
     productLoading : boolean,
     product : any[],
+    categories : any[],
     Order : any[],
     orderLoading : boolean,
+    sellerLoading : boolean,
 }
 
-const initialState : ShopState = {
-    category : [],
+const initialState : SellerState = {
+    seller: null,
     catLoading : false,
     productLoading : false,
     product : [],
+    categories : [],
     Order : [],
     orderLoading : false,
+    sellerLoading : false,
 }
 
-export const Shop = createSlice({
-  name: 'ShopData',
+export const Seller = createSlice({
+  name: 'SellerData',
   initialState,
   reducers: {
-    setCategoryData : (state, action) => {
-        state.category = action.payload
+    setSellerData : (state, action) => {
+        state.seller = action.payload
+    },
+    setSellerLoading : (state , action) => {
+      state.sellerLoading = action.payload
     },
     setProductData : (state, action) => {
         state.product = action.payload
@@ -39,12 +47,15 @@ export const Shop = createSlice({
     },
     setOrderLoading : (state , action) => {
       state.orderLoading = action.payload
-    }
+    },
+    setCategoriesForSeller: (state, action) => {
+      state.categories = action.payload
+    },
 
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCategoryData ,setCatLoading , setProdLoading  , setProductData , setOrderData , setOrderLoading} = Shop.actions
+export const { setSellerData, setSellerLoading, setCatLoading , setProdLoading  , setProductData , setOrderData , setOrderLoading, setCategoriesForSeller} = Seller.actions
 
-export const ShopReducer =  Shop.reducer
+export const SellerReducer =  Seller.reducer

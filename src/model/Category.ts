@@ -1,20 +1,18 @@
 export interface CreateCategorySchema {
     categoryName: string;
     categoryDescription: string;
-    categoryImage: string;
     categorySlug: string;
+    catIconUrl: string;
 }
 
 export interface CategorySchema extends CreateCategorySchema {
-    _id: string;
-    createdAt: string;
-    updatedAt: string;
+    categoryId: string;
 }
 
 export interface UpdateCategorySchema {
     _id: string;
     categoryName?: string;
     categoryDescription?: string;
-    categoryImage?: string;
+    catIconUrl?: string;
     categorySlug?: string;
 }

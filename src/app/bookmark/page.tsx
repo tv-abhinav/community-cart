@@ -43,10 +43,10 @@ export default function Page() {
     const fetchBookmarkData = async () => {
         if (!user?._id) return Router.push('/')
         const cartData = await get_all_bookmark_items(user?._id)
-        if (cartData?.success) {
+        if (cartData?.status === 200) {
             dispatch(setBookmark(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
         setLoading(false)
     }

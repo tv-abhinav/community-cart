@@ -11,76 +11,14 @@ import Loading from '@/app/loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
-import { delete_a_product } from '@/Services/Admin/product';
-import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/resolvers/Bookmark';
 import { update_order_status } from '@/Services/Admin/order';
 import { OrderSchema, StatusEnum } from '@/model/Order';
-
-
-// interface Order {
-//     createdAt: string;
-//     deliveredAt: string;
-//     isDelivered: boolean;
-//     isPaid: boolean;
-//     itemsPrice: number;
-//     orderItems: {
-//       qty: number;
-//       product: {
-//         createdAt: string;
-//         productCategory: string;
-//         productDescription: string;
-//         productFeatured: boolean;
-//         productImage: string;
-//         productName: string;
-//         productPrice: number;
-//         productQuantity: number;
-//         productSlug: string;
-//         updatedAt: string;
-//         __v: number;
-//         _id: string;
-//       };
-//       _id: string;
-//     }[];
-//     paidAt: string;
-//     paymentMethod: string;
-//     shippingAddress: {
-//       address: string;
-//       city: string;
-//       country: string;
-//       fullName: string;
-//       postalCode: number;
-//     };
-//     shippingPrice: number;
-//     taxPrice: number;
-//     totalPrice: number;
-//     updatedAt: string;
-//     user: {
-//       email: string;
-//       name: string;
-//       password: string;
-//       role: string;
-//       __v: number;
-//       _id: string;
-//     };
-//     __v: number;
-//     _id: string;
-//   }
-
-
-// interface userData {
-//     email: string,
-//     role: string,
-//     _id: string,
-//     name: string
-// }
-
 
 export default function PendingOrdersDataTable() {
   const { mutate } = useSWRConfig()
   const router = useRouter();
   const [orderData, setOrderData] = useState<OrderSchema[] | []>([]);
-  const data = useSelector((state: RootState) => state.Shop.Order) as OrderSchema[] | [];
+  const data = useSelector((state: RootState) => state.Seller.Order) as OrderSchema[] | [];
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<OrderSchema[] | []>([]);
 
@@ -117,11 +55,11 @@ export default function PendingOrdersDataTable() {
     
 
     const res = await update_order_status(id, updatedStatus);
-    if (res?.success) {
+    if (res?.status === 200) {
       toast.success(res?.message)
-      mutate('gettingAllOrdersForAdmin')
+      mutate('gettingAllOrdersForSeller')
     } else {
-      toast.error(res?.message)
+      toast.error(res?.statusText)
     }
   }
 

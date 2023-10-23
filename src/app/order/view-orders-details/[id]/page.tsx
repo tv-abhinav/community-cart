@@ -52,7 +52,7 @@ interface Order {
         city: string;
         country: string;
         fullName: string;
-        postalCode: number;
+        pinCode: number;
     };
     shippingPrice: number;
     taxPrice: number;
@@ -178,7 +178,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                                 </div>
                                 <div className='flex py-2 w-full text-sm justify-between'>
                                     <p>Postal Code</p>
-                                    <p className='font-semibold'>{orderData?.shippingAddress?.postalCode} </p>
+                                    <p className='font-semibold'>{orderData?.shippingAddress?.pinCode} </p>
                                 </div>
                                 <div className='flex py-2 w-full text-sm justify-between'>
                                     <p>Country</p>

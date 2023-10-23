@@ -63,19 +63,19 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
     useEffect(() => {
         const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-        if (!Cookies.get('token') || user?.role !== 'admin') {
+        if (!Cookies.get('token') || user?.role !== 'SELLER') {
             Router.push('/')
         }
         dispatch(setNavActive('Base'))
     }, [dispatch, Cookies, Router])
 
 
-    const { data, isLoading } = useSWR('/gettingAllCategoriesFOrAdmin', () => get_category_by_id(params.id))
-    if (data?.success !== true) toast.error(data?.message)
+    const { res, isLoading } = useSWR('/gettingAllCategoriesForSeller', () => get_category_by_id(params.id))
+    if (res?.status !== 200) toast.error(res?.statusText)
 
     useEffect(() => {
-        setCatData(data?.data)
-    }, [data])
+        setCatData(res?.data)
+    }, [res])
 
 
     const { register, setValue, formState: { errors }, handleSubmit } = useForm<Inputs>({
@@ -114,15 +114,15 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
         };
 
         const res = await update_a_category(updatedData)
-        if (res?.success) {
-            toast.success(res?.message);
+        if (res?.status === 200) {
+            toast.success("Action successful");
             dispatch(setNavActive('Base'))
             setTimeout(() => {
                 Router.push("/Dashboard")
             }, 2000);
             setLoader(false)
         } else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
             setLoader(false)
         }
     }

@@ -30,21 +30,21 @@ export default function CartCard({ product, userID, _id , quantity }: CartViewSc
 
     const handleDeleteCartItem = async () => {
         const res = await delete_a_cart_item(_id)
-        if (res?.success) {
+        if (res?.status === 200) {
             fetchCartData();
             return toast.success(res?.message)
         }
-        return toast.error(res?.message)
+        return toast.error(res?.statusText)
     }
 
 
     const fetchCartData = async () => {
         if (!user?._id) return Router.push('/')
         const cartData = await get_all_cart_Items(user?._id)
-        if (cartData?.success) {
+        if (cartData?.status === 200) {
             dispatch(setCart(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
     }
 

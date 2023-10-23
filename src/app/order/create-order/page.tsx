@@ -21,7 +21,7 @@ type ShippingAddressInput = {
     fullName: string,
     address: string,
     city: string,
-    postalCode: number,
+    pinCode: number,
     country: string,
 }
 
@@ -59,10 +59,10 @@ export default function Page() {
     const fetchCartData = async () => {
         if (!user?._id) return Router.push('/')
         const cartData = await get_all_cart_Items(user?._id)
-        if (cartData?.success) {
+        if (cartData?.status === 200) {
             dispatch(setCart(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
         setLoading(false)
     }
@@ -83,7 +83,7 @@ export default function Page() {
             user : user?._id,
             orderItems : cartData?.map(item => {
                 return {
-                    product: item?.productID?._id,
+                    product: item?.productId?._id,
                     qty: item?.quantity
                 }
             }),
@@ -91,7 +91,7 @@ export default function Page() {
                 fullName: data?.fullName,
                 address: data?.address,
                 city: data?.city,
-                postalCode: data?.postalCode,
+                pinCode: data?.pinCode,
                 country: data?.country,
             },
             paymentMethod : 'PayPal',
@@ -107,7 +107,7 @@ export default function Page() {
 
 
         const res =  await create_a_new_order(finalData);
-        if(res?.success){
+        if(res?.status === 200){
             toast.success(res?.message)
             
             setTimeout(() => {
@@ -115,7 +115,7 @@ export default function Page() {
             } , 1000)
             setLoader(false)
         }else{
-            toast.error(res?.message)
+            toast.error(res?.statusText)
             setLoader(false)
         }
 
@@ -124,7 +124,7 @@ export default function Page() {
 
     function calculateTotalPrice(myCart: CartViewSchema[]) {
         const totalPrice = myCart?.reduce((acc, item) => {
-            return acc + (Number(item?.quantity) * Number(item?.productID?.productPrice));
+            return acc + (Number(item?.quantity) * Number(item?.productId?.productPrice));
         }, 0);
 
         return totalPrice;
@@ -178,12 +178,12 @@ export default function Page() {
                                     cartData?.length === 0 ?
                                         <div className='w-full h-full flex items-center justify-center flex-col'>
                                             <p className='my-4 mx-2 text-lg font-semibold '>No Item Available in Cart</p>
-                                            <Link href={"/"} className='btn text-white'>Shop Now</Link>
+                                            <Link href={"/"} className='btn text-white'>Seller Now</Link>
                                         </div>
                                         :
                                         cartData?.map((item: CartViewSchema) => {
                                             return <CartCard key={item?._id}
-                                                productID={item?.productID}
+                                                productId={item?.productId}
                                                 userID={item?.userID}
                                                 _id={item?._id}
                                                 quantity={item?.quantity}
@@ -229,8 +229,8 @@ export default function Page() {
                                 <label className="label">
                                     <span className="label-text">Postal Code</span>
                                 </label>
-                                <input  {...register("postalCode", { required: true })} type="number" className="file-input file-input-bordered w-full " />
-                                {errors.postalCode &&  <span className='text-red-500 text-xs mt-2'>This field is required</span>}
+                                <input  {...register("pinCode", { required: true })} type="number" className="file-input file-input-bordered w-full " />
+                                {errors.pinCode &&  <span className='text-red-500 text-xs mt-2'>This field is required</span>}
 
                             </div>
                             <div className="form-control w-full ">

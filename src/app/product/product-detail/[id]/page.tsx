@@ -15,7 +15,7 @@ import { RootState } from '@/Store/store'
 import { add_to_cart } from '@/Services/common/cart'
 import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { bookmark_product } from '@/Services/common/bookmark'
-import { UserSessionSchema } from '@/model/User'
+import { CustomerSchema } from '@/model/User'
 
 
 interface pageParam {
@@ -43,9 +43,9 @@ type ProductData = {
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
     const dispatch = useDispatch();
     const [prodData, setprodData] = useState<ProductData | undefined>(undefined);
-    const customer = useSelector((state: RootState) => state.Customer.CustomerData) as UserSessionSchema | null
-    const { data, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
-    if (data?.success !== true) toast.error(data?.message)
+    const customer = useSelector((state: RootState) => state.Customer.CustomerData) as CustomerSchema | null
+    const { res, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
+    if (res?.status !== 200) toast.error(res?.statusText)
 
 
     useEffect(() => {
@@ -55,31 +55,31 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     }, [])
 
     useEffect(() => {
-        setprodData(data?.data)
-    }, [data])
+        setprodData(res?.data)
+    }, [res])
 
 
 
 
     const AddToCart = async () => {
-        const finalData = { productID: params.id, userID: customer?._id }
+        const finalData = { productId: params.id, userID: customer?._id }
         const res = await add_to_cart(finalData);
-        if (res?.success) {
-            toast.success(res?.message);
+        if (res?.status === 200) {
+            toast.success("Action successful");
         } else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
         }
     }
 
 
     const AddToBookmark = async () => {
         if (customer) {
-            const finalData = { productID: params.id, customerID: customer?._id }
+            const finalData = { productId: params.id, customerID: customer?._id }
             const res = await bookmark_product(finalData);
-            if (res?.success) {
-                toast.success(res?.message);
+            if (res?.status === 200) {
+                toast.success("Action successful");
             } else {
-                toast.error(res?.message)
+                toast.error(res?.statusText)
             }
         }
     }

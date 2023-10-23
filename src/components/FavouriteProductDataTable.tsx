@@ -60,12 +60,12 @@ export default function FavouriteProductDataTable() {
     ];
 
     const fetchBookmarkData = async () => {
-        if (!user?._id) return Router.push('/')
-        const cartData = await get_all_bookmark_items(user?._id)
-        if (cartData?.success) {
+        if (!user?.sub) return Router.push('/')
+        const cartData = await get_all_bookmark_items(user?.sub)
+        if (cartData?.status === 200) {
             dispatch(setBookmark(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
     }
 
@@ -74,12 +74,12 @@ export default function FavouriteProductDataTable() {
 
     const handleDeleteProduct = async (id: string) => {
         const res = await delete_a_bookmark_item(id);
-        if (res?.success) {
-            toast.success(res?.message)
+        if (res?.status === 200) {
+            toast.success(res?.statusText)
             fetchBookmarkData()
         }
         else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
         }
     }
 

@@ -1,49 +1,31 @@
 "use client"
 
 
-import { get_product_by_category_id } from '@/Services/Admin/product'
+import { get_seller_by_id } from '@/Services/Admin/seller'
 import Loading from '@/app/loading'
-import ProductCard from '@/components/ProductCard'
+import CategoryCard from '@/components/CategoryCard'
+import { CategorySchema } from '@/model/Category'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { toast , ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import useSWR from 'swr'
 
 interface pageParam {
     id: string
 }
 
-
-
-type ProductData = {
-    productName: string,
-    productImage: string,
-    productSlug: string,
-    productPrice: number,
-    productFeatured: boolean,
-    productCategory : {
-        categoryName : string,
-        categoryDescription  :string ,
-        _id : string,
-    },
-    _id : string
-};
-  
-
-
-
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
-    const [thisProduct , setThisProdData] =  useState<ProductData[] | []>([]);
-    const { res, isLoading } = useSWR('/gettingProductOFSpecificCategoryID', () => get_product_by_category_id(params.id))
+    const [sellerCategories, setSellerCategoriesData] = useState<CategorySchema[] | []>([]);
+    const { res, isLoading } = useSWR('/gettingProductOFSpecificCategoryID', () => get_seller_by_id(params.id))
     if (res?.status !== 200) toast.error(res?.statusText)
 
     useEffect(() => {
         if (res)
-            setThisProdData(res.data)
+            setSellerCategoriesData(res.data.categories)
     }, [res])
 
-    const CategoryName  =  thisProduct?.map((item) => {
-        return item?.productCategory?.categoryName
+    const CategoryName = sellerCategories?.map((item) => {
+        return item?.categoryName
     })
 
     return (
@@ -65,23 +47,21 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
             <div className='w-full h-5/6  flex items-start justify-center flex-wrap overflow-auto'>
                 {
                     isLoading ? <Loading /> : <>
-                         {
-                                thisProduct?.map((item: ProductData) => {
-                                    return <ProductCard
-                                        productName = {item?.productName}
-                                        productPrice = {item?.productPrice}
-                                        productFeatured = {item?.productFeatured}
-                                        productImage = {item?.productImage}
-                                        productSlug = {item?.productSlug}
-                                        productCategory={item?.productCategory}
-                                        _id={item?._id}
-                                        key={item?._id} />
-                                })
-                            }
+                        {
+                            sellerCategories?.map((item: CategorySchema) => {
+                                return <CategoryCard
+                                    categoryName={item?.categoryName}
+                                    categoryDescription={item?.categoryDescription}
+                                    categoryImage={item?.categoryImage}
+                                    categorySlug={item?.categorySlug}
+                                    _id={item?._id}
+                                    key={item?._id} />
+                            })
+                        }
                     </>
                 }
                 {
-                    isLoading === false && thisProduct ===  undefined || thisProduct?.length <  1 && <p className='text-2xl my-4 text-center font-semibold text-red-400'>No Product Found in this Category</p>
+                    isLoading === false && sellerCategories === undefined || sellerCategories?.length < 1 && <p className='text-2xl my-4 text-center font-semibold text-red-400'>No Categories Found in this Seller</p>
                 }
             </div>
             <ToastContainer />

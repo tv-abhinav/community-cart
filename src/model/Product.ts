@@ -1,29 +1,19 @@
 export interface ProductHighLevelFeatures {
   productName: string;
   productPrice: number;
-  productImage: string;
   productQuantity: number;
 }
 export interface CreateProductSchema extends ProductHighLevelFeatures {
   productDescription: string;
   productSlug: string;
   productFeatured: boolean;
-  categoryID: string;
-  shopID: string;
+  categoryId: string;
+  sellerId: string;
 }
 
-export interface ProductSchema extends ProductHighLevelFeatures {
-  _id: string;
-  productDescription: string;
-  productSlug: string;
-  productFeatured: boolean;
-  productCategory: {
-    _id: string,
-    categoryName: string,
-  };
-  shopID: string;
-  createdAt: string;
-  updatedAt: string;
+export interface ProductSchema extends CreateProductSchema {
+  productId: string;
+  productImageUrl?: string;
 }
 
 export interface UpdateProductSchema {
@@ -35,6 +25,6 @@ export interface UpdateProductSchema {
   productPrice?: number;
   productQuantity?: number;
   productFeatured?: boolean;
-  categoryID?: string;
-  shopID?: string;
+  categoryId?: string;
+  sellerId?: string;
 }

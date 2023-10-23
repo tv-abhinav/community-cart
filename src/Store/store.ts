@@ -2,7 +2,7 @@
 
 
 import { AdminNavReducer } from '@/utils/resolvers/AdminNavSlice';
-import { ShopReducer } from '@/utils/resolvers/ShopSlice';
+import { SellerReducer } from '@/utils/resolvers/SellerSlice';
 import { UserReducer } from '@/utils/resolvers/UserDataSlice';
 import { CustomerReducer } from '@/utils/resolvers/CustomerDataSlice';
 import { configureStore } from '@reduxjs/toolkit'
@@ -16,7 +16,7 @@ export const store = configureStore({
     reducer: {
         User : UserReducer,
         Customer : CustomerReducer,
-        Shop : ShopReducer,
+        Seller : SellerReducer,
         AdminNav : AdminNavReducer,
         Cart : cartReducer,
         Bookmark : bookmarkReducer,

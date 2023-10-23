@@ -40,23 +40,23 @@ export default function ProductCard({ productName, productFeatured, productImage
     const user = useSelector((state: RootState) => state.User.userData) as User | null
 
     const AddToCart = async () => {
-        const finalData = { productID: _id, userID: user?._id }
+        const finalData = { productId: _id, userID: user?._id }
         const res = await add_to_cart(finalData);
-        if (res?.success) {
-            toast.success(res?.message);
+        if (res?.status === 200) {
+            toast.success("Action successful");
         } else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
         }
     }
 
 
     const AddToBookmark  =  async () => {
-        const finalData = { productID: _id, userID: user?._id }
+        const finalData = { productId: _id, userID: user?._id }
         const res = await bookmark_product(finalData);
-        if (res?.success) {
-            toast.success(res?.message);
+        if (res?.status === 200) {
+            toast.success("Action successful");
         } else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
         }
     }
 

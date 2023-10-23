@@ -47,7 +47,7 @@ interface Order {
       city: string;
       country: string;
       fullName: string;
-      postalCode: number;
+      pinCode: number;
     };
     shippingPrice: number;
     taxPrice: number;
@@ -78,7 +78,7 @@ export default function CompletedOrderDataTable() {
     const { mutate } = useSWRConfig()
   const router = useRouter();
   const [orderData, setOrderData] = useState<Order[] | []>([]);
-  const data = useSelector((state: RootState) => state.Shop.Order) as Order[] | [];
+  const data = useSelector((state: RootState) => state.Seller.Order) as Order[] | [];
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<Order[] | []>([]);
 
@@ -91,12 +91,6 @@ export default function CompletedOrderDataTable() {
   useEffect(() => {
     setFilteredData(orderData);
   }, [orderData])
-
-
-
-
-
-
 
   const columns = [
     {
@@ -124,12 +118,7 @@ export default function CompletedOrderDataTable() {
     },
 
   ];
-
-
-
-
-
-
+  
   useEffect(() => {
     if (search === '') {
       setFilteredData(orderData);

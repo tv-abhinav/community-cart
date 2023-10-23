@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { login_me } from '@/Services/auth';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
-import Navbar from '@/components/Navbar';
+import jwt_decode from "jwt-decode";
 import { setUserData } from '@/utils/resolvers/UserDataSlice';
+// import { setCategoryData } from '@/utils/resolvers/SellerSlice';
 import { useRouter } from 'next/navigation';
 import { TailSpin } from 'react-loader-spinner';
-
+import { GrClose } from 'react-icons/gr';
+import { UserSessionSchema } from '@/model/User';
 
 export default function Login() {
     const dispatch = useDispatch()
@@ -35,14 +37,16 @@ export default function Login() {
         }
 
         const res = await login_me(formData);
-        if (res.success) {
+        let data = res.data;
+        if (res.status == 200 && data) {
             setLoding(false);
-            Cookies.set('token', res?.finalData?.token);
-            localStorage.setItem('user', JSON.stringify(res?.finalData?.user));
-            const userData = localStorage.getItem('user');
-            const userDataString = typeof userData === 'string' ? userData : '';
-            dispatch(setUserData(JSON.parse(userDataString)));
-            if (res?.finalData?.user?.role === 'admin') {
+            Cookies.set('token', data);
+            const tokenData:UserSessionSchema = jwt_decode(data);
+            localStorage.setItem('user', JSON.stringify(tokenData));
+            dispatch(setUserData(tokenData));
+            // const userData = localStorage.getItem('user');
+            // const userDataString = typeof userData === 'string' ? userData : '';
+            if (tokenData?.role === 'SELLER') {
                 Router.push('/Dashboard')
             }
             else {
@@ -51,7 +55,7 @@ export default function Login() {
         }
         else {
             setLoding(false);
-            toast.error(res.message);
+            toast.error(res.statusText);
         }
     }
 
@@ -65,8 +69,9 @@ export default function Login() {
 
     return (
         <>
-            <Navbar />
-            <div className='w-full h-screen bg-gray-50 text-black'>
+            {/* <Navbar /> */}
+            <div className='relative w-full h-screen bg-gray-50 text-black'>
+                <Link href={'/'}><GrClose className="absolute top-5 right-5 w-10 h-10 stroke-current" /></Link>
                 <div className="flex flex-col items-center  text-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
                     <div className="w-full bg-white text-black rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -115,7 +120,7 @@ export default function Login() {
                                 }
                                 
                                 <p className="text-sm text-black ">
-                                    Don’t have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
+                                    Don't have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
                                 </p>
                             </form>
                         </div>

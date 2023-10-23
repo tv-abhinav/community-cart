@@ -4,7 +4,7 @@ import { ProductSchema } from "./Product";
 export type StatusEnum = "packed" | "shipped" | "delivered"
 export interface CreateOrderSchema {
     customerID: string,
-    shopID: string,
+    sellerId: string,
     orderItems: [
         {
             qty: number,

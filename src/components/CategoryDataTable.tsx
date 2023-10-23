@@ -11,30 +11,20 @@ import Loading from '@/app/loading';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
+import { CategorySchema } from '@/model/Category';
 
 
 
 
-type CategoryData = {
-  _id: string;
-  categoryName: string;
-  categoryDescription: string;
-  categoryImage: string;
-  categorySlug: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-
-export default function CategoryDataTable() {
+export default function CategorySchemaTable() {
   const { mutate } = useSWRConfig()
   const router = useRouter();
-  const [catData, setCatData] = useState<CategoryData[] | []>([]);
-  const data = useSelector((state: RootState) => state.Shop.category)
-  const isLoading = useSelector((state: RootState) => state.Shop.catLoading);
+  const [catData, setCatData] = useState<CategorySchema[] | []>([]);
+  const data = useSelector((state: RootState) => state.Seller.categories)
+  const isLoading = useSelector((state: RootState) => state.Seller.catLoading);
 
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<CategoryData[] | []>([]);
+  const [filteredData, setFilteredData] = useState<CategorySchema[] | []>([]);
 
 
 
@@ -53,20 +43,26 @@ export default function CategoryDataTable() {
 
   const columns = [
     {
-      name: 'Name',
-      selector: (row: CategoryData) => row?.categoryName,
+      name: 'ID',
+      selector: (row: CategorySchema) => row?.categoryId,
       sortable: true,
     },
     {
-      name: 'Image',
-      cell: (row: CategoryData) => <Image src={row?.categoryImage} alt='No Image Found' className='py-2' width={100} height={100} />
+      name: 'Name',
+      selector: (row: CategorySchema) => row?.categoryName,
+      sortable: true,
+    },
+    {
+      name: 'Description',
+      selector: (row: CategorySchema) => row?.categoryDescription,
+      sortable: true,
     },
     {
       name: 'Action',
-      cell: (row: CategoryData) => (
+      cell: (row: CategorySchema) => (
         <div className='flex items-center justify-start px-2 h-20'>
-          <button onClick={() => router.push(`/category/update-category/${row?._id}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Update</button>
-          <button onClick={() => handleDeleteCategory(row?._id)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
+          <button onClick={() => router.push(`/category/update-category/${row?.categoryId}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Update</button>
+          <button onClick={() => handleDeleteCategory(row?.categoryId)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
         </div>
       )
     },
@@ -77,12 +73,12 @@ export default function CategoryDataTable() {
 
   const handleDeleteCategory = async (id: string) => {
     const res = await delete_a_category(id);
-    if (res?.success) {
-      toast.success(res?.message)
-      mutate('/gettingAllCategoriesFOrAdmin')
+    if (res?.status === 200) {
+      toast.success("deleteCategory success")
+      mutate('/gettingAllCategoriesForSeller')
     }
     else {
-      toast.error(res?.message)
+      toast.error(res?.statusText)
     }
   }
 
@@ -98,7 +94,7 @@ export default function CategoryDataTable() {
             return itemData.indexOf(textData) > -1;
         }))
     }
-
+    console.log(catData);
 
 }, [search, catData])
 
@@ -106,10 +102,12 @@ export default function CategoryDataTable() {
 
   return (
     <div className='w-full h-full bg-white'>
+      {
+      filteredData ?
       <DataTable
         columns={columns}
         data={filteredData || []}
-        key={'ThisisCategoryData'}
+        key={'ThisisCategorySchema'}
         pagination
         keyField="id"
         title={`Categories list`} 
@@ -129,6 +127,9 @@ export default function CategoryDataTable() {
       }
         className="bg-white px-4 h-4/6 "
       />
+      :
+      ""
+    }
 
     </div>
   )

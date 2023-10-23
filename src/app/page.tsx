@@ -4,29 +4,26 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Hero from '@/components/Hero'
 import FeaturedProduct from '@/components/FeaturedProduct'
-import TopCategories from '@/components/TopCategories'
+import TopShops from '@/components/TopShops'
 import { get_all_categories } from '@/Services/Admin/category'
 import { get_all_products } from '@/Services/Admin/product'
 import useSWR from 'swr'
 import { toast, ToastContainer } from 'react-toastify'
-import { setCategoryData, setCatLoading, setProdLoading, setProductData } from '@/utils/resolvers/ShopSlice'
+import { setCategoriesForCustomer } from '@/utils/resolvers/CustomerDataSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import Loading from './loading'
 import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { RootState } from '@/Store/store'
+import { setProductData } from '@/utils/resolvers/SellerSlice'
 
 
 export default function Home() {
   const dispatch = useDispatch();
-  const categoryLoading = useSelector((state: RootState) => state.Shop.catLoading)
-  const productLoading = useSelector((state: RootState) => state.Shop.productLoading)
+  const categoryLoading = useSelector((state: RootState) => state.Seller.catLoading)
+  const productLoading = useSelector((state: RootState) => state.Seller.productLoading)
   const [loading, setLoading] = useState(true)
   const [ratio, setRatio] = useState(16/9) 
-  useEffect(() => {
-    toast.warning("Application is under development , some features may not work properly")
-    toast.warning('This is a demo website, you can not buy anything from here')
-  }, [])
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -42,29 +39,19 @@ export default function Home() {
 
   const FetchDataOFProductAndCategory = async () => {
 
-    const categoryData = await get_all_categories();
-    if (categoryData?.success !== true) toast.error(categoryData?.message)
-
-    dispatch(setCategoryData(categoryData?.data))
-
+    const categoryRes = await get_all_categories();
+    if (categoryRes?.status !== 200) toast.error(categoryRes?.statusText)
+    dispatch(setCategoriesForCustomer(categoryRes?.data))
 
 
-    const productData = await get_all_products();
-    if (productData?.success !== true) toast.error(productData?.message)
 
-
-    dispatch(setProductData(productData?.data))
+    const productRes = await get_all_products();
+    if (productRes?.status !== 200) toast.error(productRes?.statusText)
+    dispatch(setProductData(productRes?.data))
 
 
     setLoading(false)
   }
-
-  useEffect(() => {
-    dispatch(setCatLoading(loading))
-    dispatch(setProdLoading(loading))
-  }, [categoryLoading, productLoading, dispatch, loading])
-
-
 
   return (
     <>
@@ -74,7 +61,7 @@ export default function Home() {
         loading ? <Loading /> :
           <>
 
-            <TopCategories />
+            <TopShops />
             <FeaturedProduct  />
             <Footer />
 

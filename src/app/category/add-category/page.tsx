@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation';
 import { add_new_category } from '@/Services/Admin/category';
 import Cookies from 'js-cookie';
 import { CreateCategorySchema } from '@/model/Category';
+import { UserSessionSchema } from '@/model/User';
+import IconPicker from '@/components/IconPicker';
 
 
 
@@ -25,12 +27,6 @@ type Inputs = {
 interface loaderType {
     loader: boolean
 }
-
-
-
-
-
-
 
 const uploadImages = async (file: File) => {
     const createFileName = () => {
@@ -66,32 +62,28 @@ const maxSize = (value: File) => {
 }
 
 
-
-interface userData {
-    email: string,
-    role: string,
-    _id: string,
-    name: string
-  }
-  
-
 export default function AddCategory() {
 
     const [loader, setLoader] = useState(false)
+    const [user, setUser] = useState<UserSessionSchema | null>(null)
+    const [icon, setIcon] = useState("")
     const Router = useRouter();
-    
+
 
 
     useEffect(() => {
-        const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-        if (!Cookies.get('token') || user?.role !== 'admin') {
+        const usr: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
+        setUser(usr)
+        if (!Cookies.get('token') || usr?.role !== 'SELLER') {
             Router.push('/')
         }
-        
-    }, [  Router])
+
+    }, [Router])
 
 
-    
+    const handleClick = (iconPath: any) => {
+        setIcon(iconPath.src);
+    };
 
 
     const { register, formState: { errors }, handleSubmit } = useForm<Inputs>({
@@ -100,23 +92,21 @@ export default function AddCategory() {
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
         setLoader(true)
-        const CheckFileSize = maxSize(data.image[0]);
-        if (CheckFileSize) return toast.error('Image size must be less then 1MB')
-        const uploadImageToFirebase = await uploadImages(data.image[0]);
-        // const uploadImageToFirebase = 'https://firebasestorage.googleapis.com/v0/b/socialapp-9b83f.appspot.com/o/ecommerce%2Fcategory%2Fimages131.jpg-1683339363348-c4vcab?alt=media&token=f9303ff9-7d34-4514-a53f-832f72814337';
 
-        const finalData:CreateCategorySchema = { categoryName: data.name, categoryDescription: data.description, categoryImage: uploadImageToFirebase, categorySlug: data.slug }
-
-        const res = await add_new_category(finalData)
-        if (res?.success) {
-            toast.success(res?.message);
-            setTimeout(() => {
-                Router.push('/Dashboard')
-            }, 2000);
-            setLoader(false)
-        } else {
-            toast.error(res?.message)
-            setLoader(false)
+        const catData: CreateCategorySchema = { categoryName: data.name, catIconUrl: icon, categoryDescription: data.description, categorySlug: data.slug }
+        if (user?.sub) {
+            const res = await add_new_category(catData, user?.sub)
+            console.log(res);
+            if (res?.status === 200) {
+                toast.success("Category Added");
+                setTimeout(() => {
+                    Router.push('/Dashboard')
+                }, 2000);
+                setLoader(false)
+            } else {
+                toast.error(res?.statusText)
+                setLoader(false)
+            }
         }
     }
 
@@ -190,7 +180,7 @@ export default function AddCategory() {
                                 <label className="label">
                                     <span className="label-text">Add Category Image</span>
                                 </label>
-                                <input accept="image/*" max="1000000"  {...register("image", { required: true })} type="file" className="file-input file-input-bordered w-full " />
+                                <IconPicker handleClick={handleClick} />
                                 {errors.image && <span className='text-red-500 text-xs mt-2'>This field is required and the image must be less than or equal to 1MB.</span>}
 
                             </div>

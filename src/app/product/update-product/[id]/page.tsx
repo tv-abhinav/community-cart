@@ -26,7 +26,7 @@ type Inputs = {
   feature: boolean,
   price: number,
   quantity: number,
-  categoryID: string,
+  categoryId: string,
 }
 
 type CategoryData = {
@@ -57,12 +57,12 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
   const Router = useRouter();
   const dispatch = useDispatch();
   const [prodData, setprodData] = useState<ProductSchema | undefined>(undefined);
-  const category = useSelector((state: RootState) => state.Shop.category) as CategoryData[] | undefined
+  const category = useSelector((state: RootState) => state.Seller.categories) as CategoryData[] | undefined
 
 
   useEffect(() => {
     const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!Cookies.get('token') || user?.role !== 'admin') {
+    if (!Cookies.get('token') || user?.role !== 'SELLER') {
       Router.push('/')
     }
 
@@ -70,12 +70,12 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
 
 
-  const { data, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
-  if (data?.success !== true) toast.error(data?.message)
+  const { res, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
+  if (res?.status !== 200) toast.error(res?.statusText)
 
   useEffect(() => {
-    setprodData(data?.data)
-  }, [data])
+    setprodData(res?.data)
+  }, [res])
 
 
   const { register, setValue, formState: { errors }, handleSubmit } = useForm<Inputs>({
@@ -89,7 +89,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
       setValue('description', prodData?.productDescription)
       setValue('slug', prodData?.productSlug)
       setValue('feature', prodData?.productFeatured)
-      setValue('categoryID', prodData?.productCategory._id)
+      setValue('categoryId', prodData?.productCategory._id)
       setValue('quantity', prodData?.productQuantity)
       setValue('price', prodData?.productPrice)
     }
@@ -111,21 +111,21 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
       productFeatured: data.feature !== prodData?.productFeatured ? data.feature : prodData?.productFeatured,
       productQuantity: data.quantity !== prodData?.productQuantity ? data.quantity : prodData?.productQuantity,
       productPrice: data.price !== prodData?.productPrice ? data.price : prodData?.productPrice,
-      categoryID: data.categoryID !== prodData?.productCategory._id ? data.categoryID : prodData?.productCategory._id,
+      categoryId: data.categoryId !== prodData?.productCategory._id ? data.categoryId : prodData?.productCategory._id,
     };
 
     console.log(updatedData)
 
     const res = await update_a_product(updatedData)
-    if (res?.success) {
-      toast.success(res?.message);
+    if (res?.status === 200) {
+      toast.success("Action successful");
       dispatch(setNavActive('Base'))
       setTimeout(() => {
         Router.push("/Dashboard")
       }, 2000);
       setLoader(false)
     } else {
-      toast.error(res?.message)
+      toast.error(res?.statusText)
       setLoader(false)
     }
   }
@@ -178,7 +178,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                 <label className="label">
                   <span className="label-text">Choose Category</span>
                 </label>
-                <select   {...register("categoryID", { required: true })} className="select select-bordered">
+                <select   {...register("categoryId", { required: true })} className="select select-bordered">
                   <option disabled selected>Pick  one category </option>
                   {
                     category?.map((item) => {

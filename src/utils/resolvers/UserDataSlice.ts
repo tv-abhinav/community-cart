@@ -1,8 +1,8 @@
-import { UserSchema } from '@/model/User'
+import { UserSessionSchema } from '@/model/User'
 import { createSlice } from '@reduxjs/toolkit'
 
 interface UserState {
-    userData:  UserSchema | null,
+    userData:  UserSessionSchema | null,
     userToken: string | null,
 }
 
@@ -15,7 +15,7 @@ export const userSlice = createSlice({
   name: 'User',
   initialState,
   reducers: {
-    setUserData : (state, action:{payload:UserSchema, type: string}) => {
+    setUserData : (state, action:{payload:UserSessionSchema, type: string}) => {
         state.userData = action.payload
     },
     setUserToken : (state, action) => {

@@ -62,7 +62,7 @@ interface Order {
     city: string;
     country: string;
     fullName: string;
-    postalCode: number;
+    pinCode: number;
   };
   shippingPrice: number;
   taxPrice: number;

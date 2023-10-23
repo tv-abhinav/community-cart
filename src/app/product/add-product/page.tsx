@@ -12,7 +12,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import Cookies from 'js-cookie';
 import { useSWRConfig } from "swr"
-import { add_new_product } from '@/Services/Admin/product';
+import { add_new_product, upload_product_photo } from '@/Services/Admin/product';
+import { CreateProductSchema } from '@/model/Product';
+import { CategorySchema } from '@/model/Category';
+import { UserSessionSchema } from '@/model/User';
  
 
 
@@ -24,72 +27,14 @@ type Inputs = {
     feature : boolean,
     price : number,
     quantity :  number,
-    categoryID : string,
+    categoryId : string,
     image: Array<File>,
 }
-
-interface loaderType {
-    loader: boolean
-}
-
-
-
-
-
-
-
-const uploadImages = async (file: File) => {
-    const createFileName = () => {
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 8);
-        return `${file?.name}-${timestamp}-${randomString}`;
-    }
-
-    const fileName = createFileName();
-    const storageRef = ref(storage, `ecommerce/category/${fileName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    return new Promise((resolve, reject) => {
-        uploadTask.on('state_changed', (snapshot) => {
-        }, (error) => {
-            console.log(error)
-            reject(error);
-        }, () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                resolve(downloadURL);
-            }).catch((error) => {
-                console.log(error)
-                reject(error);
-            });
-        });
-    });
-}
-
-
 
 const maxSize = (value: File) => {
     const fileSize = value.size / 1024 / 1024;
     return fileSize < 1 ? false : true
 }
-
-
-type CategoryData = {
-    _id: string;
-    categoryName: string;
-    categoryDescription: string;
-    categoryImage: string;
-    categorySlug: string;
-    createdAt: string;
-    updatedAt: string;
-};
-
-
-interface userData {
-    email: string,
-    role: string,
-    _id: string,
-    name: string
-  }
   
 
 
@@ -97,11 +42,12 @@ export default function AddProduct() {
 
     const [loader, setLoader] = useState(false)
     const Router = useRouter();
-    const category =  useSelector((state : RootState) => state.Shop.category) as CategoryData[] | undefined
+    const category =  useSelector((state : RootState) => state.Seller.categories) as CategorySchema[] | undefined
+    const sellerId =  useSelector((state : RootState) => state.Seller.seller?.sellerId) as string
 
     useEffect(() => {
-        const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-        if (!Cookies.get('token') || user?.role !== 'admin') {
+        const user: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!Cookies.get('token') || user?.role !== 'SELLER') {
             Router.push('/')
         }
         
@@ -121,19 +67,23 @@ export default function AddProduct() {
         setLoader(true)
         const CheckFileSize = maxSize(data.image[0]);
         if (CheckFileSize) return toast.error('Image size must be less then 1MB')
-        const uploadImageToFirebase = await uploadImages(data.image[0]);
-        // const uploadImageToFirebase = 'https://firebasestorage.googleapis.com/v0/b/socialapp-9b83f.appspot.com/o/ecommerce%2Fcategory%2Fimages131.jpg-1683339363348-c4vcab?alt=media&token=f9303ff9-7d34-4514-a53f-832f72814337';
 
-        const finalData = { productName: data.name, productDescription: data.description, productImage: uploadImageToFirebase, productSlug: data.slug , productFeatured  : data.feature , productPrice : data.price , productQuantity : data.quantity , productCategory : data.categoryID}
-        const res = await add_new_product(finalData)
-        if (res?.success) {
-            toast.success(res?.message);
+        const prdData:CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: data.slug , productFeatured  : data.feature , productPrice : data.price , productQuantity : data.quantity , categoryId : data.categoryId, sellerId: sellerId}
+        const regRes = await add_new_product(prdData)
+        if (regRes?.status === 201) {
+            toast.success("Product added");
+            if(data.image[0]) {
+                const photoRes = await upload_product_photo(data.image[0], regRes.data.productId)
+                if (photoRes?.status === 201) {
+                    toast.success("Error uploading product image");
+                }
+            }
             setTimeout(() => {
                 Router.push('/Dashboard')
             }, 2000);
             setLoader(false)
         } else {
-            toast.error(res?.message)
+            toast.error(regRes?.statusText)
             setLoader(false)
         }
     }
@@ -185,12 +135,12 @@ export default function AddProduct() {
                                 <label className="label">
                                     <span className="label-text">Choose Category</span>
                                 </label>
-                                <select   {...register("categoryID", { required: true })}  className="select select-bordered">
+                                <select   {...register("categoryId", { required: true })}  className="select select-bordered">
                                     <option disabled selected>Pick  one category </option>
                                     {
                                         category?.map((item) => {
                                             return (
-                                                <option key={item._id} value={item._id}>{item.categoryName}</option>
+                                                <option key={item.categoryId} value={item.categoryId}>{item.categoryName}</option>
                                             )
                                         })
                                     }

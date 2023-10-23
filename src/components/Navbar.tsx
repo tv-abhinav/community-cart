@@ -17,7 +17,7 @@ export default function Navbar() {
     const [Scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const user = useSelector((state: RootState) => state.User.userData)
-    const categories: CategorySchema[] = useSelector((state: RootState) => state.Shop.category)
+    const categories: CategorySchema[] = useSelector((state: RootState) => state.Seller.categories)
 
     useEffect(() => {
         window.onscroll = () => {
@@ -49,7 +49,7 @@ export default function Navbar() {
                 <button data-collapse-toggle="navbar-default" onClick={toggleMenu} type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
                     <span className="sr-only">Open main menu</span>
                     <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
                     </svg>
                 </button>
                 <div className={`md:navbar-end md:mt-0 md:flex space-y-3 md:space-y-0 md:items-center md:justify-center md:min-h-full w-full md:w-auto ${menuOpen ? 'block' : 'hidden md:block'}`} id="navbar-default">
@@ -82,17 +82,20 @@ export default function Navbar() {
             </div>
 
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+                <li className="mr-2 w-36">
+                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">Home</Link>
+                </li>
                 {
                     categories.map((category, index) => {
                         return (
-                            <li className="mr-2" key={index}>
-                                <Link href={`/category/${category.categorySlug}`} aria-current="page" className="inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">{category.categoryName}</Link>
+                            <li className="mr-2 w-36" key={index}>
+                                <Link href={`/category/category-product/${category.categorySlug.replace('/','')}`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">{category.categoryName}</Link>
                             </li>
                         )
                     })
                 }
-                <li>
-                    <a className="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed dark:text-gray-500">Disabled</a>
+                <li className="mr-2 w-36">
+                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">More..</Link>
                 </li>
             </ul>
 
