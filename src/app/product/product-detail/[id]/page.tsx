@@ -16,71 +16,59 @@ import { add_to_cart } from '@/Services/common/cart'
 import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { bookmark_product } from '@/Services/common/bookmark'
 import { CustomerSchema } from '@/model/User'
+import { ProductSchema } from '@/model/Product'
 
 
 interface pageParam {
     id: string
 }
 
-
-type ProductData = {
-    _id: string,
-    productName: string,
-    productDescription: string,
-    productImage: string,
-    productSlug: string,
-    productPrice: number,
-    productQuantity: number,
-    productFeatured: boolean,
-    productCategory: {
-        categoryName: string,
-        _id: string,
-    },
-    createdAt: string;
-    updatedAt: string;
-};
-
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
-    const dispatch = useDispatch();
-    const [prodData, setprodData] = useState<ProductData | undefined>(undefined);
-    const customer = useSelector((state: RootState) => state.Customer.CustomerData) as CustomerSchema | null
-    const { res, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
-    if (res?.status !== 200) toast.error(res?.statusText)
+    const [prodData, setprodData] = useState<ProductSchema | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
+    const customer = useSelector((state: RootState) => state.Customer.CustomerData) as CustomerSchema | null
 
     useEffect(() => {
-        const userData = localStorage.getItem('user');
-        if (!userData) return;
-        dispatch(setUserData(JSON.parse(userData)));
+        const getProdById = async () => {
+            setIsLoading(true)
+            const res = await get_product_by_id(Number(params.id));
+            if (res?.status !== 200) toast.error(res?.statusText)
+            else {
+                setprodData(res.data)
+            }
+            setIsLoading(false)
+        }
+
+        getProdById()
     }, [])
 
-    useEffect(() => {
-        setprodData(res?.data)
-    }, [res])
-
-
-
-
     const AddToCart = async () => {
-        const finalData = { productId: params.id, userID: customer?._id }
-        const res = await add_to_cart(finalData);
-        if (res?.status === 200) {
-            toast.success("Action successful");
+        if (customer) {
+            const finalData = { productId: params.id, userId: customer?.customerId }
+            const res = await add_to_cart(finalData);
+            if (res?.status === 200) {
+                toast.success("Added to cart");
+            } else {
+                toast.error(res?.statusText)
+            }
         } else {
-            toast.error(res?.statusText)
+            toast.error("Please login to add to cart")
         }
     }
 
 
     const AddToBookmark = async () => {
         if (customer) {
-            const finalData = { productId: params.id, customerID: customer?._id }
+            const finalData = { productId: params.id, customerId: customer?.customerId }
             const res = await bookmark_product(finalData);
             if (res?.status === 200) {
                 toast.success("Action successful");
             } else {
                 toast.error(res?.statusText)
             }
+        } else {
+            toast.error("Please login to bookmark")
         }
     }
 
@@ -96,9 +84,9 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                         </Link>
                     </li>
                     <li>
-                        <Link href={`/category/category-product/${prodData?.productCategory?._id}`}>
+                        <Link href={`/category/category-product/${prodData?.categoryId}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-4 h-4 mr-2 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                            {prodData?.productCategory?.categoryName || "Loading Category Name"}
+                            {prodData?.categoryId || "Loading Category Name"}
                         </Link>
                     </li>
                     <li>
@@ -116,7 +104,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                         :
                         <div className='lg:w-4/5 w-full h-full  bg-gray-100 rounded-xl lg:h-4/5 flex flex-col lg:flex-row items-center justify-center shadow-2xl  '>
                             <div className='lg:w-4/12 w-full h-60  lg:h-full  rounded-xl z-10 relative'>
-                                <Image src={prodData?.productImage || '/images98.jpg'} alt='no image' fill className='rounded-xl' />
+                                <Image src={prodData?.productImageUrl || '/images98.jpg'} alt='no image' fill className='rounded-xl' />
                             </div>
                             <div className='lg:w-8/12 w-full px-3 h-full  rounded flex flex-col lg:px-5 py-2'>
                                 <div className='flex flex-col  lg:flex-row md:justify-between w-full md:h-20 py-2 items-center'>
@@ -130,7 +118,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                                     }
                                 </div>
                                 <p className=' py-2   lg:h-40 w-full'>
-                                    {prodData?.productDescription} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum, Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum, blanditiis.
+                                    {prodData?.productDescription}
                                 </p>
                                 <h1 className='text-3xl font-semibold text-black py-2'>$ {`${prodData?.productPrice}`}</h1>
                                 <div className='w-full py-2 lg:flex-row flex-col flex '>

@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 export const bookmark_product = async (formData: CreateBookmarkSchema) => {
   try {
-    const res = await axios.post(`/api/common/bookmark/bookmark-product`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/bookmarkProduct`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -24,9 +24,12 @@ export const bookmark_product = async (formData: CreateBookmarkSchema) => {
 
 export const get_all_bookmark_items = async (id: any) => {
   try {
-    const res = await axios.get(`/api/common/bookmark/get-bookmark-product?id=${id}`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getBookmarkProduct`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params:{
+        bookmarkId: id
       }
     });
     // const data = await res.json();
@@ -38,7 +41,7 @@ export const get_all_bookmark_items = async (id: any) => {
     //   data: [
     //     {
     //       _id:"123",
-    //       customerID: "456",
+    //       customerId: "456",
     //       product: {
     //         productImage: "testprdimageurl",
     //         productName: "Test Name",
@@ -59,10 +62,13 @@ export const get_all_bookmark_items = async (id: any) => {
 
 export const delete_a_bookmark_item = async (id: string) => {
   try {
-    const res = await axios.delete(`/api/common/bookmark/remove-bookmark-product?id=${id}`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/removeBookmarkProduct`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
+      params:{
+        bookmarkId: id
+      }
     })
 
     // const data = await res.json();

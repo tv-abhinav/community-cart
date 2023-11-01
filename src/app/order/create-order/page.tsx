@@ -184,7 +184,7 @@ export default function Page() {
                                         cartData?.map((item: CartViewSchema) => {
                                             return <CartCard key={item?._id}
                                                 productId={item?.productId}
-                                                userID={item?.userID}
+                                                userId={item?.userId}
                                                 _id={item?._id}
                                                 quantity={item?.quantity}
                                             />

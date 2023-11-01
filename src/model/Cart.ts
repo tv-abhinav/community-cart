@@ -1,5 +1,5 @@
 export interface CartSchema {
-    customerID: string,
+    customerId: string,
     productId: string,
     quantity: number,
 }
@@ -12,7 +12,7 @@ export interface CartViewSchema {
         productImage: string,
         productQuantity: number,
     }
-    userID: "",
+    userId: "",
     _id: string,
     quantity: number,
 }

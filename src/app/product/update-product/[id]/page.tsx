@@ -70,7 +70,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
 
 
-  const { res, isLoading } = useSWR('/gettingProductbyID', () => get_product_by_id(params.id))
+  const { res, isLoading } = useSWR('/gettingProductbyId', () => get_product_by_id(params.id))
   if (res?.status !== 200) toast.error(res?.statusText)
 
   useEffect(() => {

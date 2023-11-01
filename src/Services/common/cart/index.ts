@@ -38,7 +38,7 @@ export const add_to_cart = async (formData: any) => {
 //     } = {
 //       data: [{
 //         _id:"",
-//         userID: "", // populate product details in backend
+//         userId: "", // populate product details in backend
 //         product: {
 //           _id:"",
 //           productImage:"",

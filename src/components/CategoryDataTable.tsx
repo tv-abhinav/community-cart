@@ -21,8 +21,6 @@ export default function CategorySchemaTable() {
   const router = useRouter();
   const [catData, setCatData] = useState<CategorySchema[] | []>([]);
   const data = useSelector((state: RootState) => state.Seller.categories)
-  const isLoading = useSelector((state: RootState) => state.Seller.catLoading);
-
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<CategorySchema[] | []>([]);
 
@@ -36,25 +34,26 @@ export default function CategorySchemaTable() {
 
   useEffect(() => {
     setFilteredData(catData);
-  }, [ catData])
+  }, [catData])
 
 
 
 
   const columns = [
     {
-      name: 'ID',
+      name: 'Id',
       selector: (row: CategorySchema) => row?.categoryId,
       sortable: true,
     },
     {
-      name: 'Name',
-      selector: (row: CategorySchema) => row?.categoryName,
-      sortable: true,
+      name: 'Icon',
+      cell: (row: CategorySchema) => (
+        <Image src={row?.catIconUrl ? `/icons/${row?.catIconUrl}` : "/no-photo.jpg"} alt='No Image Found' width={32} height={32} />
+      )
     },
     {
-      name: 'Description',
-      selector: (row: CategorySchema) => row?.categoryDescription,
+      name: 'Name',
+      selector: (row: CategorySchema) => row?.categoryName,
       sortable: true,
     },
     {
@@ -82,54 +81,53 @@ export default function CategorySchemaTable() {
     }
   }
 
-  
+
 
   useEffect(() => {
     if (search === '') {
-        setFilteredData(catData);
+      setFilteredData(catData);
     } else {
-        setFilteredData(catData?.filter((item) => {
-            const itemData = item?.categoryName.toUpperCase()
-            const textData = search.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-        }))
+      setFilteredData(catData?.filter((item) => {
+        const itemData = item?.categoryName.toUpperCase()
+        const textData = search.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      }))
     }
     console.log(catData);
 
-}, [search, catData])
+  }, [search, catData])
 
 
 
   return (
     <div className='w-full h-full bg-white'>
       {
-      filteredData ?
-      <DataTable
-        columns={columns}
-        data={filteredData || []}
-        key={'ThisisCategorySchema'}
-        pagination
-        keyField="id"
-        title={`Categories list`} 
-        fixedHeader
-        fixedHeaderScrollHeight='500px'
-        selectableRows
-        selectableRowsHighlight
-        persistTableHead
-        progressPending={isLoading}
-        progressComponent={<Loading />}
-        subHeader
-        subHeaderComponent={
-          <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={"Category Name"} />
+        filteredData ?
+          <DataTable
+            columns={columns}
+            data={filteredData || []}
+            key={'ThisisCategorySchema'}
+            pagination
+            keyField="id"
+            title={`Categories list`}
+            fixedHeader
+            fixedHeaderScrollHeight='500px'
+            selectableRows
+            selectableRowsHighlight
+            persistTableHead
+            progressComponent={<Loading />}
+            subHeader
+            subHeaderComponent={
+              <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={"Category Name"} />
+            }
+            className="bg-white px-4 h-4/6 "
+          />
+          :
+          ""
       }
-        className="bg-white px-4 h-4/6 "
-      />
-      :
-      ""
-    }
 
     </div>
   )

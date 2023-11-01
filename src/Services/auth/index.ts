@@ -32,9 +32,12 @@ export const upload_profile_photo = async (photo: File, email: string) => {
         photoFormData.append('profilePhoto', photo);
         console.log(photoFormData);
 
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadImage/profile/${email}`,
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadPhoto/profile`,
             photoFormData,
             {
+                params: {
+                    email: email,
+                },
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

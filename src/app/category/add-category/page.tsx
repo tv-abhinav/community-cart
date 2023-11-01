@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from "react-hook-form";
-import { storage } from '@/utils/Firebase'
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from 'react-loader-spinner';
 import { useRouter } from 'next/navigation';
@@ -23,38 +21,6 @@ type Inputs = {
     slug: string,
     image: Array<File>,
 }
-
-interface loaderType {
-    loader: boolean
-}
-
-const uploadImages = async (file: File) => {
-    const createFileName = () => {
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 8);
-        return `${file?.name}-${timestamp}-${randomString}`;
-    }
-
-    const fileName = createFileName();
-    const storageRef = ref(storage, `ecommerce/category/${fileName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    let imgUrl = ""
-
-    uploadTask.on('state_changed', (snapshot) => {
-    }, (error) => {
-        console.log(error)
-    }, () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            imgUrl = downloadURL;
-        }).catch((error) => {
-            console.log(error)
-        });
-    });
-
-    return imgUrl;
-}
-
-
 
 const maxSize = (value: File) => {
     const fileSize = value.size / 1024 / 1024;
@@ -81,8 +47,16 @@ export default function AddCategory() {
     }, [Router])
 
 
-    const handleClick = (iconPath: any) => {
-        setIcon(iconPath.src);
+    const handleClick = (iconSrc: string) => {
+        let iconSrcParts = iconSrc.split('.')
+        console.log(iconSrcParts);
+        let iconRelPath = iconSrcParts[0].split('/')
+        let iconName = iconRelPath[iconRelPath.length-1];
+        let iconExtn = iconSrcParts[iconSrcParts.length-1]
+
+        let iconFullName = iconName + '.' + iconExtn
+        
+        setIcon(iconFullName);
     };
 
 

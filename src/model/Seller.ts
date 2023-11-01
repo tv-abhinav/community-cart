@@ -13,14 +13,15 @@ export interface CreateSellerSchema {
 
 export interface SellerSchema {
     // seller details
-    sellerId: string,
+    sellerId: number,
+    email: string,
     sellerName: string,
     aadharNo: string,
     sellerAddress: AddressSchema,
     // profilePhoto?: string,
     // shop details
     shopName: string,
-    shopImages: string[], // can be modified to have captions
+    shopPhotoUrl: string, // can be modified to have captions
     qrCodeLink: string,
     gstin: string,
     shopSlug: string,
@@ -28,7 +29,7 @@ export interface SellerSchema {
 
 export interface UpdateSellerSchema {
     // seller details
-    sellerId: string,
+    sellerId: number,
     sellerName?: string,
     aadharNo?: string,
     sellerAddress?: AddressSchema,

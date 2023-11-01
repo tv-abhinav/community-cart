@@ -5,27 +5,12 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 
-export const get_all_categories = async (email?: string) => {
+export const get_all_categories = async (sellerId?: number) => {
   try {
-    const endpoint = email ? `/${email}` : "";
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getAllCategories`);
-    // const data: {
-    //   data: CategorySchema[],
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getSellerCategories`, {
+      params: sellerId ? { sellerId } : {}
+    });
 
-
-    // } =
-    // {
-    //   data: [{
-    //     _id: "123",
-    //     categoryName: "Test Cat 1",
-    //     categoryDescription: "Test Description 1",
-    //     categoryImage: "/public/images98.jpg",
-    //     categorySlug: "\\testcat1"
-    //   }],
-    //   message: "Got all categories",
-    //   success: true
-    // }
-    // const data = await res.json();
     return res;
   } catch (error) {
     throw new Error('Error in getting all Categories (service) =>' + error)
@@ -58,7 +43,12 @@ export const add_new_category = async (formData: CreateCategorySchema, email: st
 
 export const get_category_by_id = async (id: string) => {
   try {
-    const res = await axios.get(`/api/common/category/get-category-by-id?id=${id}`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getCategoryById`,
+      {
+        params: {
+          categoryId: id
+        }
+      });
 
     // const data = await res.json();
     // const data: {
@@ -80,8 +70,8 @@ export const get_category_by_id = async (id: string) => {
 
     return res;
   } catch (error) {
-    throw new Error('Error in getting Categories by ID (service) =>' + error);
-    // console.log('Error in getting Categories by ID (service) =>', error)
+    throw new Error('Error in getting Categories by Id (service) =>' + error);
+    // console.log('Error in getting Categories by Id (service) =>', error)
   }
 }
 
@@ -111,17 +101,20 @@ export const get_category_by_id = async (id: string) => {
 
 //     return res;
 //   } catch (error) {
-//     throw new Error('Error in getting Categories by ID (service) =>' + error);
-//     // console.log('Error in getting Categories by ID (service) =>', error)
+//     throw new Error('Error in getting Categories by Id (service) =>' + error);
+//     // console.log('Error in getting Categories by Id (service) =>', error)
 //   }
 // }
 
 export const delete_a_category = async (id: string) => {
   try {
-    const res = await axios.delete(`/api/Admin/category/delete-category?id=${id}`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteCategory`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
+      params: {
+        categoryId: id
+      }
     })
 
     // const data = await res.json();
@@ -141,7 +134,7 @@ export const delete_a_category = async (id: string) => {
 
 export const update_a_category = async (formData: UpdateCategorySchema) => {
   try {
-    const res = await axios.put(`/api/Admin/category/update-category`, JSON.stringify(formData), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateCategory`, JSON.stringify(formData), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'

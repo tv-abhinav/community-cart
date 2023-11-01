@@ -21,14 +21,13 @@ export default function ProductDataTable() {
   const router = useRouter();
   const [prodData, setprodData] = useState<ProductSchema[] | []>([]);
   const data = useSelector((state: RootState) => state.Seller.product)
-  const catData = useSelector((state: RootState) => state.Seller.categories)
-  const isLoading = useSelector((state: RootState) => state.Seller.productLoading);
+  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<ProductSchema[] | []>([]);
 
 
   useEffect(() => {
-    setprodData(data)
+    setprodData(Object.values(data))
   }, [data])
 
   useEffect(() => {

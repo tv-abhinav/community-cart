@@ -1,61 +1,55 @@
+import { ProductSchema } from '@/model/Product'
 import { SellerSchema } from '@/model/Seller'
-import { createSlice } from '@reduxjs/toolkit'
+import { createAction, createSlice } from '@reduxjs/toolkit'
 
 interface SellerState {
-    seller: SellerSchema | null,
-    catLoading : boolean,
-    productLoading : boolean,
-    product : any[],
-    categories : any[],
-    Order : any[],
-    orderLoading : boolean,
-    sellerLoading : boolean,
+  seller: SellerSchema | null,
+  currentCatId: number,
+  currentShopId: number,
+  product: { [id: string]: ProductSchema },
+  categories: any[],
+  Order: any[],
+  isFetching: boolean,
 }
 
-const initialState : SellerState = {
-    seller: null,
-    catLoading : false,
-    productLoading : false,
-    product : [],
-    categories : [],
-    Order : [],
-    orderLoading : false,
-    sellerLoading : false,
+const initialState: SellerState = {
+  seller: null,
+  currentCatId: -1,
+  currentShopId: -1,
+  product: {},
+  categories: [],
+  Order: [],
+  isFetching: false,
 }
 
 export const Seller = createSlice({
   name: 'SellerData',
   initialState,
   reducers: {
-    setSellerData : (state, action) => {
-        state.seller = action.payload
+    setSellerData: (state, action) => {
+      state.seller = action.payload
     },
-    setSellerLoading : (state , action) => {
-      state.sellerLoading = action.payload
+    setProductData: (state, action: { type: string, payload: ProductSchema[] }) => {
+      action.payload.forEach(prod => {
+        state.product[prod.productId] = prod
+      })
     },
-    setProductData : (state, action) => {
-        state.product = action.payload
+    setCurrentCatId: (state, action) => {
+      state.currentCatId = action.payload
     },
-    setCatLoading : (state , action) => {
-      state.catLoading = action.payload
+    setCurrentShopId: (state, action) => {
+      state.currentShopId = action.payload
     },
-    setProdLoading : (state , action) => {
-      state.productLoading = action.payload
-    },
-    setOrderData : (state , action) => {
+    setOrderData: (state, action) => {
       state.Order = action.payload
-    },
-    setOrderLoading : (state , action) => {
-      state.orderLoading = action.payload
     },
     setCategoriesForSeller: (state, action) => {
       state.categories = action.payload
-    },
-
+    }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setSellerData, setSellerLoading, setCatLoading , setProdLoading  , setProductData , setOrderData , setOrderLoading, setCategoriesForSeller} = Seller.actions
+export const { setSellerData, setCurrentCatId, setProductData, setOrderData, setCategoriesForSeller } = Seller.actions
 
-export const SellerReducer =  Seller.reducer
+export const SellerReducer = Seller.reducer

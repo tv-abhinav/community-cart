@@ -21,7 +21,7 @@ interface userData {
 }
 
 
-export default function CartCard({ product, userID, _id , quantity }: CartViewSchema) {
+export default function CartCard({ product, userId, _id , quantity }: CartViewSchema) {
     const dispatch = useDispatch();
     const [qnt, setQnt] = useState(quantity)
     const Router = useRouter();

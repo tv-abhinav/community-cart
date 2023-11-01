@@ -1,11 +1,11 @@
 import { ProductHighLevelFeatures } from "./Product";
 
 export interface CreateBookmarkSchema {
-    customerID: string,
+    customerId: string,
     productId: string,
 }
 export interface BookmarkSchema {
     _id: string,
-    customerID: string,
+    customerId: string,
     product: ProductHighLevelFeatures,
 }

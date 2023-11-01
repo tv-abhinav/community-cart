@@ -5,25 +5,24 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 
-export const get_all_orders = async () => {
+export const get_all_orders = async (email: string) => {
   try {
-    const res = await fetch('/api/Admin/order/get-all-order-data', {
-      method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${Cookies.get('token')}`
-        },
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getAllOrders/${email}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
     });
-    const data = await res.json();
+    // const data = await res.json();
 
     // const data:{
     //   data: CreateOrderSchema[],
-      
-      
+
+
     // } =
     // {
     //   data: [{
-    //     customerID: "123",
+    //     customerId: "123",
     //     sellerId:"123",
     //     orderItems: [
     //       {
@@ -90,7 +89,10 @@ export const get_all_orders = async () => {
 export const update_order_status = async (id: string, status: StatusEnum) => {
   console.log(id)
   try {
-    const res = await axios.put(`/api/Admin/order/update-order-status`, JSON.stringify(id), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateOrderStatus`, {
+      orderId: id,
+      status: status
+    }, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'

@@ -12,30 +12,70 @@ import { TailSpin } from 'react-loader-spinner';
 import { AddressSchema } from '@/model/User';
 import GoogleMapReact from 'google-map-react';
 import MapMarker from '@/components/MapMarker';
+import { get_elevation } from '@/utils/maps';
 
 export default function Register() {
   const router = useRouter();
+  let initialAddress: Partial<AddressSchema> = {
+    latitude: 28.3877096,
+    longitude: 75.5895650
+  }
+
+  const [maps, setMaps] = useState<any>(null)
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+    shopName: "",
+    aadharNo: "",
+    contactPhoneNo: "",
+    profilePhoto: null,
+    address: initialAddress,
+    gstin: "",
+    isSeller: false
+  });
+  const [error, setError] = useState({
+    email: "",
+    password: "",
+    name: '',
+    shopName: "",
+    aadharNo: "",
+    contactPhoneNo: "",
+    profilePhoto: "",
+    address1: "",
+    address2: "",
+    district: "",
+    city: "",
+    state: "",
+    pinCode: "",
+    country: "",
+    gstin: ""
+  });
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         let latitude = position.coords.latitude;
         let longitude = position.coords.longitude;
+        let elevation = position.coords.altitude;
+        console.log("latitude", latitude);
+        console.log("longitude", longitude);
+        console.log("elevation", elevation);
+        initialAddress = { latitude, longitude }
         setFormData({
           ...formData, address: {
             latitude: latitude,
             longitude: longitude
           }
         });
-        // let locFromLatLngUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_PLACES_API_KEY}`
-        // let locInfo = await fetch(locFromLatLngUrl, { method: "GET" })
-        // let parsedLocInfo = await locInfo.json()
-        // if(parsedLocInfo.status==='OK' && parsedLocInfo.results)
-        // {
-        //   let resLength = parsedLocInfo.results.length()
-        //   let country = parsedLocInfo.results[resLength].address_components[0].long_name
-        //   let state = parsedLocInfo.results[resLength-1].address_components[0].long_name
-        // }
+
+        if (elevation) {
+          setFormData({
+            ...formData, address: {
+              ...formData.address, elevation: elevation
+            }
+          });
+        }
       },
         (error) => {
           if (error.code === 1) {
@@ -57,11 +97,6 @@ export default function Register() {
     }
   }, [router])
 
-  let initlaiAddress: Partial<AddressSchema> = {
-    latitude: 28.3877096,
-    longitude: 75.5895650
-  }
-
   const otherProps = {
     bootstrapURLKeys: {
       key: process.env.NEXT_PUBLIC_PLACES_API_KEY || "",
@@ -79,39 +114,15 @@ export default function Register() {
           longitude: lng
         }
       });
+    },
+    yesIWantToUseGoogleMapApiInternals: true,
+    //@ts-ignore
+    onGoogleApiLoaded: ({ map, maps }) => {
+      setMaps(maps)
     }
   }
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    name: "",
-    shopName: "",
-    aadharNo: "",
-    contactPhoneNo: "",
-    profilePhoto: null,
-    address: initlaiAddress,
-    gstin: "",
-  });
-  const [error, setError] = useState({
-    email: "",
-    password: "",
-    name: '',
-    shopName: "",
-    aadharNo: "",
-    contactPhoneNo: "",
-    profilePhoto: "",
-    address1: "",
-    address2: "",
-    district: "",
-    city: "",
-    state: "",
-    pinCode: "",
-    country: "",
-    gstin: ""
-  });
   const [loading, setLoding] = useState(false);
-  const [isSeller, setIsSeller] = useState(false)
   const [image, setImage] = useState<string>("")
 
   const onImageChange = (event: any) => {
@@ -122,7 +133,9 @@ export default function Register() {
   }
 
   const handleCheckboxChange = () => {
-    setIsSeller(!isSeller)
+    setFormData({
+      ...formData, isSeller: !formData.isSeller
+    })
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -173,15 +186,32 @@ export default function Register() {
       setError({ ...error, country: "country Field is required" })
       return;
     }
-    if (isSeller && !formData.shopName) {
+    if (formData.isSeller && !formData.shopName) {
       setError({ ...error, shopName: "Shop Name Field is required" })
       return;
     }
-    if (isSeller && !formData.aadharNo) {
+    if (formData.isSeller && !formData.aadharNo) {
       setError({ ...error, aadharNo: "Aadhaar number Field is required" })
       return;
     }
+    if (!formData.address.latitude || !formData.address.longitude) {
+      toast.error("Unable to get location");
+      return;
+    }
 
+    if ((!formData.address.elevation || initialAddress.latitude !== formData.address.latitude || initialAddress.longitude !== formData.address.longitude) && maps) {
+      let elevation = await get_elevation(formData.address.latitude, formData.address.longitude, maps)
+      if (elevation) {
+        setFormData({
+          ...formData, address: {
+            ...formData.address, elevation
+          }
+        });
+      } else {
+        toast.error("Unable to get elevation");
+        return;
+      }
+    }
 
     const regRes = await register_me(formData);
     if (formData.profilePhoto && regRes?.status == 201) {
@@ -196,7 +226,6 @@ export default function Register() {
     }
     else {
       setLoding(false);
-      console.log(regRes);
       toast.error(regRes?.statusText);
     }
   }
@@ -324,11 +353,11 @@ export default function Register() {
                       <input
                         type='checkbox'
                         className='sr-only'
-                        checked={isSeller}
+                        checked={formData.isSeller}
                         onChange={handleCheckboxChange}
                       />
                       <span
-                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${!isSeller ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
+                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${!formData.isSeller ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
                           }`}
                       >
                         <svg
@@ -353,7 +382,7 @@ export default function Register() {
                         Buyer
                       </span>
                       <span
-                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${isSeller ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
+                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${formData.isSeller ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
                           }`}
                       >
                         <svg
@@ -373,7 +402,7 @@ export default function Register() {
                     </label>
                   </div>
                   {
-                    isSeller ?
+                    formData.isSeller ?
                       <div className='space-y-4'>
                         <div className='text-left'>
                           <label htmlFor="shopName" className="block mb-2 text-sm font-medium text-gray-900 ">Shop Name</label>
@@ -401,18 +430,19 @@ export default function Register() {
                       ""
                   }
                   {
-                    loading ? <button type="button" className="w-full flex items-center justify-center text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                      <TailSpin
-                        height="20"
-                        width="20"
-                        color="white"
-                        ariaLabel="tail-spin-loading"
-                        radius="1"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                      />
-                    </button> : <button type="submit" className="w-full text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign up</button>
+                    // loading ? <button type="button" className="w-full flex items-center justify-center text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    //   <TailSpin
+                    //     height="20"
+                    //     width="20"
+                    //     color="white"
+                    //     ariaLabel="tail-spin-loading"
+                    //     radius="1"
+                    //     wrapperStyle={{}}
+                    //     wrapperClass=""
+                    //     visible={true}
+                    //   />
+                    // </button> : 
+                    <button type="submit" className="w-full text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign up</button>
                   }
 
 

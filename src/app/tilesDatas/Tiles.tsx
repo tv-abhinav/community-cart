@@ -28,7 +28,7 @@ export default function  GettingDatasLength() {
       icon: "GiAbstract010",
       color: "text-blue-600",
       title: "Total Products",
-      count: prodData?.length || 0
+      count: Object.keys(prodData).length || 0
     },
     {
       icon: "CgMenuGridR",

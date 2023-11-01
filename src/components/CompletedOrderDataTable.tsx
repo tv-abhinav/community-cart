@@ -94,7 +94,7 @@ export default function CompletedOrderDataTable() {
 
   const columns = [
     {
-      name: 'Order ID',
+      name: 'Order Id',
       selector: (row: Order) => row?._id,
       sortable: true,
     },
@@ -152,7 +152,7 @@ export default function CompletedOrderDataTable() {
           <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Orders ID"} />
+            placeholder={"Orders Id"} />
         }
         className="bg-white px-4 h-5/6 "
       />

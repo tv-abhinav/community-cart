@@ -7,51 +7,24 @@ import { ToastContainer, toast } from 'react-toastify';
 import { TailSpin } from 'react-loader-spinner';
 import { get_category_by_id, update_a_category } from '@/Services/Admin/category';
 import { useRouter } from 'next/navigation';
-import useSWR from 'swr'
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
 import Cookies from 'js-cookie';
-import { UpdateCategorySchema } from '@/model/Category';
+import { CategorySchema, UpdateCategorySchema } from '@/model/Category';
+import { UserSessionSchema } from '@/model/User';
+import IconPicker from '@/components/IconPicker';
 
 
 type Inputs = {
     _id: string,
     name: string,
     description: string,
-    slug: string,
 }
-
-
-type CategoryData = {
-    _id?: string;
-    categoryName: string;
-    categoryDescription: string;
-    categoryImage: string;
-    categorySlug: string;
-    createdAt?: string;
-    updatedAt?: string;
-};
-
-
-
-
-
-
-
-
 
 interface pageParam {
     id: string
-}
-
-interface userData {
-    email: string,
-    role: string,
-    _id: string,
-    name: string
-  }
-  
+}  
   
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
 
@@ -59,10 +32,11 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     const [loader, setLoader] = useState(false)
     const Router = useRouter();
     const dispatch = useDispatch();
-    const [catData, setCatData] = useState<CategoryData | undefined>(undefined);
+    const [catData, setCatData] = useState<CategorySchema | undefined>(undefined);
+    const [icon, setIcon] = useState("")
 
     useEffect(() => {
-        const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
+        const user: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
         if (!Cookies.get('token') || user?.role !== 'SELLER') {
             Router.push('/')
         }
@@ -70,12 +44,16 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     }, [dispatch, Cookies, Router])
 
 
-    const { res, isLoading } = useSWR('/gettingAllCategoriesForSeller', () => get_category_by_id(params.id))
-    if (res?.status !== 200) toast.error(res?.statusText)
-
+    
     useEffect(() => {
-        setCatData(res?.data)
-    }, [res])
+        const getCat = async () => {
+            const res = await get_category_by_id(params.id)
+            if (res?.status !== 200) toast.error(res?.statusText)
+            setCatData(res?.data)
+            setLoader(false)
+        }
+        getCat()
+    }, [])
 
 
     const { register, setValue, formState: { errors }, handleSubmit } = useForm<Inputs>({
@@ -90,7 +68,6 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
         () => {
             setValue('name', catData?.categoryName ?? '')
             setValue('description', catData?.categoryDescription ?? '')
-            setValue('slug', catData?.categorySlug ?? '')
         },
         [catData]
     );
@@ -110,7 +87,6 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
             _id: params.id,
             categoryName: data.name !== catData?.categoryName ? data.name : catData?.categoryName,
             categoryDescription: data.description !== catData?.categoryDescription ? data.description : catData?.categoryDescription,
-            categorySlug: data.slug !== catData?.categorySlug ? data.slug : catData?.categorySlug,
         };
 
         const res = await update_a_category(updatedData)
@@ -128,7 +104,17 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     }
 
 
+    const handleClick = (iconSrc: string) => {
+        let iconSrcParts = iconSrc.split('.')
+        console.log(iconSrcParts);
+        let iconRelPath = iconSrcParts[0].split('/')
+        let iconName = iconRelPath[iconRelPath.length-1];
+        let iconExtn = iconSrcParts[iconSrcParts.length-1]
 
+        let iconFullName = iconName + '.' + iconExtn
+        
+        setIcon(iconFullName);
+    };
 
 
 
@@ -153,7 +139,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                 <h1 className='text-2xl py-2 '>Update Category</h1>
             </div>
             {
-                isLoading || loader ? (
+                loader ? (
                     <div className='w-full  flex-col h-96 flex items-center justify-center '>
                         <TailSpin
                             height="50"
@@ -178,14 +164,6 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                                 <input    {...register("name")} type="text" placeholder="Type here" className="input input-bordered w-full" />
                                 {errors.name && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
                             </div >
-                            <div className="form-control w-full mb-2">
-                                <label className="label">
-                                    <span className="label-text">Category Slug</span>
-                                </label>
-                                <input  {...register("slug")} type="text" placeholder="Type here" className="input input-bordered w-full" />
-                                {errors.slug && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
-
-                            </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Category Description</span>
@@ -198,11 +176,11 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                                 catData && (
 
                                     <div className="form-control">
-                                        <label className="label">
-                                            <span className="label-text">Old Image</span>
+                                        <label className="label float-left">
+                                            <span className="label-text">Category Icon: </span>
                                         </label>
-                                        <Image src={catData?.categoryImage || ""} alt='No Image Found' width={200} height={200} />
-
+                                        <Image className='float-left' src={catData?.catIconUrl ? `/icons/${catData?.catIconUrl}` : "/no-photo.jpg"} alt='No Image Found' width={32} height={32} />
+                                        <IconPicker handleClick={(res: any)=>{console.log(res)}} />
                                     </div>
                                 )
                             }
