@@ -1,21 +1,20 @@
 "use client"
 
-import { setNavActive} from '@/utils/AdminNavSlice'
+import { RESET_ACTION } from '@/utils/resolvers'
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
 export default function AdminNavbar() {
-    const router =  useRouter();
-    const dispatch =  useDispatch();
-
+    const dispatch = useDispatch();
 
     const handleLogout = () => {
         Cookies.remove('token');
         localStorage.clear();
+        dispatch(RESET_ACTION)
         location.reload();
     }
 

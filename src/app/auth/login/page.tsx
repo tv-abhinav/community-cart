@@ -7,11 +7,12 @@ import Link from 'next/link';
 import { login_me } from '@/Services/auth';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
-import Navbar from '@/components/Navbar';
-import { setUserData } from '@/utils/UserDataSlice';
+import jwt_decode from "jwt-decode";
+import { setUserData } from '@/utils/resolvers/UserDataSlice';
 import { useRouter } from 'next/navigation';
 import { TailSpin } from 'react-loader-spinner';
-
+import { GrClose } from 'react-icons/gr';
+import { UserSessionSchema } from '@/model/User';
 
 export default function Login() {
     const dispatch = useDispatch()
@@ -19,7 +20,7 @@ export default function Login() {
 
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState({ email: "", password: "" });
-    const [loading, setLoding] = useState<Boolean>(false);
+    const [loading, setLoding] = useState<boolean>(false);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 
@@ -35,14 +36,15 @@ export default function Login() {
         }
 
         const res = await login_me(formData);
-        if (res.success) {
+        let data = res.data;
+        if (res.status == 200 && data) {
             setLoding(false);
-            Cookies.set('token', res?.finalData?.token);
-            localStorage.setItem('user', JSON.stringify(res?.finalData?.user));
-            const userData = localStorage.getItem('user');
-            const userDataString = typeof userData === 'string' ? userData : '';
-            dispatch(setUserData(JSON.parse(userDataString)));
-            if (res?.finalData?.user?.role === 'admin') {
+            Cookies.set('token', data);
+            const tokenData:UserSessionSchema = jwt_decode(data);
+            localStorage.setItem('user', JSON.stringify(tokenData));
+            dispatch(setUserData(tokenData));
+            
+            if (tokenData?.role === 'SELLER') {
                 Router.push('/Dashboard')
             }
             else {
@@ -51,7 +53,7 @@ export default function Login() {
         }
         else {
             setLoding(false);
-            toast.error(res.message);
+            toast.error(res.statusText);
         }
     }
 
@@ -65,8 +67,9 @@ export default function Login() {
 
     return (
         <>
-            <Navbar />
-            <div className='w-full h-screen bg-gray-50 text-black'>
+            {/* <Navbar /> */}
+            <div className='relative w-full h-screen bg-gray-50 text-black'>
+                <Link href={'/'}><GrClose className="absolute top-5 right-5 w-10 h-10 stroke-current" /></Link>
                 <div className="flex flex-col items-center  text-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
                     <div className="w-full bg-white text-black rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -91,7 +94,7 @@ export default function Login() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-start">
                                         <div className="flex items-center h-5">
-                                            <input id="remember" aria-describedby="remember" type="checkbox" checked className="w-4 h-4 bg-white  border border-gray-300 rounded focus:ring-3 focus:ring-orange-300  " />
+                                            <input id="remember" aria-describedby="remember" type="checkbox" defaultChecked className="w-4 h-4 bg-white  border border-gray-300 rounded focus:ring-3 focus:ring-orange-300  " />
                                         </div>
                                         <div className="ml-3 text-sm">
                                             <label htmlFor="remember" className="text-gray-500  ">Remember me</label>
@@ -115,7 +118,7 @@ export default function Login() {
                                 }
                                 
                                 <p className="text-sm text-black ">
-                                    Don’t have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
+                                    Don't have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
                                 </p>
                             </form>
                         </div>

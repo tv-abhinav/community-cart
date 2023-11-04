@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAction, createSlice } from '@reduxjs/toolkit'
 
 interface NavState {
     ActiveNav : string,
@@ -15,8 +15,6 @@ export const AdminNav = createSlice({
     setNavActive : (state, action) => {
         state.ActiveNav = action.payload
     }
-
-    
   },
 })
 

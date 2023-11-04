@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useSWRConfig } from "swr"
 import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
@@ -11,43 +10,25 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
+import { ProductSchema } from '@/model/Product';
+import GetData from './GetData';
 
 
-
-
-type ProductData = {
-  _id: string,
-  productName: string,
-  productDescription: string,
-  productImage: string,
-  productSlug: string,
-  productPrice: Number,
-  productQuantity: Number,
-  productFeatured: Boolean,
-  productCategory: {
-    _id: string,
-    categoryName: string,
-    categorySlug: string
-  },
-  createdAt: string;
-  updatedAt: string;
-};
 
 
 export default function ProductDataTable() {
-  const { mutate } = useSWRConfig()
   const router = useRouter();
-  const [prodData, setprodData] = useState<ProductData[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.product)
-  const isLoading = useSelector((state: RootState) => state.Admin.productLoading);
+  const [prodData, setprodData] = useState<ProductSchema[] | []>([]);
+  const data = useSelector((state: RootState) => state.Seller.product)
+  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<ProductData[] | []>([]);
-
+  const [filteredData, setFilteredData] = useState<ProductSchema[] | []>([]);
+  const [isHasToFetch, setIsHasToFetch] = useState<boolean>(true)
 
   useEffect(() => {
-    setprodData(data)
+    setprodData(Object.values(data))
   }, [data])
-
+  
   useEffect(() => {
     setFilteredData(prodData);
   }, [prodData])
@@ -61,24 +42,24 @@ export default function ProductDataTable() {
   const columns = [
     {
       name: 'Name',
-      selector: (row: ProductData) => row?.productName,
+      selector: (row: ProductSchema) => row?.productName,
       sortable: true,
     },
     {
       name: 'Category',
-      selector: (row: ProductData) => row?.productCategory?.categoryName,
+      selector: (row: ProductSchema) => row?.categoryId,
       sortable: true,
     },
     {
       name: 'Image',
-      cell: (row: ProductData) => <Image src={row?.productImage} alt='No Image Found' className='py-2' width={100} height={100} />
+      cell: (row: ProductSchema) => <Image src={row?.productImageUrl ? row?.productImageUrl : "/no-photo.jpg"} alt='No Image Found' className='py-2' width={100} height={100} />
     },
     {
       name: 'Action',
-      cell: (row: ProductData) => (
+      cell: (row: ProductSchema) => (
         <div className='flex items-center justify-start px-2 h-20'>
-          <button onClick={() => router.push(`/product/update-product/${row?._id}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Update</button>
-          <button onClick={() => handleDeleteProduct(row?._id)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
+          <button onClick={() => router.push(`/product/update-product/${row?.productId}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Update</button>
+          <button onClick={() => handleDeleteProduct(row?.productId)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
         </div>
       )
     },
@@ -87,14 +68,14 @@ export default function ProductDataTable() {
 
 
 
-  const handleDeleteProduct = async (id: string) => {
+  const handleDeleteProduct = async (id: number) => {
     const res = await delete_a_product(id);
-    if (res?.success) {
-      toast.success(res?.message)
-      mutate('/gettingAllProductsFOrAdmin')
+    if (res?.status === 200) {
+      toast.success("delete success")
+      location.reload()
     }
     else {
-      toast.error(res?.message)
+      toast.error(res?.statusText)
     }
   }
 
@@ -104,7 +85,8 @@ export default function ProductDataTable() {
       setFilteredData(prodData);
     } else {
       setFilteredData(prodData?.filter((item) => {
-        const itemData = item?.productCategory?.categoryName.toUpperCase();
+        const itemData = item?.productName.toUpperCase();
+        // const itemData = item?.productCategory?.categoryName.toUpperCase();
         const textData = search.toUpperCase();
         return itemData.indexOf(textData) > -1;
       }))
@@ -117,6 +99,11 @@ export default function ProductDataTable() {
 
   return (
     <div className='w-full h-full'>
+      <GetData hasToFetch={isHasToFetch} onLoad={(isLoad: boolean) => {
+        setIsLoading(isLoad);
+        if (!isLoad) setIsHasToFetch(false);
+      }} />
+      {filteredData.map((dat, index) => (<div key={index}>{dat.productName} </div>))}
       <DataTable
         columns={columns}
         data={filteredData || []}
@@ -136,11 +123,10 @@ export default function ProductDataTable() {
           <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Category Name"} />
+            placeholder={"Product Name"} />
         }
         className="bg-white px-4 h-4/6 "
       />
-
     </div>
   )
 }

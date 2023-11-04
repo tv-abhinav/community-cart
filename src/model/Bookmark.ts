@@ -1,4 +1,10 @@
+import { ProductSchema } from "./Product";
+
+export interface CreateBookmarkSchema {
+    customerId: number,
+    productId: number,
+}
 export interface BookmarkSchema {
-    customerID: string,
-    productID: string,
+    customerId: number,
+    products: ProductSchema[],
 }

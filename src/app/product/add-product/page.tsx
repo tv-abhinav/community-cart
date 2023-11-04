@@ -12,8 +12,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import Cookies from 'js-cookie';
 import { useSWRConfig } from "swr"
-import { add_new_product } from '@/Services/Admin/product';
- 
+import { add_new_product, upload_product_photo } from '@/Services/Admin/product';
+import { CreateProductSchema } from '@/model/Product';
+import { CategorySchema } from '@/model/Category';
+import { UserSessionSchema } from '@/model/User';
+import { get_all_categories } from '@/Services/Admin/category';
+
 
 
 
@@ -21,51 +25,12 @@ type Inputs = {
     name: string,
     description: string,
     slug: string,
-    feature : Boolean,
-    price : Number,
-    quantity :  Number,
-    categoryID : string,
+    feature: boolean,
+    price: number,
+    quantity: number,
+    categoryId: number,
     image: Array<File>,
 }
-
-interface loaderType {
-    loader: Boolean
-}
-
-
-
-
-
-
-
-const uploadImages = async (file: File) => {
-    const createFileName = () => {
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 8);
-        return `${file?.name}-${timestamp}-${randomString}`;
-    }
-
-    const fileName = createFileName();
-    const storageRef = ref(storage, `ecommerce/category/${fileName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    return new Promise((resolve, reject) => {
-        uploadTask.on('state_changed', (snapshot) => {
-        }, (error) => {
-            console.log(error)
-            reject(error);
-        }, () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                resolve(downloadURL);
-            }).catch((error) => {
-                console.log(error)
-                reject(error);
-            });
-        });
-    });
-}
-
-
 
 const maxSize = (value: File) => {
     const fileSize = value.size / 1024 / 1024;
@@ -73,41 +38,39 @@ const maxSize = (value: File) => {
 }
 
 
-type CategoryData = {
-    _id: string;
-    categoryName: string;
-    categoryDescription: string;
-    categoryImage: string;
-    categorySlug: string;
-    createdAt: string;
-    updatedAt: string;
-};
-
-
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-  }
-  
-
 
 export default function AddProduct() {
 
     const [loader, setLoader] = useState(false)
+    const [categories, setCategories] = useState<CategorySchema[]>([])
     const Router = useRouter();
-    const category =  useSelector((state : RootState) => state.Admin.category) as CategoryData[] | undefined
+    const sellerId = useSelector((state: RootState) => state.Seller.seller?.sellerId) as number
+    const allCats = useSelector((state: RootState) => state.Seller.allCategories) as CategorySchema[]
 
     useEffect(() => {
-        const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-        if (!Cookies.get('token') || user?.role !== 'admin') {
+        const user: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!Cookies.get('token') || user?.role !== 'SELLER') {
             Router.push('/')
         }
-        
-    }, [  Router])
 
-    
+    }, [Router])
+
+    useEffect(() => {
+        const getCatForDropdown = async () => {
+            setLoader(true)
+            const categoryRes = await get_all_categories();
+            if (categoryRes?.status !== 200) toast.error(categoryRes?.statusText)
+            setCategories(categoryRes?.data)
+            setLoader(false)
+        }
+        if (allCats.length === 0) getCatForDropdown()
+        else {
+            setCategories(allCats)
+            setLoader(false)
+        }
+    }, [])
+
+
 
 
 
@@ -121,19 +84,23 @@ export default function AddProduct() {
         setLoader(true)
         const CheckFileSize = maxSize(data.image[0]);
         if (CheckFileSize) return toast.error('Image size must be less then 1MB')
-        const uploadImageToFirebase = await uploadImages(data.image[0]);
-        // const uploadImageToFirebase = 'https://firebasestorage.googleapis.com/v0/b/socialapp-9b83f.appspot.com/o/ecommerce%2Fcategory%2Fimages131.jpg-1683339363348-c4vcab?alt=media&token=f9303ff9-7d34-4514-a53f-832f72814337';
 
-        const finalData = { productName: data.name, productDescription: data.description, productImage: uploadImageToFirebase, productSlug: data.slug , productFeatured  : data.feature , productPrice : data.price , productQuantity : data.quantity , productCategory : data.categoryID}
-        const res = await add_new_product(finalData)
-        if (res?.success) {
-            toast.success(res?.message);
+        const prdData: CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: data.slug, productFeatured: data.feature, productPrice: data.price, productQuantity: data.quantity, categoryId: data.categoryId, sellerId: sellerId }
+        const regRes = await add_new_product(prdData)
+        if (regRes?.status === 201) {
+            toast.success("Product added");
+            if (data.image[0]) {
+                const photoRes = await upload_product_photo(data.image[0], regRes.data.productId)
+                if (photoRes?.status === 201) {
+                    toast.success("Error uploading product image");
+                }
+            }
             setTimeout(() => {
                 Router.push('/Dashboard')
             }, 2000);
             setLoader(false)
         } else {
-            toast.error(res?.message)
+            toast.error(regRes?.statusText)
             setLoader(false)
         }
     }
@@ -175,7 +142,7 @@ export default function AddProduct() {
                             wrapperClass=""
                             visible={true}
                         />
-                        <p className='text-sm mt-2 font-semibold text-orange-500'>Adding Product Hold Tight ....</p>
+                        <p className='text-sm mt-2 font-semibold text-orange-500'>Loading ....</p>
                     </div>
                 ) : (
 
@@ -185,12 +152,12 @@ export default function AddProduct() {
                                 <label className="label">
                                     <span className="label-text">Choose Category</span>
                                 </label>
-                                <select   {...register("categoryID", { required: true })}  className="select select-bordered">
+                                <select   {...register("categoryId", { required: true })} className="select select-bordered">
                                     <option disabled selected>Pick  one category </option>
                                     {
-                                        category?.map((item) => {
+                                        categories?.map((item) => {
                                             return (
-                                                <option key={item._id} value={item._id}>{item.categoryName}</option>
+                                                <option key={item.categoryId} value={item.categoryId}>{item.categoryName}</option>
                                             )
                                         })
                                     }
@@ -238,7 +205,7 @@ export default function AddProduct() {
                             <div className="form-control py-2">
                                 <label className="label cursor-pointer">
                                     <span className="label-text">Featured Product</span>
-                                    <input {...register("feature")} type="checkbox"  className="checkbox dark:border-black" />
+                                    <input {...register("feature")} type="checkbox" className="checkbox dark:border-black" />
                                 </label>
                             </div>
                             <div className="form-control w-full ">

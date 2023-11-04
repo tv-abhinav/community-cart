@@ -17,7 +17,7 @@ export default function Hero({setRatio} : IProps) {
         <Image src={'/mob-intro.jpg'} alt='no image'  fill />
 
         <h1 className='mb-2 text-xl text-white/90 z-10 font-semibold '>Welcome to Community Cart!</h1>
-        <Link href={"/#my-Categories"} className='btn btn-ghost border border-orange-600 text-white/90 hover:bg-orange-600  z-40'>Shop Now</Link>
+        <Link href={"/#my-Categories"} className='btn btn-ghost border border-orange-600 text-white/90 hover:bg-orange-600  z-40'>Seller Now</Link>
 
 
       </div>

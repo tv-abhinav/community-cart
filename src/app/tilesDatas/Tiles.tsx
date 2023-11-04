@@ -10,11 +10,11 @@ import { RootState } from "../../Store/store";
 export default function  GettingDatasLength() {
 
    
-  const catData = useSelector((state: RootState) => state.Admin.category);
+  const catData = useSelector((state: RootState) => state.Seller.allCategories);
 
-  const prodData = useSelector((state: RootState) => state.Admin.product);
+  const prodData = useSelector((state: RootState) => state.Seller.product);
 
-  const orderData = useSelector((state: RootState) => state.Admin.Order);
+  const orderData = useSelector((state: RootState) => state.Seller.Order);
 
   return [
     
@@ -28,7 +28,7 @@ export default function  GettingDatasLength() {
       icon: "GiAbstract010",
       color: "text-blue-600",
       title: "Total Products",
-      count: prodData?.length || 0
+      count: Object.keys(prodData).length || 0
     },
     {
       icon: "CgMenuGridR",

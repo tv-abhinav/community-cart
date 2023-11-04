@@ -13,7 +13,7 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/Bookmark';
+import { setBookmark } from '@/utils/resolvers/Bookmark';
 
 
 interface Order {
@@ -47,7 +47,7 @@ interface Order {
       city: string;
       country: string;
       fullName: string;
-      postalCode: number;
+      pinCode: number;
     };
     shippingPrice: number;
     taxPrice: number;
@@ -67,10 +67,10 @@ interface Order {
 
 
 interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
+    email: string,
+    role: string,
+    _id: string,
+    name: string
 }
 
 
@@ -78,7 +78,7 @@ export default function CompletedOrderDataTable() {
     const { mutate } = useSWRConfig()
   const router = useRouter();
   const [orderData, setOrderData] = useState<Order[] | []>([]);
-  const data = useSelector((state: RootState) => state.Admin.Order) as Order[] | [];
+  const data = useSelector((state: RootState) => state.Seller.Order) as Order[] | [];
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<Order[] | []>([]);
 
@@ -92,15 +92,9 @@ export default function CompletedOrderDataTable() {
     setFilteredData(orderData);
   }, [orderData])
 
-
-
-
-
-
-
   const columns = [
     {
-      name: 'Order ID',
+      name: 'Order Id',
       selector: (row: Order) => row?._id,
       sortable: true,
     },
@@ -124,12 +118,7 @@ export default function CompletedOrderDataTable() {
     },
 
   ];
-
-
-
-
-
-
+  
   useEffect(() => {
     if (search === '') {
       setFilteredData(orderData);
@@ -163,7 +152,7 @@ export default function CompletedOrderDataTable() {
           <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Orders ID"} />
+            placeholder={"Orders Id"} />
         }
         className="bg-white px-4 h-5/6 "
       />

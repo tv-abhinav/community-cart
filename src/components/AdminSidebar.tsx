@@ -7,7 +7,7 @@ import { GiLoincloth } from 'react-icons/gi'
 import { IoIosAddCircle } from 'react-icons/io'
 import { MdOutlinePendingActions } from 'react-icons/md'
 import { GrCompliance } from 'react-icons/gr'
-import { setNavActive } from '@/utils/AdminNavSlice'
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
 import { useDispatch } from 'react-redux'
 
 

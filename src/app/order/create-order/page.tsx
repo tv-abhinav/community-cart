@@ -10,50 +10,20 @@ import { TailSpin } from 'react-loader-spinner'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/Store/store'
 import CartCard from '@/components/CartCard'
-import {  get_all_cart_Items } from '@/Services/common/cart'
-import { setCart } from '@/utils/CartSlice'
-import { setNavActive } from '@/utils/AdminNavSlice'
+import { get_all_cart_Items } from '@/Services/common/cart'
+import { setCart } from '@/utils/resolvers/CartSlice'
+import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
 import { create_a_new_order } from '@/Services/common/order'
+import { CartItem, CartViewSchema } from '@/model/Cart'
+import { UserSchema, UserSessionSchema } from '@/model/User'
 
-
-
-type Inputs = {
+type ShippingAddressInput = {
     fullName: string,
     address: string,
     city: string,
-    postalCode: Number,
+    pinCode: number,
     country: string,
 }
-
-
-
-
-
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-}
-
-
-type Data = {
-    productID: {
-        productName: string,
-        productPrice: String,
-        _id: string,
-        productImage: string,
-        productQuantity: number,
-    }
-    userID: {
-        email: string,
-        _id: string,
-    },
-    _id: string,
-    quantity: number,
-}
-
-
 
 export default function Page() {
 
@@ -61,8 +31,8 @@ export default function Page() {
     const [loader, setLoader] = useState(false)
     const Router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.User.userData) as userData | null
-    const cartData = useSelector((state: RootState) => state.Cart.cart) as Data[] | null;
+    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
+    const cartData = useSelector((state: RootState) => state.Cart.cart) as CartViewSchema | null;
     const [loading, setLoading] = useState(true)
 
 
@@ -74,93 +44,84 @@ export default function Page() {
     }, [dispatch, Router])
 
     useEffect(() => {
-        toast.warning("This is Dummy Website Don't add your Origial Details Here !")
-    }, [])
-
-   
-  
-
-
-
-    useEffect(() => {
         fetchCartData();
     }, [])
 
     const fetchCartData = async () => {
-        if (!user?._id) return Router.push('/')
-        const cartData = await get_all_cart_Items(user?._id)
-        if (cartData?.success) {
+        if (!user?.customerId) return Router.push('/')
+        const cartData = await get_all_cart_Items(user?.customerId)
+        if (cartData?.status === 200) {
             dispatch(setCart(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
         setLoading(false)
     }
 
 
-    const { register, formState: { errors }, handleSubmit } = useForm<Inputs>({
+    const { register, formState: { errors }, handleSubmit } = useForm<ShippingAddressInput>({
         criteriaMode: "all"
     });
 
 
 
- 
 
-    const onSubmit: SubmitHandler<Inputs> = async data => {
+
+    const onSubmit: SubmitHandler<ShippingAddressInput> = async data => {
         setLoader(true)
 
         const finalData = {
-            user : user?._id,
-            orderItems : cartData?.map(item => {
+            user: user?.sub,
+            orderItems: cartData?.items.map(item => {
                 return {
-                    product: item?.productID?._id,
+                    product: item?.product.productId,
                     qty: item?.quantity
                 }
             }),
-            shippingAddress : {
+            shippingAddress: {
                 fullName: data?.fullName,
                 address: data?.address,
                 city: data?.city,
-                postalCode: data?.postalCode,
+                pinCode: data?.pinCode,
                 country: data?.country,
             },
-            paymentMethod : 'PayPal',
-            itemsPrice : totalPrice,
-            taxPrice : 100,
-            shippingPrice : 500,
-            totalPrice : totalPrice + 100 + 500,
-            isPaid : true,
-            paidAt : new Date(),
-            isDelivered : false,
-            deliveredAt : new Date(),
+            paymentMethod: 'PayPal',
+            itemsPrice: totalPrice,
+            taxPrice: 100,
+            shippingPrice: 500,
+            totalPrice: totalPrice + 100 + 500,
+            isPaid: true,
+            paidAt: new Date(),
+            isDelivered: false,
+            deliveredAt: new Date(),
         }
 
 
-        const res =  await create_a_new_order(finalData);
-        if(res?.success){
-            toast.success(res?.message)
-            
+        const res = await create_a_new_order(finalData);
+        if (res?.status === 200) {
+            toast.success("Order created")
+
             setTimeout(() => {
                 Router.push('/')
-            } , 1000)
+            }, 1000)
             setLoader(false)
-        }else{
-            toast.error(res?.message)
+        } else {
+            toast.error(res?.statusText)
             setLoader(false)
         }
 
     }
 
 
-    function calculateTotalPrice(myCart: Data[]) {
-        const totalPrice = myCart?.reduce((acc, item) => {
-            return acc + (Number(item?.quantity) * Number(item?.productID?.productPrice));
+    function calculateTotalPrice(myCart: CartViewSchema) {
+        const totalPrice = myCart?.items.reduce((acc, item) => {
+            return acc + (Number(item?.quantity) * Number(item?.product.productPrice));
         }, 0);
 
         return totalPrice;
     }
 
-    const totalPrice = calculateTotalPrice(cartData as Data[])
+    const totalPrice = calculateTotalPrice(cartData as CartViewSchema)
 
     return (
         <div className='w-full h-full bg-gray-50 px-2'>
@@ -205,18 +166,18 @@ export default function Page() {
                         <div className='md:w-2/3 w-full px-2 h-full flex-col items-end justify-end flex'>
                             <div className='w-full flex flex-col items-center py-2 overflow-auto h-96'>
                                 {
-                                    cartData?.length === 0 ?
+                                    cartData?.items.length === 0 ?
                                         <div className='w-full h-full flex items-center justify-center flex-col'>
                                             <p className='my-4 mx-2 text-lg font-semibold '>No Item Available in Cart</p>
-                                            <Link href={"/"} className='btn text-white'>Shop Now</Link>
+                                            <Link href={"/"} className='btn text-white'>Continue Shopping</Link>
                                         </div>
                                         :
-                                        cartData?.map((item: Data) => {
-                                            return <CartCard key={item?._id}
-                                                productID={item?.productID}
-                                                userID={item?.userID}
-                                                _id={item?._id}
+                                        cartData?.items.map((item: CartItem) => {
+                                            return <CartCard key={item?.cartItemId}
+                                                product={item?.product}
+                                                cartItemId={item?.cartItemId}
                                                 quantity={item?.quantity}
+                                                customerId={cartData.customerId}
                                             />
                                         })
                                 }
@@ -259,8 +220,8 @@ export default function Page() {
                                 <label className="label">
                                     <span className="label-text">Postal Code</span>
                                 </label>
-                                <input  {...register("postalCode", { required: true })} type="number" className="file-input file-input-bordered w-full " />
-                                {errors.postalCode &&  <span className='text-red-500 text-xs mt-2'>This field is required</span>}
+                                <input  {...register("pinCode", { required: true })} type="number" className="file-input file-input-bordered w-full " />
+                                {errors.pinCode && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
 
                             </div>
                             <div className="form-control w-full ">
@@ -268,7 +229,7 @@ export default function Page() {
                                     <span className="label-text">Country</span>
                                 </label>
                                 <input  {...register("country", { required: true })} type="text" className="file-input file-input-bordered w-full " />
-                                {errors.country &&  <span className='text-red-500 text-xs mt-2'>This field is required</span>}
+                                {errors.country && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
 
                             </div>
 

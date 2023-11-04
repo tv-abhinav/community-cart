@@ -1,20 +1,19 @@
 
+import { BookmarkSchema, CreateBookmarkSchema } from "@/model/Bookmark";
+import axios from "axios";
 import Cookies from "js-cookie";
 
-export const bookmark_product = async (formData: any) => {
+export const bookmark_product = async (formData: CreateBookmarkSchema) => {
   try {
-    // const res = await fetch(`/api/common/bookmark/bookmark-product`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${Cookies.get('token')}`
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-    // const data = await res.json();
-    console.log(formData);
-    const data = { success: true, message: "Product added to Favourites!" };
-    return data;
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addBookmark`, null, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params: formData
+    });
+
+    return res;
   } catch (error) {
     console.log('Error in Add product to bookmark (service) =>', error);
   }
@@ -22,44 +21,32 @@ export const bookmark_product = async (formData: any) => {
 
 
 
-export const get_all_bookmark_items = async (id: any) => {
+export const get_all_bookmark_items = async (customerId: number) => {
   try {
-    // const res = await fetch(`/api/common/bookmark/get-bookmark-product?id=${id}`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Authorization': `Bearer ${Cookies.get('token')}`
-    //   }
-    // });
-    // const data = await res.json();
-    const data = {
-      data: [
-        {
-          userID: "1234",
-          productID: "p123",
-        }
-      ],
-      message: "Bookmarks found",
-      success: true
-    }
-    return data;
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/viewBookmarks`, {
+      headers: {
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params: { customerId }
+    });
+
+    return res;
   } catch (error) {
     console.log('Error in getting all bookmark Item for specific User (service) =>', error)
   }
 }
 
 
-export const delete_a_bookmark_item = async (id: string) => {
+export const delete_a_bookmark_item = async (customerId: number, productId: number) => {
   try {
-    // const res = await fetch(`/api/common/bookmark/remove-bookmark-product?id=${id}`, {
-    //   method: 'DELETE',
-    //   headers: {
-    //     'Authorization': `Bearer ${Cookies.get('token')}`
-    //   },
-    // })
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/removeBookmark`, {
+      headers: {
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params: { customerId, productId }
+    })
 
-    // const data = await res.json();
-    const data = { success: true, message: "Bookmark deleted!" };
-    return data;
+    return res;
   } catch (error) {
     console.log('Error in deleting Bookmark Item (service) =>', error)
   }

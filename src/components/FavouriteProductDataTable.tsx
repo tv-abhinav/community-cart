@@ -12,82 +12,48 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/Bookmark';
-
-
-interface Product {
-    productName: string;
-    productPrice: string;
-    _id: string;
-    productImage: string;
-    productQuantity: number;
-}
-
-interface User {
-    email: string;
-    _id: string;
-}
-
-interface BookmarkItem {
-    productID: Product;
-    userID: User;
-    _id: string;
-}
-
-
-
-interface userData {
-    email: String,
-    role: String,
-    _id: String,
-    name: String
-}
-
+import { setBookmark } from '@/utils/resolvers/Bookmark';
+import { BookmarkSchema } from '@/model/Bookmark';
+import { UserSessionSchema } from '@/model/User';
+import { ProductSchema } from '@/model/Product';
 
 export default function FavouriteProductDataTable() {
     const Router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.User.userData) as userData | null
-    const [bookmarkData, setBookmarkData] = useState<BookmarkItem[] | []>([]);
+    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
+    const [bookmarkData, setBookmarkData] = useState<ProductSchema[]>([]);
     const data = useSelector((state: RootState) => state.Bookmark.bookmark)
     const [search, setSearch] = useState('');
-    const [filteredData, setFilteredData] = useState<BookmarkItem[] | []>([]);
-
+    const [filteredData, setFilteredData] = useState<ProductSchema[]>([]);
 
     useEffect(() => {
-        setBookmarkData(data)
+        if(data) setBookmarkData(data.products)
     }, [data])
 
     useEffect(() => {
         setFilteredData(bookmarkData);
     }, [bookmarkData])
 
-
-
-
-
-
-
     const columns = [
         {
             name: 'Product Name',
-            selector: (row: BookmarkItem) => row?.productID?.productName,
+            selector: (row: ProductSchema) => row?.productName,
             sortable: true,
         },
         {
             name: 'Price',
-            selector: (row: BookmarkItem) => row?.productID?.productPrice,
+            selector: (row: ProductSchema) => row?.productPrice,
             sortable: true,
         },
         {
             name: 'Image',
-            cell: (row: BookmarkItem) => <Image src={row?.productID?.productImage} alt='No Image Found' className='py-2' width={100} height={100} />
+            cell: (row: ProductSchema) => <Image src={row?.productImageUrl || "/no-photo.jpg"} alt='No Image Found' className='py-2' width={100} height={100} />
         },
         {
             name: 'Action',
-            cell: (row: BookmarkItem) => (
+            cell: (row: ProductSchema) => (
                 <div className='flex items-start justify-start px-2 h-20'>
-                    <button onClick={() => handleDeleteProduct(row?._id)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
+                    <button onClick={() => handleDeleteProduct(row?.productId)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
                 </div>
             )
         },
@@ -95,26 +61,27 @@ export default function FavouriteProductDataTable() {
     ];
 
     const fetchBookmarkData = async () => {
-        if (!user?._id) return Router.push('/')
-        const cartData = await get_all_bookmark_items(user?._id)
-        if (cartData?.success) {
+        if (!user?.customerId) return Router.push('/')
+        const cartData = await get_all_bookmark_items(user?.customerId)
+        if (cartData?.status === 200) {
             dispatch(setBookmark(cartData?.data))
         } else {
-            toast.error(cartData?.message)
+            toast.error(cartData?.statusText)
         }
     }
 
 
 
 
-    const handleDeleteProduct = async (id: string) => {
-        const res = await delete_a_bookmark_item(id);
-        if (res?.success) {
-            toast.success(res?.message)
+    const handleDeleteProduct = async (productId: number) => {
+        if (!user?.customerId) return Router.push('/')
+        const res = await delete_a_bookmark_item(user?.customerId, productId);
+        if (res?.status === 200) {
+            toast.success("Bookmark deleted")
             fetchBookmarkData()
         }
         else {
-            toast.error(res?.message)
+            toast.error(res?.statusText)
         }
     }
 
@@ -124,7 +91,7 @@ export default function FavouriteProductDataTable() {
             setFilteredData(bookmarkData);
         } else {
             setFilteredData(bookmarkData?.filter((item) => {
-                const itemData = item?.productID?.productName.toUpperCase();
+                const itemData = item?.productName.toUpperCase();
                 const textData = search.toUpperCase();
                 return itemData.indexOf(textData) > -1;
             }))
