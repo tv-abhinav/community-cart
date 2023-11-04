@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useSWRConfig } from "swr"
 import { toast } from 'react-toastify';
 import { delete_a_category } from '@/Services/Admin/category';
 import DataTable from 'react-data-table-component';
@@ -12,19 +11,19 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { CategorySchema } from '@/model/Category';
+import GetData from './GetData';
 
 
 
 
 export default function CategorySchemaTable() {
-  const { mutate } = useSWRConfig()
   const router = useRouter();
   const [catData, setCatData] = useState<CategorySchema[] | []>([]);
-  const data = useSelector((state: RootState) => state.Seller.categories)
+  const data = useSelector((state: RootState) => state.Seller.allCategories)
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<CategorySchema[] | []>([]);
-
-
+  const [isHasToFetch, setIsHasToFetch] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     setCatData(data)
@@ -74,7 +73,7 @@ export default function CategorySchemaTable() {
     const res = await delete_a_category(id);
     if (res?.status === 200) {
       toast.success("deleteCategory success")
-      mutate('/gettingAllCategoriesForSeller')
+      setIsHasToFetch(true)
     }
     else {
       toast.error(res?.statusText)
@@ -93,7 +92,6 @@ export default function CategorySchemaTable() {
         return itemData.indexOf(textData) > -1;
       }))
     }
-    console.log(catData);
 
   }, [search, catData])
 
@@ -101,8 +99,12 @@ export default function CategorySchemaTable() {
 
   return (
     <div className='w-full h-full bg-white'>
+      <GetData hasToFetch={isHasToFetch} onLoad={(isLoad: boolean) => {
+        setIsLoading(isLoad);
+        if(!isLoad) setIsHasToFetch(false);
+        }} />
       {
-        filteredData ?
+        !isLoading && filteredData ?
           <DataTable
             columns={columns}
             data={filteredData || []}
@@ -126,7 +128,7 @@ export default function CategorySchemaTable() {
             className="bg-white px-4 h-4/6 "
           />
           :
-          ""
+          <Loading />
       }
 
     </div>

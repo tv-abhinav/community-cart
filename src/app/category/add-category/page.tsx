@@ -49,7 +49,6 @@ export default function AddCategory() {
 
     const handleClick = (iconSrc: string) => {
         let iconSrcParts = iconSrc.split('.')
-        console.log(iconSrcParts);
         let iconRelPath = iconSrcParts[0].split('/')
         let iconName = iconRelPath[iconRelPath.length-1];
         let iconExtn = iconSrcParts[iconSrcParts.length-1]
@@ -70,8 +69,7 @@ export default function AddCategory() {
         const catData: CreateCategorySchema = { categoryName: data.name, catIconUrl: icon, categoryDescription: data.description, categorySlug: data.slug }
         if (user?.sub) {
             const res = await add_new_category(catData, user?.sub)
-            console.log(res);
-            if (res?.status === 200) {
+            if (res?.status === 201) {
                 toast.success("Category Added");
                 setTimeout(() => {
                     Router.push('/Dashboard')

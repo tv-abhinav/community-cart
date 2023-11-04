@@ -23,7 +23,6 @@ const appReducer = combineReducers({
 
 export const rootReducer = (state: any, action: any) => {
   if (action === RESET_ACTION) {
-    console.log("RESET_STORE called")
     return appReducer(undefined, action)
   }
   return appReducer(state, action)

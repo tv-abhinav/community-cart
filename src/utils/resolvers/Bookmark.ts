@@ -2,12 +2,12 @@ import { BookmarkSchema } from '@/model/Bookmark';
 import { createAction, createSlice } from '@reduxjs/toolkit'
 
 interface Data {
-    bookmark: BookmarkSchema[];
+    bookmark: BookmarkSchema | null;
 }
 
 
 const initialState: Data = {
-    bookmark: [],
+    bookmark: null,
 }
 
 export const BookmarkSlice = createSlice({

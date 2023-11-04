@@ -6,6 +6,5 @@ export const fetcher = async (endpoint: string) => {
       return res;
     } catch (error) {
       throw new Error('Error in fetching (service) =>' + error)
-      // console.log('Error in getting all Categories (service) =>', error)
     }
   }

@@ -1,70 +1,50 @@
 
 
-import { CartViewSchema } from "@/model/Cart";
+import { AddToCartSchema, CartViewSchema } from "@/model/Cart";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export const add_to_cart = async (formData: any) => {
+export const add_to_cart = async (product: AddToCartSchema, customerId: number) => {
   try {
-    const res = await axios.post(`/api/common/cart/add-to-cart`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addtocart`, JSON.stringify(product), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params:{
+        customerId
       }
     });
-    console.log(formData)
-    // const data = {
-    //   message: "Product Deleted",
-    //   success: true
-    // }
+
     return res;
   } catch (error) {
     throw new Error('Error in Add product to cart (service) =>' + error);
   }
 }
 
-// export const get_all_cart_Items = async (id: string) => {
-//   try {
-//     // const res = await fetch(`/api/common/cart/get-cart-items?id=${id}`, {
-//     //   method: 'GET',
-//     //   headers: {
-//     //     'Authorization': `Bearer ${Cookies.get('token')}`
-//     //   }
-//     // });
-//     const data:{
-//       data:CartViewSchema[],
-      
-      
-//     } = {
-//       data: [{
-//         _id:"",
-//         userId: "", // populate product details in backend
-//         product: {
-//           _id:"",
-//           productImage:"",
-//           productName:"",
-//           productPrice:"1 rs",
-//           productQuantity:1
-//         },
-//         quantity: 2,
-//       }],
-//       message: "Fetched all Cart Items",
-//       success: true
-
-//     }
-//     return res;
-//   } catch (error) {
-//     throw new Error('Error in getting all cart Item for specific User (service) =>' + error)
-//   }
-// }
-
-
-export const delete_a_cart_item = async (id: string) => {
+export const get_all_cart_Items = async (customerId: number) => {
   try {
-    const res = await axios.delete(`/api/common/cart/remove-from-cart?id=${id}`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/viewcart`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
+      params: { customerId }
+    });
+
+    return res;
+  } catch (error) {
+    throw new Error('Error in getting all cart Item for specific User (service) =>' + error)
+  }
+}
+
+
+export const delete_a_cart_item = async (customerId: number, productId?: number) => {
+  try {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/removeCart`, {
+      headers: {
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      params: productId ? { customerId, productId } : { customerId }
     })
 
     // const data = {

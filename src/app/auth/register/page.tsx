@@ -18,10 +18,10 @@ export default function Register() {
   const router = useRouter();
   let initialAddress: Partial<AddressSchema> = {
     latitude: 28.3877096,
-    longitude: 75.5895650
+    longitude: 75.5895650,
+    elevation: 75.5895650,
   }
 
-  const [maps, setMaps] = useState<any>(null)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -58,9 +58,6 @@ export default function Register() {
         let latitude = position.coords.latitude;
         let longitude = position.coords.longitude;
         let elevation = position.coords.altitude;
-        console.log("latitude", latitude);
-        console.log("longitude", longitude);
-        console.log("elevation", elevation);
         initialAddress = { latitude, longitude }
         setFormData({
           ...formData, address: {
@@ -114,11 +111,6 @@ export default function Register() {
           longitude: lng
         }
       });
-    },
-    yesIWantToUseGoogleMapApiInternals: true,
-    //@ts-ignore
-    onGoogleApiLoaded: ({ map, maps }) => {
-      setMaps(maps)
     }
   }
 
@@ -199,34 +191,36 @@ export default function Register() {
       return;
     }
 
-    if ((!formData.address.elevation || initialAddress.latitude !== formData.address.latitude || initialAddress.longitude !== formData.address.longitude) && maps) {
-      let elevation = await get_elevation(formData.address.latitude, formData.address.longitude, maps)
+    if (!formData.address.elevation || initialAddress.latitude !== formData.address.latitude || initialAddress.longitude !== formData.address.longitude) {
+      let elevation = await get_elevation(formData.address.latitude, formData.address.longitude)
       if (elevation) {
+        console.log(elevation)
         setFormData({
           ...formData, address: {
-            ...formData.address, elevation
+            ...formData.address, elevation: elevation
           }
         });
+
+        const regRes = await register_me(formData, elevation);
+        if (formData.profilePhoto && regRes?.status == 201) {
+          await upload_profile_photo(formData.profilePhoto, formData.email);
+        }
+        if (regRes?.status == 201) {
+          setLoding(false);
+          toast.success("User created successfully");
+          setTimeout(() => {
+            router.push('/auth/login');
+          }, 2000);
+        }
+        else {
+          setLoding(false);
+          toast.error(regRes?.statusText);
+        }
+
       } else {
         toast.error("Unable to get elevation");
         return;
       }
-    }
-
-    const regRes = await register_me(formData);
-    if (formData.profilePhoto && regRes?.status == 201) {
-      await upload_profile_photo(formData.profilePhoto, formData.email);
-    }
-    if (regRes?.status == 201) {
-      setLoding(false);
-      toast.success("User created successfully");
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 2000);
-    }
-    else {
-      setLoding(false);
-      toast.error(regRes?.statusText);
     }
   }
 

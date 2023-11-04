@@ -10,7 +10,7 @@ import { RootState } from "../../Store/store";
 export default function  GettingDatasLength() {
 
    
-  const catData = useSelector((state: RootState) => state.Seller.categories);
+  const catData = useSelector((state: RootState) => state.Seller.allCategories);
 
   const prodData = useSelector((state: RootState) => state.Seller.product);
 

@@ -3,6 +3,7 @@
 import { get_all_bookmark_items } from '@/Services/common/bookmark'
 import { RootState } from '@/Store/store'
 import FavouriteProductDataTable from '@/components/FavouriteProductDataTable'
+import { UserSessionSchema } from '@/model/User'
 import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
 import { setBookmark } from '@/utils/resolvers/Bookmark'
 import Cookies from 'js-cookie'
@@ -13,18 +14,11 @@ import { MdFavorite } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
 
-interface userData {
-    email: string,
-    role: string,
-    _id: string,
-    name: string
-}
-
 
 export default function Page() {
     const Router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.User.userData) as userData | null
+    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -41,8 +35,8 @@ export default function Page() {
     }, [])
 
     const fetchBookmarkData = async () => {
-        if (!user?._id) return Router.push('/')
-        const cartData = await get_all_bookmark_items(user?._id)
+        if (!user?.customerId) return Router.push('/')
+        const cartData = await get_all_bookmark_items(user?.customerId)
         if (cartData?.status === 200) {
             dispatch(setBookmark(cartData?.data))
         } else {

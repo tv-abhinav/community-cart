@@ -6,11 +6,11 @@ export interface CreateCategorySchema {
 }
 
 export interface CategorySchema extends CreateCategorySchema {
-    categoryId: string;
+    categoryId: number;
 }
 
 export interface UpdateCategorySchema {
-    _id: string;
+    categoryId: number;
     categoryName?: string;
     categoryDescription?: string;
     catIconUrl?: string;

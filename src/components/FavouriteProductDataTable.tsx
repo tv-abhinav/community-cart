@@ -15,18 +15,19 @@ import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/commo
 import { setBookmark } from '@/utils/resolvers/Bookmark';
 import { BookmarkSchema } from '@/model/Bookmark';
 import { UserSessionSchema } from '@/model/User';
+import { ProductSchema } from '@/model/Product';
 
 export default function FavouriteProductDataTable() {
     const Router = useRouter();
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
-    const [bookmarkData, setBookmarkData] = useState<BookmarkSchema[] | []>([]);
+    const [bookmarkData, setBookmarkData] = useState<ProductSchema[]>([]);
     const data = useSelector((state: RootState) => state.Bookmark.bookmark)
     const [search, setSearch] = useState('');
-    const [filteredData, setFilteredData] = useState<BookmarkSchema[] | []>([]);
+    const [filteredData, setFilteredData] = useState<ProductSchema[]>([]);
 
     useEffect(() => {
-        setBookmarkData(data)
+        if(data) setBookmarkData(data.products)
     }, [data])
 
     useEffect(() => {
@@ -36,23 +37,23 @@ export default function FavouriteProductDataTable() {
     const columns = [
         {
             name: 'Product Name',
-            selector: (row: BookmarkSchema) => row?.product?.productName,
+            selector: (row: ProductSchema) => row?.productName,
             sortable: true,
         },
         {
             name: 'Price',
-            selector: (row: BookmarkSchema) => row?.product?.productPrice,
+            selector: (row: ProductSchema) => row?.productPrice,
             sortable: true,
         },
         {
             name: 'Image',
-            cell: (row: BookmarkSchema) => <Image src={row?.product?.productImage} alt='No Image Found' className='py-2' width={100} height={100} />
+            cell: (row: ProductSchema) => <Image src={row?.productImageUrl || "/no-photo.jpg"} alt='No Image Found' className='py-2' width={100} height={100} />
         },
         {
             name: 'Action',
-            cell: (row: BookmarkSchema) => (
+            cell: (row: ProductSchema) => (
                 <div className='flex items-start justify-start px-2 h-20'>
-                    <button onClick={() => handleDeleteProduct(row?._id)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
+                    <button onClick={() => handleDeleteProduct(row?.productId)} className=' w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700'>Delete</button>
                 </div>
             )
         },
@@ -60,8 +61,8 @@ export default function FavouriteProductDataTable() {
     ];
 
     const fetchBookmarkData = async () => {
-        if (!user?.sub) return Router.push('/')
-        const cartData = await get_all_bookmark_items(user?.sub)
+        if (!user?.customerId) return Router.push('/')
+        const cartData = await get_all_bookmark_items(user?.customerId)
         if (cartData?.status === 200) {
             dispatch(setBookmark(cartData?.data))
         } else {
@@ -72,10 +73,11 @@ export default function FavouriteProductDataTable() {
 
 
 
-    const handleDeleteProduct = async (id: string) => {
-        const res = await delete_a_bookmark_item(id);
+    const handleDeleteProduct = async (productId: number) => {
+        if (!user?.customerId) return Router.push('/')
+        const res = await delete_a_bookmark_item(user?.customerId, productId);
         if (res?.status === 200) {
-            toast.success(res?.statusText)
+            toast.success("Bookmark deleted")
             fetchBookmarkData()
         }
         else {
@@ -89,7 +91,7 @@ export default function FavouriteProductDataTable() {
             setFilteredData(bookmarkData);
         } else {
             setFilteredData(bookmarkData?.filter((item) => {
-                const itemData = item?.product?.productName.toUpperCase();
+                const itemData = item?.productName.toUpperCase();
                 const textData = search.toUpperCase();
                 return itemData.indexOf(textData) > -1;
             }))

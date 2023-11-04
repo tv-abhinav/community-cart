@@ -7,17 +7,17 @@ export interface CreateProductSchema extends ProductHighLevelFeatures {
   productDescription: string;
   productSlug: string;
   productFeatured: boolean;
-  categoryId: string;
-  sellerId: string;
+  categoryId: number;
+  sellerId: number;
 }
 
 export interface ProductSchema extends CreateProductSchema {
-  productId: string;
+  productId: number;
   productImageUrl?: string;
 }
 
 export interface UpdateProductSchema {
-  _id: string;
+  productId: number;
   productName?: string;
   productDescription?: string;
   productImage?: string;
@@ -25,6 +25,6 @@ export interface UpdateProductSchema {
   productPrice?: number;
   productQuantity?: number;
   productFeatured?: boolean;
-  categoryId?: string;
-  sellerId?: string;
+  categoryId?: number;
+  sellerId?: number;
 }

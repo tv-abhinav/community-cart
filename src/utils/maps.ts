@@ -1,9 +1,8 @@
-export const get_elevation = async (lat: number, lng: number, mapsObject: any) => {
+export const get_elevation = async (lat: number, lng: number) => {
     try {
-        const location = new mapsObject.LatLng(lat, lng);
-        const elevator = new mapsObject.ElevationService(lat, lng);
+        const location = new google.maps.LatLng(lat, lng);
+        const elevator = new google.maps.ElevationService();
         const res = await elevator.getElevationForLocations({ locations: [location] })
-        console.log(res);
         if (res.results && res.results.length > 0) {
             return res.results[0].elevation;
         } else {
@@ -11,7 +10,6 @@ export const get_elevation = async (lat: number, lng: number, mapsObject: any) =
         }
     } catch (error) {
         throw new Error('Error in getting elevation =>' + error)
-        // console.log('Error in getting all Categories (service) =>', error)
     }
 }
 

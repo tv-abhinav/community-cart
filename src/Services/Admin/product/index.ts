@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 
 export const add_new_product = async (formData: CreateProductSchema) => {
   try {
-    console.log(formData)
     const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addProduct`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
@@ -14,39 +13,30 @@ export const add_new_product = async (formData: CreateProductSchema) => {
       }
     });
 
-    // const data = {
-    //   message: "New Product Added",
-    //   success: true
-    // }
     return res;
   } catch (error) {
     throw new Error('Error in Add New Category (service) =>' + error);
   }
 }
 
-export const upload_product_photo = async (photo: File, productId: string) => {
+export const upload_product_photo = async (photo: File, productId: number) => {
 
   try {
-    console.log(photo);
     var photoFormData = new FormData();
     photoFormData.append('productImage', photo);
 
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadImage/product/${productId}`,
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadImage/product`,
       photoFormData,
       {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        params: { productId }
       })
-    console.log(res.data);
-    // const data = {
-    //     success: true,
-    //     message: "User Registered"
-    // }
+
     return res;
   } catch (error) {
     throw new Error('error in register (service) => ' + error);
-    // console.log('error in register (service) => ', error);
   }
 }
 
@@ -74,12 +64,15 @@ export const get_all_products = async (params?: { sellerId?: number, categoryId?
 }
 
 
-export const delete_a_product = async (id: string) => {
+export const delete_a_product = async (id: number) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteProduct/${id}`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteProduct`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
+      params: {
+        productId: id
+      }
     })
     return res;
   } catch (error) {
@@ -97,7 +90,6 @@ export const update_a_product = async (formData: any) => {
       }
     })
 
-    console.log(formData)
     return res;
   } catch (error) {
     throw new Error('Error in updating Product (service) =>' + error)
@@ -114,7 +106,6 @@ export const get_product_by_id = async (id: number) => {
       })
     return res;
   } catch (error) {
-    // console.log('Error in getting product by Id (service) =>', error)
     throw new Error('Error in getting product by Id (service) =>' + error);
   }
 }

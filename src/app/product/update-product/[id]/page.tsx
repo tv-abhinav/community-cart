@@ -11,9 +11,12 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
 import { RootState } from '@/Store/store';
-import { get_product_by_id, update_a_product } from '@/Services/Admin/product';
+import { get_product_by_id, update_a_product, upload_product_photo } from '@/Services/Admin/product';
 import Cookies from 'js-cookie';
 import { ProductSchema, UpdateProductSchema } from '@/model/Product';
+import { CategorySchema } from '@/model/Category';
+import { UserSessionSchema } from '@/model/User';
+import { get_all_categories } from '@/Services/Admin/category';
 
 
 
@@ -26,42 +29,28 @@ type Inputs = {
   feature: boolean,
   price: number,
   quantity: number,
-  categoryId: string,
+  categoryId: number,
 }
-
-type CategoryData = {
-  _id: string;
-  categoryName: string;
-  categoryDescription: string;
-  categoryImage: string;
-  categorySlug: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 interface pageParam {
   id: string
-}
-
-interface userData {
-  email: string,
-  role: string,
-  _id: string,
-  name: string
 }
 
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
 
 
   const [loader, setLoader] = useState(false)
+  const [image, setImage] = useState<any>(null)
+  const [imageUrl, setImageUrl] = useState<string>("")
   const Router = useRouter();
   const dispatch = useDispatch();
   const [prodData, setprodData] = useState<ProductSchema | undefined>(undefined);
-  const category = useSelector((state: RootState) => state.Seller.categories) as CategoryData[] | undefined
+  const [categories, setCategories] = useState<CategorySchema[]>([])
+  const allCats = useSelector((state: RootState) => state.Seller.allCategories) as CategorySchema[]
 
 
   useEffect(() => {
-    const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
+    const user: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
     if (!Cookies.get('token') || user?.role !== 'SELLER') {
       Router.push('/')
     }
@@ -70,12 +59,32 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
 
 
-  const { res, isLoading } = useSWR('/gettingProductbyId', () => get_product_by_id(params.id))
-  if (res?.status !== 200) toast.error(res?.statusText)
-
   useEffect(() => {
-    setprodData(res?.data)
-  }, [res])
+    const getProd = async () => {
+      const res = await get_product_by_id(Number(params.id))
+      if (res?.status !== 200) toast.error(res?.statusText)
+      setprodData(res?.data)
+      setLoader(false)
+    }
+    getProd()
+
+    const getCatForDropdown = async () => {
+      setLoader(true)
+      const categoryRes = await get_all_categories();
+      if (categoryRes?.status !== 200) toast.error(categoryRes?.statusText)
+      setCategories(categoryRes?.data)
+      setLoader(false)
+    }
+    if (allCats.length === 0) getCatForDropdown()
+    else setCategories(allCats)
+  }, [])
+
+  const onImageChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      setImage(event.target.files[0])
+      setImageUrl(URL.createObjectURL(event.target.files[0]));
+    }
+  }
 
 
   const { register, setValue, formState: { errors }, handleSubmit } = useForm<Inputs>({
@@ -89,34 +98,36 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
       setValue('description', prodData?.productDescription)
       setValue('slug', prodData?.productSlug)
       setValue('feature', prodData?.productFeatured)
-      setValue('categoryId', prodData?.productCategory._id)
+      setValue('categoryId', prodData?.categoryId)
       setValue('quantity', prodData?.productQuantity)
       setValue('price', prodData?.productPrice)
+      if (prodData.productImageUrl) setImageUrl(prodData.productImageUrl)
     }
   }
 
   useEffect(() => {
+    console.log(prodData?.categoryId)
     if (prodData) setValueofFormData();
   }, [prodData])
 
   const onSubmit: SubmitHandler<Inputs> = async data => {
     setLoader(false)
 
+    if (!prodData?.productId) return;
 
     const updatedData: UpdateProductSchema = {
-      _id: params.id,
+      productId: Number(params.id),
       productName: data.name !== prodData?.productName ? data.name : prodData?.productName,
       productDescription: data.description !== prodData?.productDescription ? data.description : prodData?.productDescription,
       productSlug: data.slug !== prodData?.productSlug ? data.slug : prodData?.productSlug,
       productFeatured: data.feature !== prodData?.productFeatured ? data.feature : prodData?.productFeatured,
       productQuantity: data.quantity !== prodData?.productQuantity ? data.quantity : prodData?.productQuantity,
       productPrice: data.price !== prodData?.productPrice ? data.price : prodData?.productPrice,
-      categoryId: data.categoryId !== prodData?.productCategory._id ? data.categoryId : prodData?.productCategory._id,
+      categoryId: data.categoryId !== prodData?.categoryId ? data.categoryId : prodData?.categoryId,
     };
 
-    console.log(updatedData)
-
     const res = await update_a_product(updatedData)
+    if (prodData?.productImageUrl !== imageUrl) upload_product_photo(image, prodData?.productId)
     if (res?.status === 200) {
       toast.success("Action successful");
       dispatch(setNavActive('Base'))
@@ -129,12 +140,6 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
       setLoader(false)
     }
   }
-
-
-
-
-
-
 
   return (
     <div className='w-full dark:text-black p-4 min-h-screen  bg-gray-50 flex flex-col '>
@@ -156,7 +161,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
         <h1 className='text-2xl py-2 '>Update Product</h1>
       </div>
       {
-        isLoading || loader ? (
+        loader ? (
           <div className='w-full  flex-col h-96 flex items-center justify-center '>
             <TailSpin
               height="50"
@@ -181,9 +186,9 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                 <select   {...register("categoryId", { required: true })} className="select select-bordered">
                   <option disabled selected>Pick  one category </option>
                   {
-                    category?.map((item) => {
+                    categories?.map((item) => {
                       return (
-                        <option key={item._id} value={item._id}>{item.categoryName}</option>
+                        <option key={item.categoryId} value={item.categoryId}>{item.categoryName}</option>
                       )
                     })
                   }
@@ -238,10 +243,21 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                 prodData && (
 
                   <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Old Image</span>
+                    <label htmlFor="profilePhoto">
+                      <div className="mx-auto h-32 w-32 text-center">
+                        <div className="relative w-32">
+                          <img className="w-32 h-32 rounded-md absolute" src={imageUrl || "/no-photo.jpg"} alt="" />
+                          {
+                            !imageUrl ?
+                              <div className="w-32 h-32 group bg-gray-200 opacity-30 rounded-md absolute flex justify-center items-center cursor-pointer transition duration-500">
+                                <img className="block w-12" src="https://www.svgrepo.com/show/33565/upload.svg" alt="" />
+                              </div> : ""
+                          }
+                        </div>
+                      </div>
                     </label>
-                    <Image src={prodData?.productImage || ""} alt='No Image Found' width={200} height={200} />
+
+                    <input className="hidden" name="profilePhoto" id="profilePhoto" type="file" onChange={onImageChange} />
 
                   </div>
                 )

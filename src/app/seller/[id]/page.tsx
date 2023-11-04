@@ -2,10 +2,12 @@
 
 
 import { get_all_categories } from '@/Services/Admin/category'
+import { get_all_products } from '@/Services/Admin/product'
 import { get_seller } from '@/Services/Admin/seller'
 import Loading from '@/app/loading'
-import CategoryCard from '@/components/CategoryCard'
+import ProductCard from '@/components/ProductCard'
 import { CategorySchema } from '@/model/Category'
+import { ProductSchema } from '@/model/Product'
 import { SellerSchema } from '@/model/Seller'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,9 +19,13 @@ interface pageParam {
 }
 
 export default function Page({ params, searchParams }: { params: pageParam, searchParams: any }) {
-    const [sellerCategories, setSellerCategoriesData] = useState<CategorySchema[] | []>([]);
+    const [sellerCategories, setSellerCategoriesData] = useState<CategorySchema[]>([]);
+    const [sellerProducts, setSellerProducts] = useState<ProductSchema[]>([]);
+    const [noProducts, setNoProducts] = useState<boolean>(false);
+    const [currentCatProducts, setCurrentCatProducts] = useState<ProductSchema[]>([]);
     const [shopDetails, setShopDetails] = useState<SellerSchema | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [activeCategoryId, setActiveCategoryId] = useState<number>(-1);
 
     useEffect(() => {
         const fetch_shop = async () => {
@@ -28,14 +34,37 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
             const catRes = await get_all_categories(Number(params.id))
             if (shopRes?.status !== 200 || catRes?.status !== 200) toast.error(shopRes?.statusText)
             else {
-                setShopDetails(shopRes.data)
-                setSellerCategoriesData(catRes.data.categories)
+                setShopDetails(shopRes.data[0])
+                setSellerCategoriesData(catRes.data)
             }
             setIsLoading(false)
         }
 
         fetch_shop()
+        fetchProducts(-1)
     }, [])
+
+    const fetchProducts = async (categoryId: number) => {
+        setActiveCategoryId(categoryId)
+        if (categoryId === -1) {
+            setIsLoading(true)
+            if(sellerProducts.length > 0) {
+                setCurrentCatProducts(sellerProducts)
+            } else {
+                const prdRes = await get_all_products({sellerId: Number(params.id)})
+                setSellerProducts(prdRes.data)
+                setCurrentCatProducts(prdRes.data)
+            }
+            setIsLoading(false)
+        } else {
+            setIsLoading(true)
+            setCurrentCatProducts(sellerProducts.filter(prod => prod.categoryId === categoryId))
+            setIsLoading(false)
+        }
+    }
+
+    const activeTabStyle = "cursor-pointer mr-2 w-36 inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg"
+    const inactiveTabStyle = "cursor-pointer mr-2 w-36 inline-block p-4 rounded-t-lg hover:text-gray-800 hover:bg-gray-100"
 
     return (
         <div className='w-full h-screen dark:text-black bg-gray-50 py-4 px-2 '>
@@ -53,33 +82,52 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                     </li>
                 </ul>
             </div>
-            <div className='grid grid-cols-2'>
+            <div className='w-full h-1/2 grid grid-cols-2 items-center justify-items-center'>
                 <div>
-                    <Image src={ shopDetails?.shopPhotoUrl || ""} alt='no Image' className='rounded' fill />
+                    <Image src={shopDetails?.shopPhotoUrl || "/no-photo.jpg"} alt='no Image' className='rounded' width={300} height={300} />
                 </div>
-                <div>
-                {shopDetails?.sellerName}
-                {shopDetails?.gstin}
+                <div className='justify-self-start'>
+                    <h3 className='text-3xl font-bold'>{shopDetails?.shopName}</h3>
+                    <br />
+                    <p>{shopDetails?.address.address1}</p>
+                    <p>{shopDetails?.address.address2}</p>
+                    <p>{shopDetails?.address.city}</p>
+                    <p>{shopDetails?.address.country}</p>
+                    <p>GSTIN: {shopDetails?.gstin}</p>
                 </div>
             </div>
+            <ul className="col-span-2 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+                <li className={activeCategoryId === -1 ? activeTabStyle : inactiveTabStyle} onClick={() => {fetchProducts(-1)}}> All </li>
+                {
+                    sellerCategories && sellerCategories.map((category, index) => {
+                        const tabStyle = activeCategoryId === category.categoryId ? activeTabStyle : inactiveTabStyle
+
+                        return (
+                            <li className={tabStyle} key={category.categoryId} onClick={() => {fetchProducts(category.categoryId)}}> {category.categoryName} </li>
+                        )
+                    })
+                }
+                {
+                    sellerCategories && sellerCategories.length > 10 ?
+                        <li className="cursor-pointer mr-2 w-36 inline-block p-4 rounded-t-lg hover:text-gray-800 hover:bg-gray-100"> More.. </li> : ""
+                }
+            </ul>
             <div className='w-full h-5/6  flex items-start justify-center flex-wrap overflow-auto'>
                 {
-                    isLoading ? <Loading /> : <>
+                    isLoading ? <Loading /> : 
+                    noProducts ? 
+                    <p className='text-2xl my-4 text-center font-semibold text-red-400'>No products found in selected category</p>
+                    :
+                    <>
                         {
-                            sellerCategories?.map((item: CategorySchema) => {
-                                return <CategoryCard
-                                    categoryName={item?.categoryName}
-                                    categoryDescription={item?.categoryDescription}
-                                    categoryImage={item?.catIconUrl}
-                                    categorySlug={item?.categorySlug}
-                                    _id={item?.categoryId}
-                                    key={item?.categoryId} />
+                            currentCatProducts?.map((item, index) => {
+                                return <ProductCard key={index} item={item} />
                             })
                         }
                     </>
                 }
                 {
-                    isLoading === false && sellerCategories === undefined || sellerCategories?.length < 1 && <p className='text-2xl my-4 text-center font-semibold text-red-400'>No Categories Found in this Seller</p>
+                    isLoading === false && sellerCategories === undefined || sellerCategories?.length < 1 && <p className='text-2xl my-4 text-center font-semibold text-red-400'>No products sold by this Seller</p>
                 }
             </div>
             <ToastContainer />

@@ -83,19 +83,19 @@ export default function Navbar() {
 
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li className="mr-2 w-36">
-                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">Home</Link>
+                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 text-blue-600 bg-gray-100 rounded-t-lg active">Home</Link>
                 </li>
                 {
                     categories.map((category, index) => {
                         return (
                             <li className="mr-2 w-36" key={index}>
-                                <Link href={`/category/category-product/${category.categoryId}`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">{category.categoryName}</Link>
+                                <Link href={`/category/category-product/${category.categoryId}`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-300">{category.categoryName}</Link>
                             </li>
                         )
                     })
                 }
                 <li className="mr-2 w-36">
-                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">More..</Link>
+                    <Link href={`/`} aria-current="page" className="w-full inline-block p-4 rounded-t-lg hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-300">More..</Link>
                 </li>
             </ul>
 

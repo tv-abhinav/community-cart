@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useSWRConfig } from "swr"
 import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
@@ -12,24 +11,24 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { ProductSchema } from '@/model/Product';
+import GetData from './GetData';
 
 
 
 
 export default function ProductDataTable() {
-  const { mutate } = useSWRConfig()
   const router = useRouter();
   const [prodData, setprodData] = useState<ProductSchema[] | []>([]);
   const data = useSelector((state: RootState) => state.Seller.product)
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<ProductSchema[] | []>([]);
-
+  const [isHasToFetch, setIsHasToFetch] = useState<boolean>(true)
 
   useEffect(() => {
     setprodData(Object.values(data))
   }, [data])
-
+  
   useEffect(() => {
     setFilteredData(prodData);
   }, [prodData])
@@ -53,7 +52,7 @@ export default function ProductDataTable() {
     },
     {
       name: 'Image',
-      cell: (row: ProductSchema) => <Image src={row?.productImageUrl ? row?.productImageUrl : ""} alt='No Image Found' className='py-2' width={100} height={100} />
+      cell: (row: ProductSchema) => <Image src={row?.productImageUrl ? row?.productImageUrl : "/no-photo.jpg"} alt='No Image Found' className='py-2' width={100} height={100} />
     },
     {
       name: 'Action',
@@ -69,11 +68,11 @@ export default function ProductDataTable() {
 
 
 
-  const handleDeleteProduct = async (id: string) => {
+  const handleDeleteProduct = async (id: number) => {
     const res = await delete_a_product(id);
     if (res?.status === 200) {
       toast.success("delete success")
-      mutate('/gettingAllProductsForSeller')
+      location.reload()
     }
     else {
       toast.error(res?.statusText)
@@ -86,7 +85,7 @@ export default function ProductDataTable() {
       setFilteredData(prodData);
     } else {
       setFilteredData(prodData?.filter((item) => {
-        const itemData = item?.categoryId;
+        const itemData = item?.productName.toUpperCase();
         // const itemData = item?.productCategory?.categoryName.toUpperCase();
         const textData = search.toUpperCase();
         return itemData.indexOf(textData) > -1;
@@ -100,6 +99,11 @@ export default function ProductDataTable() {
 
   return (
     <div className='w-full h-full'>
+      <GetData hasToFetch={isHasToFetch} onLoad={(isLoad: boolean) => {
+        setIsLoading(isLoad);
+        if (!isLoad) setIsHasToFetch(false);
+      }} />
+      {filteredData.map((dat, index) => (<div key={index}>{dat.productName} </div>))}
       <DataTable
         columns={columns}
         data={filteredData || []}
@@ -119,11 +123,10 @@ export default function ProductDataTable() {
           <input className='w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600' type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Category Name"} />
+            placeholder={"Product Name"} />
         }
         className="bg-white px-4 h-4/6 "
       />
-
     </div>
   )
 }

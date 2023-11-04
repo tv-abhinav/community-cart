@@ -9,7 +9,6 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import jwt_decode from "jwt-decode";
 import { setUserData } from '@/utils/resolvers/UserDataSlice';
-// import { setCategoryData } from '@/utils/resolvers/SellerSlice';
 import { useRouter } from 'next/navigation';
 import { TailSpin } from 'react-loader-spinner';
 import { GrClose } from 'react-icons/gr';
@@ -44,8 +43,7 @@ export default function Login() {
             const tokenData:UserSessionSchema = jwt_decode(data);
             localStorage.setItem('user', JSON.stringify(tokenData));
             dispatch(setUserData(tokenData));
-            // const userData = localStorage.getItem('user');
-            // const userDataString = typeof userData === 'string' ? userData : '';
+            
             if (tokenData?.role === 'SELLER') {
                 Router.push('/Dashboard')
             }

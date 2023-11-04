@@ -1,18 +1,16 @@
-export interface CartSchema {
-    customerId: string,
-    productId: string,
+import { ProductSchema } from "./Product"
+
+export interface AddToCartSchema {
+    product: ProductSchema,
     quantity: number,
 }
 
+export interface CartItem extends AddToCartSchema {
+    cartItemId: number,
+}
+
 export interface CartViewSchema {
-    product: {
-        _id: string,
-        productName: string,
-        productPrice: number,
-        productImage: string,
-        productQuantity: number,
-    }
-    userId: "",
-    _id: string,
-    quantity: number,
+    cartId: number,
+    customerId: number,
+    items: CartItem[],
 }

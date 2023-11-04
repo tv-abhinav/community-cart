@@ -15,7 +15,7 @@ import { RootState } from '@/Store/store'
 import { add_to_cart } from '@/Services/common/cart'
 import { setUserData } from '@/utils/resolvers/UserDataSlice'
 import { bookmark_product } from '@/Services/common/bookmark'
-import { CustomerSchema } from '@/model/User'
+import { CustomerSchema, UserSessionSchema } from '@/model/User'
 import { ProductSchema } from '@/model/Product'
 
 
@@ -27,7 +27,8 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     const [prodData, setprodData] = useState<ProductSchema | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const customer = useSelector((state: RootState) => state.Customer.CustomerData) as CustomerSchema | null
+    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
+    const custId = user?.customerId;
 
     useEffect(() => {
         const getProdById = async () => {
@@ -44,9 +45,9 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     }, [])
 
     const AddToCart = async () => {
-        if (customer) {
-            const finalData = { productId: params.id, userId: customer?.customerId }
-            const res = await add_to_cart(finalData);
+        if (custId && prodData) {
+            // const finalData = { productId: params.id, userId: customer?.customerId }
+            const res = await add_to_cart({product: prodData, quantity: 1}, custId);
             if (res?.status === 200) {
                 toast.success("Added to cart");
             } else {
@@ -59,9 +60,8 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
 
     const AddToBookmark = async () => {
-        if (customer) {
-            const finalData = { productId: params.id, customerId: customer?.customerId }
-            const res = await bookmark_product(finalData);
+        if (custId) {
+            const res = await bookmark_product({ productId: Number(params.id), customerId: custId });
             if (res?.status === 200) {
                 toast.success("Action successful");
             } else {

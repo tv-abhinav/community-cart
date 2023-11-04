@@ -10,6 +10,7 @@ export interface UserSchema {
 export interface UserSessionSchema {
     sub: string,
     sellerId?: number,
+    customerId?: number,
     role: "BUYER" | "SELLER",
     iat?: number,
     exp?: number,
@@ -25,7 +26,7 @@ export interface CreateCustomerSchema {
 }
 
 export interface CustomerSchema extends CreateCustomerSchema {
-    customerId: string,
+    customerId: number,
 }
 
 export interface AddressSchema {

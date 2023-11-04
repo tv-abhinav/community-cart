@@ -17,25 +17,25 @@ export default function ProductCard({ item }: { item: ProductSchema }) {
     const router = useRouter();
 
     const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
-    const custId = useSelector((state: RootState) => state.Customer.CustomerData?.customerId) as string | null
+    const custId = user?.customerId;
 
     const AddToCart = async () => {
-        if(custId) {
-        const finalData = { productId: item.productId, customerId: custId }
-        const res = await add_to_cart(finalData);
-        if (res?.status === 200) {
-            toast.success("Action successful");
+        if (custId) {
+            const finalData = { product: item, quantity: 1 }
+            const res = await add_to_cart(finalData, custId);
+            if (res?.status === 200) {
+                toast.success("Action successful");
+            } else {
+                toast.error(res?.statusText)
+            }
         } else {
-            toast.error(res?.statusText)
+            toast.error("Please login to add to cart");
         }
-    } else {
-        toast.error("Please login to add to cart");
-    }
     }
 
 
-    const AddToBookmark  =  async () => {
-        if(custId) {
+    const AddToBookmark = async () => {
+        if (custId) {
             const finalData = { productId: item.productId, customerId: custId }
             const res = await bookmark_product(finalData);
             if (res?.status === 200) {
@@ -50,9 +50,9 @@ export default function ProductCard({ item }: { item: ProductSchema }) {
 
 
     return (
-        <div  className="card text-black cursor-pointer card-compact m-3 w-80 bg-white shadow-xl relative">
+        <div className="card text-black cursor-pointer card-compact m-3 w-80 bg-white shadow-xl relative">
             <div onClick={() => router.push(`/product/product-detail/${item.productId}`)} className='w-full rounded relative h-60'>
-                <Image src={item.productImageUrl || '/images98.jpg'} alt='no Image' className='rounded' fill />
+                <Image src={item.productImageUrl || '/no-photo.jpg'} alt='no Image' className='rounded' fill />
             </div>
 
             <div className="card-body">

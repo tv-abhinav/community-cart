@@ -5,32 +5,21 @@ import React, { useEffect, useState } from 'react'
 import AdminNavbar from '@/components/AdminNavbar';
 import AdminSidebar from '@/components/AdminSidebar';
 import SuperComponent from '@/components/SuperComponent';
-import { ToastContainer, toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 import Loading from '../loading';
 import { setNavActive } from '@/utils/resolvers/AdminNavSlice';
-import { UserSessionSchema } from '@/model/User';
 import GetData from '@/components/GetData';
-import { RootState } from '@/Store/store';
 
 export default function Dashboard() {
   const Router = useRouter();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const sellerRes = await get_seller(user?.sub)
-  //     setSeller(sellerRes.data);
-  //     const catRes = await get_all_categories(user?.sub)
-  //     setCategories(catRes.data);
-  //   })()
-  // }, [])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isHasToFetch, setIsHasToFetch] = useState<boolean>(true)
 
   useEffect(() => {
     let usr = JSON.parse(localStorage.getItem('user') || '{}')
     if (!Cookies.get('token') || usr?.role !== 'SELLER') {
-      console.log("Hello!!")
       Router.push('/')
     }
     dispatch(setNavActive('Base'))
@@ -38,7 +27,10 @@ export default function Dashboard() {
 
   return (
     <div className='w-full h-screen flex  bg-gray-50 overflow-hidden'>
-      <GetData onLoad={() => setIsLoading(false)} />
+      <GetData hasToFetch={isHasToFetch} onLoad={(isLoad: boolean) => {
+        setIsLoading(isLoad);
+        if(!isLoad) setIsHasToFetch(false);
+        }} />
       <AdminSidebar />
       <div className='w-full h-full '>
         <AdminNavbar />

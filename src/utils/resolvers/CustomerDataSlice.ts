@@ -28,14 +28,11 @@ export const CustomerSlice = createSlice({
     },
     setNearbySellers: (state, action: { payload: SellerSchema[], type: string }) => {
       state.nearbySellers = action.payload
-    },
-    setIsFetchingCustomer: (state, action) => {
-      state.nearbySellers = action.payload
-    },
+    }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCustomerData, setCategoriesForCustomer, setNearbySellers, setIsFetchingCustomer } = CustomerSlice.actions
+export const { setCustomerData, setCategoriesForCustomer, setNearbySellers } = CustomerSlice.actions
 
 export const CustomerReducer = CustomerSlice.reducer

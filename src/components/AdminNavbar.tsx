@@ -1,20 +1,17 @@
 "use client"
 
-import { RootState } from '@/Store/store'
 import { RESET_ACTION } from '@/utils/resolvers'
 import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 export default function AdminNavbar() {
     const dispatch = useDispatch();
-    const prod = useSelector((state: RootState) => state.Seller.product)
 
     const handleLogout = () => {
-        console.log("before", prod)
         Cookies.remove('token');
         localStorage.clear();
         dispatch(RESET_ACTION)

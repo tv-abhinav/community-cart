@@ -18,7 +18,7 @@ export default function IconPicker({handleClick}:{handleClick: Function}) {
   },[])
 
   return (
-    <div className='w-full h-48 relative items-center grid grid-cols-4 overflow-y-scroll'>
+    <div className='w-full h-48 relative items-center grid grid-cols-4 overflow-y-auto'>
       {
         icons.map((icon: any, index: number) => {
           return (

@@ -16,7 +16,8 @@ import { add_new_product, upload_product_photo } from '@/Services/Admin/product'
 import { CreateProductSchema } from '@/model/Product';
 import { CategorySchema } from '@/model/Category';
 import { UserSessionSchema } from '@/model/User';
- 
+import { get_all_categories } from '@/Services/Admin/category';
+
 
 
 
@@ -24,10 +25,10 @@ type Inputs = {
     name: string,
     description: string,
     slug: string,
-    feature : boolean,
-    price : number,
-    quantity :  number,
-    categoryId : string,
+    feature: boolean,
+    price: number,
+    quantity: number,
+    categoryId: number,
     image: Array<File>,
 }
 
@@ -35,25 +36,41 @@ const maxSize = (value: File) => {
     const fileSize = value.size / 1024 / 1024;
     return fileSize < 1 ? false : true
 }
-  
+
 
 
 export default function AddProduct() {
 
     const [loader, setLoader] = useState(false)
+    const [categories, setCategories] = useState<CategorySchema[]>([])
     const Router = useRouter();
-    const category =  useSelector((state : RootState) => state.Seller.categories) as CategorySchema[] | undefined
-    const sellerId =  useSelector((state : RootState) => state.Seller.seller?.sellerId) as string
+    const sellerId = useSelector((state: RootState) => state.Seller.seller?.sellerId) as number
+    const allCats = useSelector((state: RootState) => state.Seller.allCategories) as CategorySchema[]
 
     useEffect(() => {
         const user: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
         if (!Cookies.get('token') || user?.role !== 'SELLER') {
             Router.push('/')
         }
-        
-    }, [  Router])
 
-    
+    }, [Router])
+
+    useEffect(() => {
+        const getCatForDropdown = async () => {
+            setLoader(true)
+            const categoryRes = await get_all_categories();
+            if (categoryRes?.status !== 200) toast.error(categoryRes?.statusText)
+            setCategories(categoryRes?.data)
+            setLoader(false)
+        }
+        if (allCats.length === 0) getCatForDropdown()
+        else {
+            setCategories(allCats)
+            setLoader(false)
+        }
+    }, [])
+
+
 
 
 
@@ -68,11 +85,11 @@ export default function AddProduct() {
         const CheckFileSize = maxSize(data.image[0]);
         if (CheckFileSize) return toast.error('Image size must be less then 1MB')
 
-        const prdData:CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: data.slug , productFeatured  : data.feature , productPrice : data.price , productQuantity : data.quantity , categoryId : data.categoryId, sellerId: sellerId}
+        const prdData: CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: data.slug, productFeatured: data.feature, productPrice: data.price, productQuantity: data.quantity, categoryId: data.categoryId, sellerId: sellerId }
         const regRes = await add_new_product(prdData)
         if (regRes?.status === 201) {
             toast.success("Product added");
-            if(data.image[0]) {
+            if (data.image[0]) {
                 const photoRes = await upload_product_photo(data.image[0], regRes.data.productId)
                 if (photoRes?.status === 201) {
                     toast.success("Error uploading product image");
@@ -125,7 +142,7 @@ export default function AddProduct() {
                             wrapperClass=""
                             visible={true}
                         />
-                        <p className='text-sm mt-2 font-semibold text-orange-500'>Adding Product Hold Tight ....</p>
+                        <p className='text-sm mt-2 font-semibold text-orange-500'>Loading ....</p>
                     </div>
                 ) : (
 
@@ -135,10 +152,10 @@ export default function AddProduct() {
                                 <label className="label">
                                     <span className="label-text">Choose Category</span>
                                 </label>
-                                <select   {...register("categoryId", { required: true })}  className="select select-bordered">
+                                <select   {...register("categoryId", { required: true })} className="select select-bordered">
                                     <option disabled selected>Pick  one category </option>
                                     {
-                                        category?.map((item) => {
+                                        categories?.map((item) => {
                                             return (
                                                 <option key={item.categoryId} value={item.categoryId}>{item.categoryName}</option>
                                             )
@@ -188,7 +205,7 @@ export default function AddProduct() {
                             <div className="form-control py-2">
                                 <label className="label cursor-pointer">
                                     <span className="label-text">Featured Product</span>
-                                    <input {...register("feature")} type="checkbox"  className="checkbox dark:border-black" />
+                                    <input {...register("feature")} type="checkbox" className="checkbox dark:border-black" />
                                 </label>
                             </div>
                             <div className="form-control w-full ">
