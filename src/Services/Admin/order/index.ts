@@ -1,17 +1,18 @@
 
 
-import { CreateOrderSchema, StatusEnum } from "@/model/Order";
+import { UpdateOrderSchema } from "@/model/Order";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 
-export const get_all_orders = async (email: string) => {
+export const get_all_orders = async (sellerId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getAllOrders/${email}`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getOrders`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
+      params: { sellerId }
     });
 
     return res;
@@ -22,12 +23,9 @@ export const get_all_orders = async (email: string) => {
 
 
 
-export const update_order_status = async (id: string, status: StatusEnum) => {
+export const update_order_status = async (data: UpdateOrderSchema) => {
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateOrderStatus`, {
-      orderId: id,
-      status: status
-    }, {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateOrder`, JSON.stringify(data), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'

@@ -1,43 +1,43 @@
 import { AddressSchema } from "./User";
 import { ProductSchema } from "./Product";
 
-export type StatusEnum = "packed" | "shipped" | "delivered"
-export interface CreateOrderSchema {
-    customerId: string,
-    sellerId: string,
-    orderItems: [
-        {
-            qty: number,
-            product: ProductSchema,
+export type StatusEnum = "placed" | "packed" | "shipped" | "delivered"
+export type PaymentMethod = "COD" | "ONLINE"
 
-        }
-    ],
-    shippingAddress: AddressSchema,
-    paymentMethod: string, // default : "Paypal"
-    paymentResult: {
-        id: string,
-        status: string,
-        update_time: string,
-        email_address: string,
-    },
-    itemsPrice: number,
-    shippingPrice: number,
-    taxPrice: number,
-    totalPrice: number,
-    isPaid: boolean, // default: false
-    paidAt?: Date,
-    status: StatusEnum, // default: false
-    deliveredAt: Date,
+
+export interface OrderItemSchema {
+    orderItemId: number;
+    quantity: number;
+    product: ProductSchema;
+    totalPrice: number;
+    itemPrice: number;
+}
+
+export interface CreateOrderSchema {
+    customerId: number;
+    paymentMethod: PaymentMethod;
+    sessionId: string;
 }
 
 export interface OrderSchema extends CreateOrderSchema {
-    _id: string,
+    sellerId: number;
+    orderId: number,
+    isPaid: boolean;
+    deliveryDate: Date;
+    deliveredAt: Date;
+    status: StatusEnum;
+    createdAt: Date;
+    totalPrice: number;
+    shippingCharges: number;
+    sessionId: string;
+    shippingAddress: AddressSchema;
+    items: OrderItemSchema[];
 }
 
 export interface UpdateOrderSchema {
-    _id: string,
-    status?: StatusEnum,
-    isPaid?: boolean,
-    shippingAddress?: AddressSchema,
-    deliveredAt?: Date,
+    orderId: number,
+    isPaid?: boolean;
+    deliveryDate?: Date;
+    deliveredAt?: Date;
+    status?: StatusEnum;
 }

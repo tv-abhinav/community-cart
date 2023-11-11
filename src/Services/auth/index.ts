@@ -60,9 +60,11 @@ export const login_me = async (formData: any) => {
 
 
 
-export const forget_password = async (formData: any) => {
+export const forget_password = async (email: any) => {
     try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgetPassword`, JSON.stringify(formData))
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/forgotPassword`, {
+            params:{ email }
+        })
 
         return res;
     } catch (error) {

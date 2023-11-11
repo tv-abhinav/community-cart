@@ -17,13 +17,6 @@ export default function  GettingDatasLength() {
   const orderData = useSelector((state: RootState) => state.Seller.Order);
 
   return [
-    
-    {
-      icon: "FaUserAlt",
-      color: "text-green-600",
-      title: "Total Users",
-      count: 500,
-    },
     {
       icon: "GiAbstract010",
       color: "text-blue-600",
@@ -46,13 +39,7 @@ export default function  GettingDatasLength() {
       icon: "GrCompliance",
       color: "text-orange-600",
       title: "Completed Orders",
-      count: 100,
-    },
-    {
-      icon: "TfiStatsUp",
-      color: "text-orange-600",
-      title: "Month Statistics",
-      count: +100,
-    },
+      count: orderData.filter(order => order.status==='delivered').length,
+    }
   ]
 }
