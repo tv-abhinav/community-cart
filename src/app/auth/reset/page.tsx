@@ -1,22 +1,37 @@
 "use client"
 
 import Navbar from '@/components/Navbar';
-import { forget_password } from '@/Services/auth';
+import { change_password, forget_password } from '@/Services/auth';
 import { useRouter } from 'next/navigation';
 import React, { useState, FormEvent } from 'react'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TailSpin } from 'react-loader-spinner';
+import Loading from '@/app/loading';
 
 export default function ForgetPassword() {
   const Router = useRouter();
 
-  const [formData, setFormData] = useState({ email: "", password: "", confirmPassword: "" });
-  const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({ email: "", password: "", confirmPassword: "", otp: "" });
+  const [error, setError] = useState({ email: "", password: "", confirmPassword: "", otp: "" });
   const [loading, setLoding] = useState(false);
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState<string>("");
 
+  const sendOTP = async () => {
+    if (!formData.email) {
+      setError({ ...error, email: "Email Field is Required" })
+      return;
+    }
 
+    setOtpSending(true)
+    const res = await forget_password(formData.email);
+    setOtp(String(res.data));
+    setOtpSending(false)
+    setOtpSent(true)
 
+  }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 
@@ -26,6 +41,14 @@ export default function ForgetPassword() {
 
     if (!formData.email) {
       setError({ ...error, email: "Email Field is Required" })
+      return;
+    }
+    if (formData.otp !== otp) {
+      console.log("otp")
+      console.log(otp)
+      console.log("formData.otp")
+      console.log(formData.otp)
+      setError({ ...error, otp: "OTP not matching" })
       return;
     }
     if (!formData.password) {
@@ -41,17 +64,17 @@ export default function ForgetPassword() {
       toast.error("Password and Confirm Password does not match");
     }
 
-    const res = await forget_password(formData);
-    if (res.success) {
+    const res = await change_password(formData);
+    if (res.status === 200) {
       setLoding(false);
-      toast.success(res.message);
+      toast.success("Password reset");
       setTimeout(() => {
         Router.push('/auth/login')
       }, 1000);
     }
     else {
       setLoding(false);
-      toast.error(res.message);
+      toast.error(res.statusText);
     }
   }
 
@@ -73,20 +96,35 @@ export default function ForgetPassword() {
                   error.email && <p className="text-sm text-red-500">{error.email}</p>
                 }
               </div>
-              <div className='text-left'>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">New Password</label>
-                <input onChange={(e) => setFormData({ ...formData, password: e.target.value })} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 " />
-                {
-                  error.password && <p className="text-sm text-red-500">{error.password}</p>
-                }
-              </div>
-              <div className='text-left'>
-                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 ">Confirm password</label>
-                <input onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 " />
-                {
-                  error.confirmPassword && <p className="text-sm text-red-500">{error.confirmPassword}</p>
-                }
-              </div>
+              {
+                otpSent ?
+                  <div>
+                    <div className='text-left'>
+                      <label htmlFor="otp" className="block mb-2 text-sm font-medium text-gray-900 ">Enter OTP</label>
+                      <input onChange={(e) => setFormData({ ...formData, otp: e.target.value })} type="text" name="otp" id="otp" placeholder="123456" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 " />
+                      {
+                        error.otp && <p className="text-sm text-red-500">{error.otp}</p>
+                      }
+                    </div>
+                    <div className='text-left'>
+                      <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">New Password</label>
+                      <input onChange={(e) => setFormData({ ...formData, password: e.target.value })} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 " />
+                      {
+                        error.password && <p className="text-sm text-red-500">{error.password}</p>
+                      }
+                    </div>
+                    <div className='text-left'>
+                      <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 ">Confirm password</label>
+                      <input onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 " />
+                      {
+                        error.confirmPassword && <p className="text-sm text-red-500">{error.confirmPassword}</p>
+                      }
+                    </div>
+                  </div> :
+                  otpSending ?
+                    <Loading /> :
+                    <button onClick={() => { sendOTP() }} className="w-full text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">Send OTP</button>
+              }
               {
                 loading ? <button type="button" className="w-full flex items-center justify-center text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                   <TailSpin

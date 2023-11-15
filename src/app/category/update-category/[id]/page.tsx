@@ -19,7 +19,7 @@ import { GrClose } from 'react-icons/gr';
 
 
 type Inputs = {
-    _id: string,
+    categoryId: number,
     name: string,
     description: string,
 }
@@ -88,7 +88,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
         if (catData) {
             const updatedData: CategorySchema = {
-                categoryId: params.id,
+                categoryId: Number(params.id),
                 categoryName: data.name !== catData.categoryName ? data.name : catData.categoryName,
                 categoryDescription: data.description !== catData.categoryDescription ? data.description : catData.categoryDescription,
                 categorySlug: catData.categorySlug,

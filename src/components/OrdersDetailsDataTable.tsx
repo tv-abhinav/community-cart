@@ -2,98 +2,23 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { useSWRConfig } from "swr"
 import DataTable from 'react-data-table-component';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
-
-
-
-
-type ProductData = {
-  _id: string,
-  productName: string,
-  productDescription: string,
-  productImage: string,
-  productSlug: string,
-  productPrice: number,
-  productQuantity: number,
-  productFeatured: boolean,
-  productCategory: {
-    _id: string,
-    categoryName: string,
-    categorySlug: string
-  },
-  createdAt: string;
-  updatedAt: string;
-};
-
-
-
-interface Order {
-  createdAt: string;
-  deliveredAt: string;
-  isDelivered: boolean;
-  isPaid: boolean;
-  itemsPrice: number;
-  orderItems: {
-    qty: number;
-    product: {
-      createdAt: string;
-      productCategory: string;
-      productDescription: string;
-      productFeatured: boolean;
-      productImage: string;
-      productName: string;
-      productPrice: number;
-      productQuantity: number;
-      productSlug: string;
-      updatedAt: string;
-      __v: number;
-      _id: string;
-    };
-    _id: string;
-  }[];
-  paidAt: string;
-  paymentMethod: string;
-  shippingAddress: {
-    address: string;
-    city: string;
-    country: string;
-    fullName: string;
-    pinCode: number;
-  };
-  shippingPrice: number;
-  taxPrice: number;
-  totalPrice: number;
-  updatedAt: string;
-  user: {
-    email: string;
-    name: string;
-    password: string;
-    role: string;
-    __v: number;
-    _id: string;
-  };
-  __v: number;
-  _id: string;
-}
-
-
+import { OrderSchema } from '@/model/Order';
 
 export default function OrdersDetailsDataTable() {
-  const { mutate } = useSWRConfig()
   const router = useRouter();
-  const [orderData, setOrderData] = useState<Order[] | []>([]);
-  const data = useSelector((state: RootState) => state.Order.order) as Order[] | [];
+  const [orderData, setOrderData] = useState<OrderSchema[]>([]);
+  const data = useSelector((state: RootState) => state.Order.order) as OrderSchema[];
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<Order[] | []>([]);
+  const [filteredData, setFilteredData] = useState<OrderSchema[]>([]);
 
 
   useEffect(() => {
     setOrderData(data)
-  }, [data])
+  }, [])
 
   useEffect(() => {
     setFilteredData(orderData);
@@ -107,25 +32,25 @@ export default function OrdersDetailsDataTable() {
 
   const columns = [
     {
-      name: 'Order Id',
-      selector: (row: Order) => row?._id,
+      name: 'OrderSchema Id',
+      selector: (row: OrderSchema) => row?.orderId,
       sortable: true,
     },
     {
       name: 'Total Price',
-      selector: (row: Order) => row?.totalPrice,
+      selector: (row: OrderSchema) => row?.totalPrice,
       sortable: true,
     },
     {
       name: 'Delivered',
-      selector: (row: Order) => row?.isDelivered ? 'Yes' : 'No',
+      selector: (row: OrderSchema) => row?.status,
       sortable: true,
     },
     {
       name: 'Action',
-      cell: (row: Order) => (
+      cell: (row: OrderSchema) => (
 
-        <button onClick={() => router.push(`/order/view-orders-details/${row?._id}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Details</button>
+        <button onClick={() => router.push(`/order/view-orders-details/${row?.orderId}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Details</button>
 
       )
     },
@@ -142,7 +67,7 @@ export default function OrdersDetailsDataTable() {
       setFilteredData(orderData);
     } else {
       setFilteredData(orderData?.filter((item) => {
-        const itemData = item?._id?.toUpperCase();
+        const itemData = String(item?.orderId).toUpperCase();
         const textData = search.toUpperCase();
         return itemData.indexOf(textData) > -1;
       }))

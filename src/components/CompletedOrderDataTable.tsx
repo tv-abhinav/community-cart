@@ -14,78 +14,21 @@ import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
 import { setBookmark } from '@/utils/resolvers/Bookmark';
-
-
-interface Order {
-    createdAt: string;
-    deliveredAt: string;
-    isDelivered: boolean;
-    isPaid: boolean;
-    itemsPrice: number;
-    orderItems: {
-      qty: number;
-      product: {
-        createdAt: string;
-        productCategory: string;
-        productDescription: string;
-        productFeatured: boolean;
-        productImage: string;
-        productName: string;
-        productPrice: number;
-        productQuantity: number;
-        productSlug: string;
-        updatedAt: string;
-        __v: number;
-        _id: string;
-      };
-      _id: string;
-    }[];
-    paidAt: string;
-    paymentMethod: string;
-    shippingAddress: {
-      address: string;
-      city: string;
-      country: string;
-      fullName: string;
-      pinCode: number;
-    };
-    shippingPrice: number;
-    taxPrice: number;
-    totalPrice: number;
-    updatedAt: string;
-    user: {
-      email: string;
-      name: string;
-      password: string;
-      role: string;
-      __v: number;
-      _id: string;
-    };
-    __v: number;
-    _id: string;
-  }
-
-
-interface userData {
-    email: string,
-    role: string,
-    _id: string,
-    name: string
-}
+import { OrderSchema } from '@/model/Order';
 
 
 export default function CompletedOrderDataTable() {
     const { mutate } = useSWRConfig()
   const router = useRouter();
-  const [orderData, setOrderData] = useState<Order[] | []>([]);
-  const data = useSelector((state: RootState) => state.Seller.Order) as Order[] | [];
+  const [orderData, setOrderData] = useState<OrderSchema[] | []>([]);
+  const data = useSelector((state: RootState) => state.Seller.Order) as OrderSchema[] | [];
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<Order[] | []>([]);
+  const [filteredData, setFilteredData] = useState<OrderSchema[] | []>([]);
 
 
   useEffect(() => {
-    const filteredCompletedOrder =  data?.filter((item) => item?.isDelivered === true)
-    setOrderData(filteredCompletedOrder)
+    const filterPendingOrder = data?.filter((item) => item?.status === 'delivered')
+    setOrderData(filterPendingOrder)
   }, [data])
 
   useEffect(() => {
@@ -95,24 +38,24 @@ export default function CompletedOrderDataTable() {
   const columns = [
     {
       name: 'Order Id',
-      selector: (row: Order) => row?._id,
+      selector: (row: OrderSchema) => row?.orderId,
       sortable: true,
     },
     {
       name: 'Total Price',
-      selector: (row: Order) => row?.totalPrice,
+      selector: (row: OrderSchema) => row?.totalPrice,
       sortable: true,
     },
     {
       name: 'Delivered',
-      selector: (row: Order) => row?.isDelivered ? 'Yes' : 'No',
+      selector: (row: OrderSchema) => row?.status,
       sortable: true,
     },
     {
       name: 'Action',
-      cell: (row: Order) => (
+      cell: (row: OrderSchema) => (
 
-        <button onClick={() => router.push(`/order/view-orders-details/${row?._id}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Details</button>
+        <button onClick={() => router.push(`/order/view-orders-details/${row?.orderId}`)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>Details</button>
 
       )
     },
@@ -124,7 +67,7 @@ export default function CompletedOrderDataTable() {
       setFilteredData(orderData);
     } else {
       setFilteredData(orderData?.filter((item) => {
-        const itemData = item?._id?.toUpperCase();
+        const itemData = String(item?.orderId).toUpperCase();
         const textData = search.toUpperCase();
         return itemData.indexOf(textData) > -1;
       }))

@@ -1,19 +1,23 @@
 "use client"
 
 import { get_all_categories } from '@/Services/Admin/category';
+import { get_all_orders } from '@/Services/Admin/order';
 import { get_all_products } from '@/Services/Admin/product';
 import { get_seller } from '@/Services/Admin/seller';
 import { get_customer } from '@/Services/auth/customer';
 import { get_all_bookmark_items } from '@/Services/common/bookmark';
 import { get_all_cart_Items } from '@/Services/common/cart';
+import { get_customer_orders } from '@/Services/common/order';
 import { RootState } from '@/Store/store';
 import { CategorySchema } from '@/model/Category';
 import { ProductSchema } from '@/model/Product';
 import { SellerSchema } from '@/model/Seller';
 import { CustomerSchema, UserSessionSchema } from '@/model/User';
 import { setBookmark } from '@/utils/resolvers/Bookmark';
+import { setCart } from '@/utils/resolvers/CartSlice';
 import { setCustomerData } from '@/utils/resolvers/CustomerDataSlice';
-import { setAllCategories, setCategoriesForSeller, setProductData, setSellerData } from '@/utils/resolvers/SellerSlice';
+import { setOrder } from '@/utils/resolvers/OrderSlice';
+import { setAllCategories, setCategoriesForSeller, setOrderData, setProductData, setSellerData } from '@/utils/resolvers/SellerSlice';
 import { setUserData } from '@/utils/resolvers/UserDataSlice';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
@@ -44,6 +48,9 @@ export default function GetData(props: {hasToFetch: boolean, onLoad: Function}) 
 
             const prdRes = await get_all_products({ sellerId })
             if (prdRes.status === 200) dispatch(setProductData(prdRes.data))
+
+            const ordRes = await get_all_orders(sellerId)
+            if (ordRes && ordRes.status === 200) dispatch(setOrderData(ordRes.data))
             
             props.onLoad(false)
         } catch (error) {
@@ -62,13 +69,13 @@ export default function GetData(props: {hasToFetch: boolean, onLoad: Function}) 
             if (custRes.status === 200) dispatch(setCustomerData(custRes.data))
             
             const bookmarkRes = await get_all_bookmark_items(custId)
-            if (bookmarkRes && bookmarkRes.status === 200) dispatch(setBookmark(bookmarkRes.data))
-
-            const cartRes = await get_all_cart_Items(custId)
-            if (cartRes.status === 200) dispatch(setSellerData(cartRes.data))
+            if (bookmarkRes?.status === 200) dispatch(setBookmark(bookmarkRes.data))
             
-            // const ordRes = await get_customer_orders(email)
-            // if (ordRes.status === 200) dispatch(setSellerData(sellerRes.data))
+            const cartRes = await get_all_cart_Items(custId)
+            if (cartRes.status === 200) dispatch(setCart(cartRes.data))
+            
+            const ordRes = await get_customer_orders(custId)
+            if (ordRes?.status === 200) dispatch(setOrder(ordRes.data))
             props.onLoad(false)
         } catch (error) {
             throw new Error('Error in fetching (service) =>' + error)
@@ -76,18 +83,31 @@ export default function GetData(props: {hasToFetch: boolean, onLoad: Function}) 
     }
 
     useEffect(() => {
-        if(!props.hasToFetch) return
+        if(!props.hasToFetch) {
+            props.onLoad(false) 
+            return
+        } 
         const userData = localStorage.getItem('user');
-        if (!userData) return;
+        if (!userData) {
+            props.onLoad(false) 
+            return;
+        }
         const userObj: UserSessionSchema | null = JSON.parse(userData)
-        if(!userObj) return;
+        if(!userObj) {
+            props.onLoad(false) 
+            return;
+        }
         
         dispatch(setUserData(userObj));
         if (userObj.role === "SELLER") {
             if (userObj.sellerId) fetchSellerData(userObj.sellerId)
         } else if (userObj.customerId) {
             fetchCustomerData(userObj.customerId)
+        } else {
+            props.onLoad(false) 
+            return;
         }
+
     },[props.hasToFetch])
     return null;
 }

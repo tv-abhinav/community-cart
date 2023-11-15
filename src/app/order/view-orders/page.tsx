@@ -1,53 +1,42 @@
 "use client"
-import { get_all_orders_of_user } from '@/Services/common/order'
+import { get_customer_orders } from '@/Services/common/order'
 import { RootState } from '@/Store/store'
+import Loading from '@/app/loading'
 import OrdersDetailsDataTable from '@/components/OrdersDetailsDataTable'
+import { UserSessionSchema } from '@/model/User'
 import { setOrder } from '@/utils/resolvers/OrderSlice'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GrDeliver } from 'react-icons/gr'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
 
-interface userData {
-  email: string,
-  role: string,
-  _id: string,
-  name: string
-}
-
-
-
 export default function Page() {
   const Router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.User.userData) as userData | null
-
-
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const user: userData | null = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!Cookies.get('token') || !user) {
+    const usr: UserSessionSchema | null = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!Cookies.get('token') || !usr?.customerId) {
       Router.push('/')
+      return;
     }
-  }, [Router])
 
-
-  useEffect(() => {
-    fetchOrdersData();
+    fetchOrdersData(usr?.customerId);
   }, [])
 
-  const fetchOrdersData = async () => {
-    if (!user?._id) return Router.push('/')
-    const orderData = await get_all_orders_of_user(user?._id)
-    if (orderData?.success) {
-      dispatch(setOrder(orderData?.data))
+  const fetchOrdersData = async (customerId: number) => {
+    setLoading(true)
+    const orderRes = await get_customer_orders(customerId)
+    if (orderRes?.status === 200) {
+      dispatch(setOrder(orderRes.data))
     } else {
-      toast.error(orderData?.message)
+      toast.error(orderRes?.statusText)
     }
+    setLoading(false)
   }
 
 
@@ -70,7 +59,11 @@ export default function Page() {
         </ul>
       </div>
       <div className='w-full h-5/6 py-2'>
-        <OrdersDetailsDataTable />
+        {
+          !loading ?
+            <OrdersDetailsDataTable />
+            : <Loading />
+        }
       </div>
       <ToastContainer />
     </div>

@@ -1,3 +1,4 @@
+import { OrderSchema } from '@/model/Order'
 import { ProductSchema } from '@/model/Product'
 import { SellerSchema } from '@/model/Seller'
 import { createAction, createSlice } from '@reduxjs/toolkit'
@@ -9,7 +10,7 @@ interface SellerState {
   product: { [id: string]: ProductSchema },
   categories: any[],
   allCategories: any[],
-  Order: any[],
+  Order: OrderSchema[],
   isFetching: boolean,
 }
 
