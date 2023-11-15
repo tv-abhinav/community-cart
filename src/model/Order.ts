@@ -22,7 +22,7 @@ export interface CreateOrderSchema {
 export interface OrderSchema extends CreateOrderSchema {
     sellerId: number;
     orderId: number,
-    isPaid: boolean;
+    paid: boolean;
     deliveryDate: Date;
     deliveredAt: Date;
     status: StatusEnum;
@@ -36,7 +36,7 @@ export interface OrderSchema extends CreateOrderSchema {
 
 export interface UpdateOrderSchema {
     orderId: number,
-    isPaid?: boolean;
+    paid?: boolean;
     deliveryDate?: Date;
     deliveredAt?: Date;
     status?: StatusEnum;

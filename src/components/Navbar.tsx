@@ -10,6 +10,10 @@ import { FaCartArrowDown } from 'react-icons/fa';
 import { CiDeliveryTruck } from 'react-icons/ci'
 import { MdFavorite } from 'react-icons/md';
 import { CategorySchema } from '@/model/Category';
+import { update_cart } from '@/Services/common/cart';
+import { CartViewSchema } from '@/model/Cart';
+import { BookmarkSchema } from '@/model/Bookmark';
+import { toast } from 'react-toastify';
 
 
 export default function Navbar() {
@@ -18,6 +22,8 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const user = useSelector((state: RootState) => state.User.userData)
     const categories: CategorySchema[] = useSelector((state: RootState) => state.Customer.categories)
+    const cart: CartViewSchema | null = useSelector((state: RootState) => state.Cart.cart);
+    const bookmark: BookmarkSchema | null = useSelector((state: RootState) => state.Bookmark.bookmark);
 
     useEffect(() => {
         window.onscroll = () => {
@@ -29,9 +35,15 @@ export default function Navbar() {
 
 
     const handleLogout = () => {
-        Cookies.remove('token');
-        localStorage.clear();
-        location.reload();
+        if(user?.customerId && cart){
+            update_cart(user?.customerId, cart.items).then(res => {
+                Cookies.remove('token');
+                localStorage.clear();
+                location.reload();
+            }, error => {
+                toast.error("Unable to update cart");
+            });
+        }
     }
 
     const toggleMenu = () => {

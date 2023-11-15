@@ -136,7 +136,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                                 </div>
                                 <div className='flex py-2 w-full text-sm justify-between'>
                                     <p>Is Paid</p>
-                                    <p className='font-semibold'>{orderData?.isPaid ? "Done" : "Pending"}</p>
+                                    <p className='font-semibold'>{orderData?.paid ? "Done" : "Pending"}</p>
                                 </div>
                             </div>
 
