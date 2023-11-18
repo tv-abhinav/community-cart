@@ -1,0 +1,186 @@
+Date : 2023-11-15 11:26:20
+Directory : d:\Bits\SEM\Project\community-cart
+Total : 96 files,  11467 codes, 94 comments, 978 blanks, all 12539 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          3 |      6,027 |          0 |          3 |      6,030 |
+| TypeScript JSX     |         48 |      3,957 |         54 |        654 |      4,665 |
+| TypeScript         |         28 |        957 |         18 |        199 |      1,174 |
+| XML                |         11 |        433 |          7 |        111 |        551 |
+| JavaScript         |          3 |         34 |          2 |          4 |         40 |
+| CSS                |          1 |         33 |          9 |          5 |         47 |
+| JSON with Comments |          1 |         26 |          4 |          1 |         31 |
+| Markdown           |          1 |          0 |          0 |          1 |          1 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                               | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                  |         96 |     11,467 |         94 |        978 |     12,539 |
+| . (Files)                                                                          |          8 |      6,087 |          6 |          9 |      6,102 |
+| public                                                                             |         11 |        433 |          7 |        111 |        551 |
+| public (Files)                                                                     |          2 |          2 |          0 |          0 |          2 |
+| public\icons                                                                       |          9 |        431 |          7 |        111 |        549 |
+| src                                                                                |         77 |      4,947 |         81 |        858 |      5,886 |
+| src\Services                                                                       |          9 |        528 |          5 |        126 |        659 |
+| src\Services\Admin                                                                 |          4 |        280 |          1 |         67 |        348 |
+| src\Services\Admin\category                                                        |          1 |         67 |          0 |         20 |         87 |
+| src\Services\Admin\order                                                           |          1 |         30 |          0 |         11 |         41 |
+| src\Services\Admin\product                                                         |          1 |         94 |          0 |         17 |        111 |
+| src\Services\Admin\seller                                                          |          1 |         89 |          1 |         19 |        109 |
+| src\Services\auth                                                                  |          2 |         88 |          0 |         20 |        108 |
+| src\Services\auth (Files)                                                          |          1 |         72 |          0 |         16 |         88 |
+| src\Services\auth\customer                                                         |          1 |         16 |          0 |          4 |         20 |
+| src\Services\common                                                                |          3 |        160 |          4 |         39 |        203 |
+| src\Services\common\bookmark                                                       |          1 |         43 |          0 |         11 |         54 |
+| src\Services\common\cart                                                           |          1 |         73 |          4 |         18 |         95 |
+| src\Services\common\order                                                          |          1 |         44 |          0 |         10 |         54 |
+| src\Store                                                                          |          2 |         21 |          0 |         10 |         31 |
+| src\app                                                                            |         25 |      2,637 |         56 |        390 |      3,083 |
+| src\app (Files)                                                                    |          4 |        190 |         19 |         31 |        240 |
+| src\app\Dashboard                                                                  |          1 |         41 |          1 |          7 |         49 |
+| src\app\auth                                                                       |          3 |        698 |         15 |         53 |        766 |
+| src\app\auth\login                                                                 |          1 |        144 |          1 |         13 |        158 |
+| src\app\auth\register                                                              |          1 |        419 |         14 |         24 |        457 |
+| src\app\auth\reset                                                                 |          1 |        135 |          0 |         16 |        151 |
+| src\app\bookmark                                                                   |          1 |         61 |          0 |         11 |         72 |
+| src\app\category                                                                   |          4 |        412 |          0 |         98 |        510 |
+| src\app\category\[id]                                                              |          1 |         33 |          0 |         13 |         46 |
+| src\app\category\add-category                                                      |          1 |        136 |          0 |         37 |        173 |
+| src\app\category\category-product                                                  |          1 |         65 |          0 |          7 |         72 |
+| src\app\category\category-product\[id]                                             |          1 |         65 |          0 |          7 |         72 |
+| src\app\category\update-category                                                   |          1 |        178 |          0 |         41 |        219 |
+| src\app\category\update-category\[id]                                              |          1 |        178 |          0 |         41 |        219 |
+| src\app\customer                                                                   |          1 |          6 |          0 |          2 |          8 |
+| src\app\order                                                                      |          3 |        396 |          2 |         58 |        456 |
+| src\app\order\create-order                                                         |          1 |        205 |          0 |         29 |        234 |
+| src\app\order\view-orders                                                          |          1 |         63 |          0 |          9 |         72 |
+| src\app\order\view-orders-details                                                  |          1 |        128 |          2 |         20 |        150 |
+| src\app\order\view-orders-details\[id]                                             |          1 |        128 |          2 |         20 |        150 |
+| src\app\payment                                                                    |          2 |         62 |          0 |          9 |         71 |
+| src\app\payment\failed                                                             |          1 |         16 |          0 |          3 |         19 |
+| src\app\payment\success                                                            |          1 |         46 |          0 |          6 |         52 |
+| src\app\product                                                                    |          3 |        542 |         19 |         92 |        653 |
+| src\app\product\add-product                                                        |          1 |        182 |         18 |         33 |        233 |
+| src\app\product\product-detail                                                     |          1 |        122 |          1 |         16 |        139 |
+| src\app\product\product-detail\[id]                                                |          1 |        122 |          1 |         16 |        139 |
+| src\app\product\update-product                                                     |          1 |        238 |          0 |         43 |        281 |
+| src\app\product\update-product\[id]                                                |          1 |        238 |          0 |         43 |        281 |
+| src\app\seller                                                                     |          2 |        194 |          0 |         19 |        213 |
+| src\app\seller\[id]                                                                |          1 |        126 |          0 |         11 |        137 |
+| src\app\seller\seller-category                                                     |          1 |         68 |          0 |          8 |         76 |
+| src\app\seller\seller-category\[id]                                                |          1 |         68 |          0 |          8 |         76 |
+| src\app\tilesDatas                                                                 |          1 |         35 |          0 |         10 |         45 |
+| src\components                                                                     |         23 |      1,340 |          7 |        264 |      1,611 |
+| src\model                                                                          |          7 |        168 |          0 |         23 |        191 |
+| src\utils                                                                          |         11 |        253 |         13 |         45 |        311 |
+| src\utils (Files)                                                                  |          3 |         36 |          9 |          5 |         50 |
+| src\utils\resolvers                                                                |          8 |        217 |          4 |         40 |        261 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                           | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| d:\Bits\SEM\Project\community-cart\.eslintrc.json                                  | JSON               |          3 |          0 |          1 |          4 |
+| d:\Bits\SEM\Project\community-cart\README.md                                       | Markdown           |          0 |          0 |          1 |          1 |
+| d:\Bits\SEM\Project\community-cart\next.config.js                                  | JavaScript         |         11 |          1 |          2 |         14 |
+| d:\Bits\SEM\Project\community-cart\package-lock.json                               | JSON               |      5,969 |          0 |          1 |      5,970 |
+| d:\Bits\SEM\Project\community-cart\package.json                                    | JSON               |         55 |          0 |          1 |         56 |
+| d:\Bits\SEM\Project\community-cart\postcss.config.js                               | JavaScript         |          6 |          0 |          1 |          7 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Appliances.svg                     | XML                |          2 |          0 |          0 |          2 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Beauty.svg                         | XML                |         97 |          1 |          0 |         98 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Books.svg                          | XML                |          2 |          0 |          0 |          2 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Fashion.svg                        | XML                |         64 |          1 |          0 |         65 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Furniture.svg                      | XML                |         58 |          1 |         57 |        116 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Groceries.svg                      | XML                |         70 |          1 |          0 |         71 |
+| d:\Bits\SEM\Project\community-cart\public\icons\Home&Kitchen.svg                   | XML                |         47 |          1 |          0 |         48 |
+| d:\Bits\SEM\Project\community-cart\public\icons\electronics.svg                    | XML                |         36 |          1 |          0 |         37 |
+| d:\Bits\SEM\Project\community-cart\public\icons\mobileAndTablets.svg               | XML                |         55 |          1 |         54 |        110 |
+| d:\Bits\SEM\Project\community-cart\public\next.svg                                 | XML                |          1 |          0 |          0 |          1 |
+| d:\Bits\SEM\Project\community-cart\public\vercel.svg                               | XML                |          1 |          0 |          0 |          1 |
+| d:\Bits\SEM\Project\community-cart\src\Services\Admin\category\index.ts            | TypeScript         |         67 |          0 |         20 |         87 |
+| d:\Bits\SEM\Project\community-cart\src\Services\Admin\order\index.ts               | TypeScript         |         30 |          0 |         11 |         41 |
+| d:\Bits\SEM\Project\community-cart\src\Services\Admin\product\index.ts             | TypeScript         |         94 |          0 |         17 |        111 |
+| d:\Bits\SEM\Project\community-cart\src\Services\Admin\seller\index.ts              | TypeScript         |         89 |          1 |         19 |        109 |
+| d:\Bits\SEM\Project\community-cart\src\Services\auth\customer\index.ts             | TypeScript         |         16 |          0 |          4 |         20 |
+| d:\Bits\SEM\Project\community-cart\src\Services\auth\index.ts                      | TypeScript         |         72 |          0 |         16 |         88 |
+| d:\Bits\SEM\Project\community-cart\src\Services\common\bookmark\index.ts           | TypeScript         |         43 |          0 |         11 |         54 |
+| d:\Bits\SEM\Project\community-cart\src\Services\common\cart\index.ts               | TypeScript         |         73 |          4 |         18 |         95 |
+| d:\Bits\SEM\Project\community-cart\src\Services\common\order\index.ts              | TypeScript         |         44 |          0 |         10 |         54 |
+| d:\Bits\SEM\Project\community-cart\src\Store\Provider.tsx                          | TypeScript JSX     |         13 |          0 |          5 |         18 |
+| d:\Bits\SEM\Project\community-cart\src\Store\store.ts                              | TypeScript         |          8 |          0 |          5 |         13 |
+| d:\Bits\SEM\Project\community-cart\src\app\Dashboard\page.tsx                      | TypeScript JSX     |         41 |          1 |          7 |         49 |
+| d:\Bits\SEM\Project\community-cart\src\app\auth\login\page.tsx                     | TypeScript JSX     |        144 |          1 |         13 |        158 |
+| d:\Bits\SEM\Project\community-cart\src\app\auth\register\page.tsx                  | TypeScript JSX     |        419 |         14 |         24 |        457 |
+| d:\Bits\SEM\Project\community-cart\src\app\auth\reset\page.tsx                     | TypeScript JSX     |        135 |          0 |         16 |        151 |
+| d:\Bits\SEM\Project\community-cart\src\app\bookmark\page.tsx                       | TypeScript JSX     |         61 |          0 |         11 |         72 |
+| d:\Bits\SEM\Project\community-cart\src\app\category\[id]\page.tsx                  | TypeScript JSX     |         33 |          0 |         13 |         46 |
+| d:\Bits\SEM\Project\community-cart\src\app\category\add-category\page.tsx          | TypeScript JSX     |        136 |          0 |         37 |        173 |
+| d:\Bits\SEM\Project\community-cart\src\app\category\category-product\[id]\page.tsx | TypeScript JSX     |         65 |          0 |          7 |         72 |
+| d:\Bits\SEM\Project\community-cart\src\app\category\update-category\[id]\page.tsx  | TypeScript JSX     |        178 |          0 |         41 |        219 |
+| d:\Bits\SEM\Project\community-cart\src\app\customer\page.tsx                       | TypeScript JSX     |          6 |          0 |          2 |          8 |
+| d:\Bits\SEM\Project\community-cart\src\app\globals.css                             | CSS                |         33 |          9 |          5 |         47 |
+| d:\Bits\SEM\Project\community-cart\src\app\layout.tsx                              | TypeScript JSX     |         40 |          5 |         10 |         55 |
+| d:\Bits\SEM\Project\community-cart\src\app\loading.tsx                             | TypeScript JSX     |         20 |          0 |          3 |         23 |
+| d:\Bits\SEM\Project\community-cart\src\app\order\create-order\page.tsx             | TypeScript JSX     |        205 |          0 |         29 |        234 |
+| d:\Bits\SEM\Project\community-cart\src\app\order\view-orders-details\[id]\page.tsx | TypeScript JSX     |        128 |          2 |         20 |        150 |
+| d:\Bits\SEM\Project\community-cart\src\app\order\view-orders\page.tsx              | TypeScript JSX     |         63 |          0 |          9 |         72 |
+| d:\Bits\SEM\Project\community-cart\src\app\page.tsx                                | TypeScript JSX     |         97 |          5 |         13 |        115 |
+| d:\Bits\SEM\Project\community-cart\src\app\payment\failed\page.tsx                 | TypeScript JSX     |         16 |          0 |          3 |         19 |
+| d:\Bits\SEM\Project\community-cart\src\app\payment\success\page.tsx                | TypeScript JSX     |         46 |          0 |          6 |         52 |
+| d:\Bits\SEM\Project\community-cart\src\app\product\add-product\page.tsx            | TypeScript JSX     |        182 |         18 |         33 |        233 |
+| d:\Bits\SEM\Project\community-cart\src\app\product\product-detail\[id]\page.tsx    | TypeScript JSX     |        122 |          1 |         16 |        139 |
+| d:\Bits\SEM\Project\community-cart\src\app\product\update-product\[id]\page.tsx    | TypeScript JSX     |        238 |          0 |         43 |        281 |
+| d:\Bits\SEM\Project\community-cart\src\app\seller\[id]\page.tsx                    | TypeScript JSX     |        126 |          0 |         11 |        137 |
+| d:\Bits\SEM\Project\community-cart\src\app\seller\seller-category\[id]\page.tsx    | TypeScript JSX     |         68 |          0 |          8 |         76 |
+| d:\Bits\SEM\Project\community-cart\src\app\tilesDatas\Tiles.tsx                    | TypeScript JSX     |         35 |          0 |         10 |         45 |
+| d:\Bits\SEM\Project\community-cart\src\components\AdminNavbar.tsx                  | TypeScript JSX     |         55 |          0 |          5 |         60 |
+| d:\Bits\SEM\Project\community-cart\src\components\AdminSidebar.tsx                 | TypeScript JSX     |         32 |          0 |          5 |         37 |
+| d:\Bits\SEM\Project\community-cart\src\components\CartCard.tsx                     | TypeScript JSX     |        113 |          0 |         15 |        128 |
+| d:\Bits\SEM\Project\community-cart\src\components\CategoryCard.tsx                 | TypeScript JSX     |         24 |          0 |          7 |         31 |
+| d:\Bits\SEM\Project\community-cart\src\components\CategoryDataTable.tsx            | TypeScript JSX     |        110 |          0 |         28 |        138 |
+| d:\Bits\SEM\Project\community-cart\src\components\CompletedOrderDataTable.tsx      | TypeScript JSX     |         88 |          0 |         19 |        107 |
+| d:\Bits\SEM\Project\community-cart\src\components\FavouriteProductDataTable.tsx    | TypeScript JSX     |        111 |          0 |         22 |        133 |
+| d:\Bits\SEM\Project\community-cart\src\components\FeaturedProduct.tsx              | TypeScript JSX     |         23 |          0 |          4 |         27 |
+| d:\Bits\SEM\Project\community-cart\src\components\Footer.tsx                       | TypeScript JSX     |         19 |          0 |          2 |         21 |
+| d:\Bits\SEM\Project\community-cart\src\components\GetData.tsx                      | TypeScript JSX     |         93 |          5 |         16 |        114 |
+| d:\Bits\SEM\Project\community-cart\src\components\Hero.tsx                         | TypeScript JSX     |         20 |          0 |          7 |         27 |
+| d:\Bits\SEM\Project\community-cart\src\components\IconPicker.tsx                   | TypeScript JSX     |         33 |          0 |          4 |         37 |
+| d:\Bits\SEM\Project\community-cart\src\components\MapMarker.tsx                    | TypeScript JSX     |         10 |          1 |          2 |         13 |
+| d:\Bits\SEM\Project\community-cart\src\components\Navbar.tsx                       | TypeScript JSX     |        103 |          0 |         14 |        117 |
+| d:\Bits\SEM\Project\community-cart\src\components\OrdersDetailsDataTable.tsx       | TypeScript JSX     |         79 |          0 |         28 |        107 |
+| d:\Bits\SEM\Project\community-cart\src\components\PendingOrdersDataTable.tsx       | TypeScript JSX     |        138 |          0 |         29 |        167 |
+| d:\Bits\SEM\Project\community-cart\src\components\ProductCard.tsx                  | TypeScript JSX     |         59 |          0 |         10 |         69 |
+| d:\Bits\SEM\Project\community-cart\src\components\ProductDataTable.tsx             | TypeScript JSX     |        105 |          1 |         28 |        134 |
+| d:\Bits\SEM\Project\community-cart\src\components\ShopCard.tsx                     | TypeScript JSX     |         17 |          0 |          2 |         19 |
+| d:\Bits\SEM\Project\community-cart\src\components\StatsTiles.tsx                   | TypeScript JSX     |         29 |          0 |          5 |         34 |
+| d:\Bits\SEM\Project\community-cart\src\components\SuperComponent.tsx               | TypeScript JSX     |         26 |          0 |          2 |         28 |
+| d:\Bits\SEM\Project\community-cart\src\components\TileContainer.tsx                | TypeScript JSX     |         25 |          0 |          6 |         31 |
+| d:\Bits\SEM\Project\community-cart\src\components\TopShops.tsx                     | TypeScript JSX     |         28 |          0 |          4 |         32 |
+| d:\Bits\SEM\Project\community-cart\src\model\Bookmark.ts                           | TypeScript         |          9 |          0 |          1 |         10 |
+| d:\Bits\SEM\Project\community-cart\src\model\Cart.ts                               | TypeScript         |         13 |          0 |          3 |         16 |
+| d:\Bits\SEM\Project\community-cart\src\model\Category.ts                           | TypeScript         |         16 |          0 |          2 |         18 |
+| d:\Bits\SEM\Project\community-cart\src\model\Order.ts                              | TypeScript         |         37 |          0 |          7 |         44 |
+| d:\Bits\SEM\Project\community-cart\src\model\Product.ts                            | TypeScript         |         28 |          0 |          3 |         31 |
+| d:\Bits\SEM\Project\community-cart\src\model\Seller.ts                             | TypeScript         |         26 |          0 |          3 |         29 |
+| d:\Bits\SEM\Project\community-cart\src\model\User.ts                               | TypeScript         |         39 |          0 |          4 |         43 |
+| d:\Bits\SEM\Project\community-cart\src\utils\Firebase.ts                           | TypeScript         |         13 |          0 |          3 |         16 |
+| d:\Bits\SEM\Project\community-cart\src\utils\fetcher.ts                            | TypeScript         |          9 |          0 |          1 |         10 |
+| d:\Bits\SEM\Project\community-cart\src\utils\maps.ts                               | TypeScript         |         14 |          9 |          1 |         24 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\AdminNavSlice.ts            | TypeScript         |         18 |          1 |          5 |         24 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\Bookmark.ts                 | TypeScript         |         19 |          0 |          6 |         25 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\CartSlice.ts                | TypeScript         |         24 |          0 |          5 |         29 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\CustomerDataSlice.ts        | TypeScript         |         32 |          1 |          5 |         38 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\OrderSlice.ts               | TypeScript         |         19 |          0 |          6 |         25 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\SellerSlice.ts              | TypeScript         |         55 |          1 |          5 |         61 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\UserDataSlice.ts            | TypeScript         |         24 |          1 |          5 |         30 |
+| d:\Bits\SEM\Project\community-cart\src\utils\resolvers\index.ts                    | TypeScript         |         26 |          0 |          3 |         29 |
+| d:\Bits\SEM\Project\community-cart\tailwind.config.js                              | JavaScript         |         17 |          1 |          1 |         19 |
+| d:\Bits\SEM\Project\community-cart\tsconfig.json                                   | JSON with Comments |         26 |          4 |          1 |         31 |
+| Total                                                                              |                    |     11,467 |         94 |        978 |     12,539 |
++------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

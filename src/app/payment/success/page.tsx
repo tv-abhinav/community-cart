@@ -37,7 +37,7 @@ export default function PaymentSuccess() {
 
         setTimeout(() => {
           Router.push('/order/view-orders')
-        }, 5000)
+        }, 3000)
       } else {
         toast.error(res?.statusText)
       }

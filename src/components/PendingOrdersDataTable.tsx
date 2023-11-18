@@ -12,6 +12,7 @@ import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { update_order_status } from '@/Services/Admin/order';
 import { OrderSchema, StatusEnum } from '@/model/Order';
+import DatePicker from './DatePicker';
 
 export default function PendingOrdersDataTable() {
   const router = useRouter();
@@ -54,10 +55,20 @@ export default function PendingOrdersDataTable() {
     if (status == 'delivered') {
       return
     }
-    
+
     let updatedStatus = getNextStatus(status);
 
     const res = await update_order_status({ orderId, status: updatedStatus });
+    if (res?.status === 200) {
+      toast.success("Order updated")
+      location.reload()
+    } else {
+      toast.error(res?.statusText)
+    }
+  }
+
+  const updatePaymentStatus = async (orderId: number) => {
+    const res = await update_order_status({ orderId, paid: true });
     if (res?.status === 200) {
       toast.success("Order updated")
       location.reload()
@@ -83,6 +94,31 @@ export default function PendingOrdersDataTable() {
       name: 'Status',
       selector: (row: OrderSchema) => row?.status,
       sortable: true,
+    },
+    {
+      name: 'Payment Type',
+      selector: (row: OrderSchema) => row?.paymentMethod,
+      sortable: true,
+    },
+    {
+      name: 'Delivery Date',
+      cell: (row: OrderSchema) => {
+
+        return (
+          <DatePicker key={row.orderId} orderId={row.orderId} deliveryDate={row.deliveryDate} />
+        )
+      }
+    },
+    {
+      name: 'Payment Status',
+      cell: (row: OrderSchema) => {
+        if(row.paymentMethod==='ONLINE' || row.paid===true) {
+          return "PAID"
+        }
+        return (
+          <button onClick={() => updatePaymentStatus(row?.orderId)} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>PAID</button>
+        )
+      }
     },
     {
       name: 'Action',

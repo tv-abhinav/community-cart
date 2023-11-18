@@ -15,7 +15,7 @@ export default function  GettingDatasLength() {
   const prodData = useSelector((state: RootState) => state.Seller.product);
 
   const orderData = useSelector((state: RootState) => state.Seller.Order);
-
+  let noOfCompletedOrders = orderData.filter(order => order.status==='delivered').length
   return [
     {
       icon: "GiAbstract010",
@@ -33,13 +33,13 @@ export default function  GettingDatasLength() {
       icon: "AiOutlineClockCircle",
       color: "text-yellow-600",
       title: "Pending Orders",
-      count: orderData?.length || 0,
+      count: orderData.length - noOfCompletedOrders || 0,
     },
     {
       icon: "GrCompliance",
       color: "text-orange-600",
       title: "Completed Orders",
-      count: orderData.filter(order => order.status==='delivered').length,
+      count: noOfCompletedOrders,
     }
   ]
 }

@@ -85,7 +85,7 @@ export default function AddProduct() {
         const CheckFileSize = maxSize(data.image[0]);
         if (CheckFileSize) return toast.error('Image size must be less then 1MB')
 
-        const prdData: CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: data.slug, productFeatured: data.feature, productPrice: data.price, productQuantity: data.quantity, categoryId: data.categoryId, sellerId: sellerId }
+        const prdData: CreateProductSchema = { productName: data.name, productDescription: data.description, productSlug: "", productFeatured: data.feature, productPrice: data.price, productQuantity: data.quantity, categoryId: data.categoryId, sellerId: sellerId }
         const regRes = await add_new_product(prdData)
         if (regRes?.status === 201) {
             toast.success("Product added");
@@ -170,14 +170,6 @@ export default function AddProduct() {
                                 <input {...register("name", { required: true })} type="text" placeholder="Type here" className="input input-bordered w-full" />
                                 {errors.name && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
                             </div >
-                            <div className="form-control w-full mb-2">
-                                <label className="label">
-                                    <span className="label-text">Product Slug</span>
-                                </label>
-                                <input  {...register("slug", { required: true })} type="text" placeholder="Type here" className="input input-bordered w-full" />
-                                {errors.slug && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
-
-                            </div>
                             <div className="form-control w-full mb-2">
                                 <label className="label">
                                     <span className="label-text">Product Price</span>

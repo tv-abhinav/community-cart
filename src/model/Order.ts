@@ -16,7 +16,7 @@ export interface OrderItemSchema {
 export interface CreateOrderSchema {
     customerId: number;
     paymentMethod: PaymentMethod;
-    sessionId: string;
+    sessionId?: string;
 }
 
 export interface OrderSchema extends CreateOrderSchema {

@@ -27,6 +27,7 @@ export default function Page() {
     const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
     const cartData = useSelector((state: RootState) => state.Cart.cart) as CartViewSchema | null;
     const [loading, setLoading] = useState(true)
+    const [isPaymentMethodOnline, setIsPaymentMethodOnline] = useState(true)
 
 
     useEffect(() => {
@@ -51,28 +52,44 @@ export default function Page() {
         isOnline: boolean,
     }
 
-    const { register, getValues, setValue, formState: { errors }, handleSubmit } = useForm<Inputs>({
+    const { register, formState: { errors }, handleSubmit } = useForm<Inputs>({
         criteriaMode: "all"
     });
 
-    const setInitialFormData = () => (
-        setValue('isOnline', true)
-    );
-
     useEffect(() => {
         fetchCartData();
-        setInitialFormData();
     }, [])
+
+
+    const handleCheckboxChange = () => {
+        setIsPaymentMethodOnline(!isPaymentMethodOnline)
+    }
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
         if (user?.customerId && cartData) {
             setLoader(true)
             const updateCartRes = await update_cart(user.customerId, cartData.items)
             if (updateCartRes?.status === 200) {
-                const checkoutRes = await checkout_cart(user.customerId)
-                if(checkoutRes.status === 200) {
-                    Cookies.set("sessionId", checkoutRes.data.sessionId);
-                    location.replace(checkoutRes.data.url)
+                if (isPaymentMethodOnline) {
+                    const checkoutRes = await checkout_cart(user.customerId)
+                    if (checkoutRes.status === 200) {
+                        Cookies.set("sessionId", checkoutRes.data.sessionId);
+                        location.replace(checkoutRes.data.url)
+                    }
+                } else {
+                    const finalData: CreateOrderSchema = {
+                        customerId: user?.customerId,
+                        paymentMethod: "COD",
+                    }
+
+                    const res = await create_a_new_order(finalData);
+                    if (res?.status === 200) {
+                        toast.success("Order created")
+
+                        setTimeout(() => {
+                            Router.push('/order/view-orders')
+                        }, 3000)
+                    }
                 }
             } else {
                 toast.error("Unable to update cart.")
@@ -168,11 +185,12 @@ export default function Page() {
                                     <input
                                         type='checkbox'
                                         className='sr-only'
-                                        {...register("isOnline", { required: true })}
-                                        checked={getValues("isOnline")}
+                                        {...register("isOnline")}
+                                        checked={isPaymentMethodOnline}
+                                        onChange={handleCheckboxChange}
                                     />
                                     <span
-                                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${!getValues("isOnline") ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
+                                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${!isPaymentMethodOnline ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
                                             }`}
                                     >
                                         <svg
@@ -197,7 +215,7 @@ export default function Page() {
                                         COD
                                     </span>
                                     <span
-                                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${getValues("isOnline") ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
+                                        className={`flex items-center space-x-[6px] rounded py-2 px-[18px] text-sm font-medium ${isPaymentMethodOnline ? 'text-primary bg-[#f4f7ff]' : 'text-body-color'
                                             }`}
                                     >
                                         <svg

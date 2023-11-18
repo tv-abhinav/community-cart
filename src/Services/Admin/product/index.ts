@@ -43,8 +43,6 @@ export const upload_product_photo = async (photo: File, productId: number) => {
 
 export const get_all_products = async (params?: { sellerId?: number, categoryId?: number }) => {
   try {
-    let token = Cookies.get('token')
-    if (!token && params?.sellerId) throw new Error('Seller not authenticated')
     let queryParams: Partial<{
       categoryId: number,
       sellerId: number

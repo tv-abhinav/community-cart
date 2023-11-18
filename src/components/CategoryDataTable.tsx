@@ -69,7 +69,7 @@ export default function CategorySchemaTable() {
 
 
 
-  const handleDeleteCategory = async (id: string) => {
+  const handleDeleteCategory = async (id: number) => {
     const res = await delete_a_category(id);
     if (res?.status === 200) {
       toast.success("deleteCategory success")

@@ -65,8 +65,13 @@ export default function Home() {
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
-    FetchDataOFProductAndCategory()
   }, [])
+
+  useEffect(() => {
+    if(loc.elevation) {
+      FetchDataOFProductAndCategory()
+    }
+  },[loc])
 
 
   const FetchDataOFProductAndCategory = async () => {
@@ -74,16 +79,21 @@ export default function Home() {
     const categoryRes = await get_all_categories();
     if (categoryRes?.status !== 200) toast.error(categoryRes?.statusText)
     dispatch(setCategoriesForCustomer(categoryRes?.data))
-  
-  const shopRes = await get_seller({});
-  // const shopRes = await get_seller({
-    //   sourceLatitude: loc.lat,
-    //   sourceLongitude: loc.lng,
-    //   elevation: loc.elevation
-    // });
+    console.log("loc.lat")
+    console.log(loc.lat)
+    console.log("loc.lng")
+    console.log(loc.lng)
+    console.log("loc.elevation")
+    console.log(loc.elevation)
+    // const shopRes = await get_seller({});
+    const shopRes = await get_seller({
+      sourceLatitude: loc.lat,
+      sourceLongitude: loc.lng,
+      elevation: loc.elevation
+    });
     if (shopRes?.status !== 200) toast.error(shopRes?.statusText)
     if (shopRes?.data) setTopShops(shopRes.data.slice(0, 3))
-    
+
     const productRes = await get_all_products();
     if (productRes?.status !== 200) toast.error(productRes?.statusText)
     if (productRes?.data) setFeaturedProds(productRes.data.slice(0, 9))

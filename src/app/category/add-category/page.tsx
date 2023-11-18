@@ -22,11 +22,6 @@ type Inputs = {
     image: Array<File>,
 }
 
-const maxSize = (value: File) => {
-    const fileSize = value.size / 1024 / 1024;
-    return fileSize < 1 ? false : true
-}
-
 
 export default function AddCategory() {
 
@@ -64,10 +59,10 @@ export default function AddCategory() {
     });
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
-        setLoader(true)
-
-        const catData: CreateCategorySchema = { categoryName: data.name, catIconUrl: icon, categoryDescription: data.description, categorySlug: data.slug }
+        
+        const catData: CreateCategorySchema = { categoryName: data.name, catIconUrl: icon, categoryDescription: data.description, categorySlug: "" }
         if (user?.sub) {
+            setLoader(true)
             const res = await add_new_category(catData, user?.sub)
             if (res?.status === 201) {
                 toast.success("Category Added");
@@ -132,14 +127,6 @@ export default function AddCategory() {
                                 <input {...register("name", { required: true })} type="text" placeholder="Type here" className="input input-bordered w-full" />
                                 {errors.name && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
                             </div >
-                            <div className="form-control w-full mb-2">
-                                <label className="label">
-                                    <span className="label-text">Category Slug</span>
-                                </label>
-                                <input  {...register("slug", { required: true })} type="text" placeholder="Type here" className="input input-bordered w-full" />
-                                {errors.slug && <span className='text-red-500 text-xs mt-2'>This field is required</span>}
-
-                            </div>
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text">Category Description</span>

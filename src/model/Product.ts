@@ -14,6 +14,7 @@ export interface CreateProductSchema extends ProductHighLevelFeatures {
 export interface ProductSchema extends CreateProductSchema {
   productId: number;
   productImageUrl?: string;
+  rating: number;
 }
 
 export interface UpdateProductSchema {
@@ -27,4 +28,5 @@ export interface UpdateProductSchema {
   productFeatured?: boolean;
   categoryId?: number;
   sellerId?: number;
+  rating?: number;
 }
