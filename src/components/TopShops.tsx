@@ -3,7 +3,7 @@
 import { RootState } from '@/Store/store'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Loading from '@/app/loading';
+import Loading from '@/components/loading';
 import ShopCard from './ShopCard';
 import { SellerSchema } from '@/model/Seller';
 

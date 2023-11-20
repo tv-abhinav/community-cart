@@ -34,6 +34,7 @@ export default function Login() {
     }, [formData.submitted])
 
     const loginUser = async () => {
+        try {
         const res = await login_me(formData);
         let data = res.data;
         if (res.status == 200 && data) {
@@ -59,6 +60,9 @@ export default function Login() {
 
             Router.push(`/auth/register?${params.toString()}`)
         }
+    } catch {
+        toast.error("Unable to login. It might be due to wrong credentials. If problem persist, server may be down.");
+    }
     }
 
     const handleSso = async (credential: string) => {

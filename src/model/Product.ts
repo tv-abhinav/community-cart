@@ -15,13 +15,14 @@ export interface ProductSchema extends CreateProductSchema {
   productId: number;
   productImageUrl?: string;
   rating: number;
+  available: boolean;
 }
 
 export interface UpdateProductSchema {
   productId: number;
   productName?: string;
   productDescription?: string;
-  productImage?: string;
+  productImageUrl?: string;
   productSlug?: string;
   productPrice?: number;
   productQuantity?: number;
@@ -29,4 +30,5 @@ export interface UpdateProductSchema {
   categoryId?: number;
   sellerId?: number;
   rating?: number;
+  available?: boolean;
 }

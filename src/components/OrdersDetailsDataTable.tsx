@@ -11,7 +11,7 @@ import { OrderSchema } from '@/model/Order';
 export default function OrdersDetailsDataTable() {
   const router = useRouter();
   const [orderData, setOrderData] = useState<OrderSchema[]>([]);
-  const data = useSelector((state: RootState) => state.Order.order) as OrderSchema[];
+  const data = useSelector((state: RootState) => state.Customer.order) as OrderSchema[];
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<OrderSchema[]>([]);
 

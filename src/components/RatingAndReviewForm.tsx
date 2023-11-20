@@ -1,7 +1,7 @@
 import { add_or_edit_review, get_can_review } from '@/Services/common/review';
 import React, { useState, useEffect } from 'react';
 import Reviews from './Reviews';
-import Loading from '@/app/loading';
+import Loading from '@/components/loading';
 
 const RatingAndReviewForm = ({ customerId, productId }: { customerId?: number, productId: number }) => {
   const [rating, setRating] = useState(0);

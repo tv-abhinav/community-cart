@@ -6,11 +6,12 @@ import { toast } from 'react-toastify';
 import { delete_a_category } from '@/Services/Admin/category';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
-import Loading from '@/app/loading';
-import { useSelector } from 'react-redux';
+import Loading from '@/components/loading';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { CategorySchema } from '@/model/Category';
+import { setCatUpdate } from '@/utils/resolvers/SellerSlice';
 import GetData from './GetData';
 
 
@@ -18,15 +19,16 @@ import GetData from './GetData';
 
 export default function CategorySchemaTable() {
   const router = useRouter();
-  const [catData, setCatData] = useState<CategorySchema[] | []>([]);
+  const dispatch = useDispatch();
+  const [catData, setCatData] = useState<CategorySchema[]>([]);
   const data = useSelector((state: RootState) => state.Seller.allCategories)
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState<CategorySchema[] | []>([]);
-  const [isHasToFetch, setIsHasToFetch] = useState<boolean>(true)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [filteredData, setFilteredData] = useState<CategorySchema[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isFetched, setIsFetched] = useState<boolean>(false)
 
   useEffect(() => {
-    setCatData(data)
+    setCatData(Object.values(data))
   }, [data])
 
 
@@ -35,8 +37,9 @@ export default function CategorySchemaTable() {
     setFilteredData(catData);
   }, [catData])
 
-
-
+  const removeCatFromTable = async (categoryId: number) => {
+    setCatData(catData.filter(cat => cat.categoryId != categoryId));
+  }
 
   const columns = [
     {
@@ -70,10 +73,13 @@ export default function CategorySchemaTable() {
 
 
   const handleDeleteCategory = async (id: number) => {
+    setIsLoading(true);
     const res = await delete_a_category(id);
     if (res?.status === 200) {
       toast.success("deleteCategory success")
-      setIsHasToFetch(true)
+      dispatch(setCatUpdate(true))
+      removeCatFromTable(id);
+      setIsLoading(false);
     }
     else {
       toast.error(res?.statusText)
@@ -96,18 +102,13 @@ export default function CategorySchemaTable() {
   }, [search, catData])
 
 
-
-  return (
-    <div className='w-full h-full bg-white'>
-      <GetData hasToFetch={isHasToFetch} onLoad={(isLoad: boolean) => {
-        setIsLoading(isLoad);
-        if(!isLoad) setIsHasToFetch(false);
-        }} />
-      {
-        !isLoading && filteredData ?
+  if (!isLoading)
+    return (
+      <GetData>
+        <div className='w-full h-full bg-white'>
           <DataTable
             columns={columns}
-            data={filteredData || []}
+            data={filteredData}
             key={'ThisisCategorySchema'}
             pagination
             keyField="id"
@@ -127,11 +128,9 @@ export default function CategorySchemaTable() {
             }
             className="bg-white px-4 h-4/6 "
           />
-          :
-          <Loading />
-      }
-
-    </div>
-  )
+        </div>
+      </GetData>
+    )
+  else return <Loading />
 }
 

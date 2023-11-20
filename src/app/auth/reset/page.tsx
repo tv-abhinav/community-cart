@@ -7,7 +7,7 @@ import React, { useState, FormEvent } from 'react'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TailSpin } from 'react-loader-spinner';
-import Loading from '@/app/loading';
+import Loading from '@/components/loading';
 
 export default function ForgetPassword() {
   const Router = useRouter();

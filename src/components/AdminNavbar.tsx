@@ -1,7 +1,7 @@
 "use client"
 
 import { RESET_ACTION } from '@/utils/resolvers'
-import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
+import { setNavActive } from '@/utils/resolvers/SellerSlice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -6,8 +6,8 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 
-export default function DatePicker({ orderId, deliveryDate, key }: { orderId: number, deliveryDate?: Date | null, key: number }) {
-    const [dateForDelivery, setDateForDelivery] = useState<Date | undefined | null>(deliveryDate ? new Date(deliveryDate) : null);
+export default function DatePicker({ orderId, deliveryDate, toggleLoading, onOrderUpdate }: { orderId: number, deliveryDate?: string | null, toggleLoading: Function, onOrderUpdate: Function }) {
+    const [dateForDelivery, setDateForDelivery] = useState<string | undefined | null>(deliveryDate ? new Date(deliveryDate).toISOString() : null);
     const [yetToUpdate, setYetToUpdate] = useState<boolean>(true);
     useEffect(() => {
         setYetToUpdate(!Boolean(deliveryDate));
@@ -15,21 +15,24 @@ export default function DatePicker({ orderId, deliveryDate, key }: { orderId: nu
     const submitDeilveryDate = async () => {
         if (!dateForDelivery) return;
 
+        toggleLoading(true);
         const res = await update_order_status({ orderId, deliveryDate: dateForDelivery });
         if (res?.status === 200) {
-            toast.success("Order updated")
+            toast.success("Delivery date updated")
             setYetToUpdate(false);
+            onOrderUpdate(res.data);
+            toggleLoading(false);
         } else {
             toast.error(res?.statusText)
         }
     }
 
     return (
-        <div key={key}>
-            {!yetToUpdate && dateForDelivery ? dateForDelivery.toISOString().split('T')[0] :
+        <div>
+            {!yetToUpdate && dateForDelivery ? dateForDelivery.split('T')[0] :
                 <div>
-                    <input type="date" id="deliveryDate" name="deliveryDate" onChange={(e) => setDateForDelivery(new Date(e.target.value))}></input>
-                    <button onClick={() => submitDeilveryDate()} className=' w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700'>☑️</button>
+                    <input type="date" id="deliveryDate" name="deliveryDate" onChange={(e) => setDateForDelivery(new Date(e.target.value).toISOString())}></input>
+                    <button onClick={() => submitDeilveryDate()} className='py-2 mx-2 text-xs'>☑️</button>
                 </div>
             }
         </div>
