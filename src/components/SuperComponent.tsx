@@ -8,7 +8,7 @@ import PendingOrdersDataTable from './PendingOrdersDataTable';
 import CompletedOrderDataTable from './CompletedOrderDataTable';
 
 export default function SuperComponent() {
-    const navActive = useSelector((state: RootState) => state.AdminNav.ActiveNav)
+    const navActive = useSelector((state: RootState) => state.Seller.ActiveNav)
     switch (navActive) {
         case 'Base':
             return <TileContainer />;

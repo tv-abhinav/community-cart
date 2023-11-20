@@ -6,13 +6,13 @@ import { useSWRConfig } from "swr"
 import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import Image from 'next/image';
-import Loading from '@/app/loading';
+import Loading from '@/components/loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/Store/store';
 import { useRouter } from 'next/navigation';
 import { delete_a_product } from '@/Services/Admin/product';
 import { delete_a_bookmark_item, get_all_bookmark_items } from '@/Services/common/bookmark';
-import { setBookmark } from '@/utils/resolvers/Bookmark';
+import { setBookmark } from '@/utils/resolvers/CustomerDataSlice';
 import { BookmarkSchema } from '@/model/Bookmark';
 import { UserSessionSchema } from '@/model/User';
 import { ProductSchema } from '@/model/Product';
@@ -22,7 +22,7 @@ export default function FavouriteProductDataTable() {
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
     const [bookmarkData, setBookmarkData] = useState<ProductSchema[]>([]);
-    const data = useSelector((state: RootState) => state.Bookmark.bookmark)
+    const data = useSelector((state: RootState) => state.Customer.bookmark)
     const [search, setSearch] = useState('');
     const [filteredData, setFilteredData] = useState<ProductSchema[]>([]);
 

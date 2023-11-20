@@ -19,19 +19,22 @@ export default function Login() {
     const dispatch = useDispatch()
     const Router = useRouter()
 
-    const [formData, setFormData] = useState({ email: "", credential: "", sso: false, submitted: false });
-    const [error, setError] = useState({ email: "", credential: "", sso: "" });
+    const [formData, setFormData] = useState({ email: "", credential: "", password:"", sso: false, submitted: false });
+    const [error, setError] = useState({ email: "", credential: "", password:"", sso: "" });
     const [loading, setLoding] = useState<boolean>(false);
+    const [name, setName] = useState<string>("");
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
 
     useEffect(() => {
         const login = async () => {
             setLoding(true);
             await loginUser();
         }
-        if(formData.submitted) login();
-    },[formData.submitted])
+        if (formData.submitted) login();
+    }, [formData.submitted])
 
     const loginUser = async () => {
+        try {
         const res = await login_me(formData);
         let data = res.data;
         if (res.status == 200 && data) {
@@ -48,15 +51,26 @@ export default function Login() {
                 Router.push('/')
             }
         }
-        else {
-            setLoding(false);
-            toast.error(res.statusText);
+        else if (!data) {
+            const params = new URLSearchParams({
+                email: formData.email,
+                name: name,
+                profilePhoto: profilePhotoUrl
+            });
+
+            Router.push(`/auth/register?${params.toString()}`)
         }
+    } catch {
+        toast.error("Unable to login. It might be due to wrong credentials. If problem persist, server may be down.");
+    }
     }
 
     const handleSso = async (credential: string) => {
         const tokenData: any = jwt_decode(credential);
-        setFormData({ email: tokenData.email, credential, sso: true, submitted: true })
+        setName(tokenData.name);
+        let profilePhotoUrl = encodeURIComponent(tokenData.picture);
+        setProfilePhotoUrl(profilePhotoUrl);
+        setFormData({ email: tokenData.email, credential, password:"", sso: true, submitted: true })
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -66,12 +80,12 @@ export default function Login() {
             setError({ ...error, email: "Email Field is Required" })
             return;
         }
-        if (!formData.credential) {
+        if (!formData.password) {
             setError({ ...error, credential: "Password Field is required" })
             return;
         }
         setFormData({ ...formData, sso: false, submitted: true });
-        
+
     }
 
     useEffect(() => {
@@ -101,10 +115,10 @@ export default function Login() {
                                         }
                                     </div>
                                     <div className='text-left'>
-                                        <label htmlFor="credential" className="block mb-2 text-sm font-medium text-gray-900 ">Password</label>
-                                        <input onChange={(e) => setFormData({ ...formData, credential: e.target.value })} type="password" name="credential" id="credential" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5" />
+                                        <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 ">Password</label>
+                                        <input onChange={(e) => setFormData({ ...formData, password: e.target.value })} type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5" />
                                         {
-                                            error.credential && <p className="text-sm text-red-500">{error.credential}</p>
+                                            error.password && <p className="text-sm text-red-500">{error.password}</p>
                                         }
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -116,7 +130,7 @@ export default function Login() {
                                                 <label htmlFor="remember" className="text-gray-500  ">Remember me</label>
                                             </div>
                                         </div>
-                                        <Link href="/auth/reset" className="text-sm font-medium text-orange-600 hover:underline ">Forgot credential?</Link>
+                                        <Link href="/auth/reset" className="text-sm font-medium text-orange-600 hover:underline ">Forgot password?</Link>
                                     </div>
                                     {
                                         loading ? <button type="button" className="w-full flex items-center justify-center text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">

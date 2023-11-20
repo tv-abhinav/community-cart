@@ -17,16 +17,16 @@ export const get_seller = async (params: { categoryId?: number, sellerId?: numbe
     if (params.sellerId) {
       queryParams.sellerId = params.sellerId;
     } else {
-      endpoint = '/getSeller'
-      // endpoint = '/getNearbySellers'
+      endpoint = '/getNearbySellers'
       if (params.sourceLatitude && params.sourceLongitude && params.elevation) {
         queryParams.sourceLat = params.sourceLatitude;
         queryParams.sourceLng = params.sourceLongitude;
         queryParams.elevation = params.elevation;
       }
-      
+
       if (params.categoryId) queryParams.categoryId = params.categoryId;
     }
+
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`, { params: queryParams });
 
     return res;

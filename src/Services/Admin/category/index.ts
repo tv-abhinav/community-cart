@@ -1,6 +1,6 @@
 
 
-import { CategorySchema, UpdateCategorySchema, CreateCategorySchema } from "@/model/Category";
+import { CategorySchema, CreateCategorySchema } from "@/model/Category";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -48,7 +48,7 @@ export const get_category_by_id = async (id: string) => {
   }
 }
 
-export const delete_a_category = async (id: string) => {
+export const delete_a_category = async (id: number) => {
   try {
     const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteCategory`, {
       headers: {

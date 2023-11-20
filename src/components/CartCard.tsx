@@ -1,49 +1,31 @@
 "use client"
 
 
-import { delete_a_cart_item, get_all_cart_Items } from '@/Services/common/cart'
+import { delete_a_cart_item } from '@/Services/common/cart'
 import { RootState } from '@/Store/store'
 import { CartItem, CartViewSchema } from '@/model/Cart'
 import { ProductSchema } from '@/model/Product'
-import { UserSessionSchema } from '@/model/User'
-import { setCart } from '@/utils/resolvers/CartSlice'
+import { setCart, setCartUpdate } from '@/utils/resolvers/CustomerDataSlice'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { AiFillDelete } from 'react-icons/ai'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { useSWRConfig } from 'swr'
-
 
 export default function CartCard({ customerId, product, cartItemId , quantity }: {product: ProductSchema, cartItemId: number, quantity: number, customerId:number}) {
     const dispatch = useDispatch();
     const [qnt, setQnt] = useState(quantity)
-    const Router = useRouter();
-    const user = useSelector((state: RootState) => state.User.userData) as UserSessionSchema | null
-    const cart = useSelector((state: RootState) => state.Cart.cart) as CartViewSchema | null
+    const cart = useSelector((state: RootState) => state.Customer.cart) as CartViewSchema | null
 
     const handleDeleteCartItem = async () => {
         const res = await delete_a_cart_item(customerId, product.productId)
         if (res?.status === 200) {
-            fetchCartData();
+            dispatch(setCartUpdate(true))
+            dispatch(setCart(res.data));
             return toast.success("Deleted from cart")
         }
         return toast.error(res?.statusText)
     }
-
-
-    const fetchCartData = async () => {
-        if (!user?.customerId) return Router.push('/')
-        const cartData = await get_all_cart_Items(user?.customerId)
-        if (cartData?.status === 200) {
-            dispatch(setCart(cartData?.data))
-        } else {
-            toast.error(cartData?.statusText)
-        }
-    }
-
-
 
     const handleIncrement = () => {
         const newCartItems = cart?.items.map((item: CartItem) => {

@@ -16,6 +16,12 @@ export interface UserSessionSchema {
     exp?: number,
 }
 
+export interface LocationSchema {
+    lat: number,
+    lng: number,
+    elevation: number
+}
+
 export interface CreateCustomerSchema {
     email: string,
     password: string,

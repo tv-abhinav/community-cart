@@ -1,7 +1,7 @@
 "use client"
 
 import { RESET_ACTION } from '@/utils/resolvers'
-import { setNavActive } from '@/utils/resolvers/AdminNavSlice'
+import { setNavActive } from '@/utils/resolvers/SellerSlice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -37,22 +37,7 @@ export default function AdminNavbar() {
                 </div>
             </div>
             <div className="flex-none">
-                <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 relative rounded-full">
-                            <Image className='rounded-full' fill alt='none' src="/profile.jpg" />
-                        </div>
-                    </label>
-                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-gray-50 rounded-box w-52">
-                        <li>
-                            <Link href={"/Dashboard"} className="justify-between">
-                                Profile
-                                <span className="badge">New</span>
-                            </Link>
-                        </li>
-                        <li onClick={handleLogout}><button> Logout </button></li>
-                    </ul>
-                </div>
+                <button className='btn' onClick={handleLogout}>Logout</button>
             </div>
         </div>
     )

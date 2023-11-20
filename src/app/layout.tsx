@@ -5,6 +5,7 @@ import { Poppins } from 'next/font/google'
 import { Providers } from '@/Store/Provider'
 import Script from 'next/script'
 import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from 'react'
 
 const poppin = Poppins({
   weight: ['100', '400'],
@@ -18,7 +19,7 @@ const poppin = Poppins({
 //   authors: [{ name: "Abdullah Moiz", url: 'https://abdullahmoiz.vercel.app/' }],
 // }
 
-function initMap(): void {}
+function initMap(): void { }
 
 declare global {
   interface Window {
@@ -26,13 +27,15 @@ declare global {
   }
 }
 
-window.initMap = initMap;
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  useEffect(() => {
+    window.initMap = initMap;
+  }, []);
+  
   return (
     <html lang="en">
       <head>

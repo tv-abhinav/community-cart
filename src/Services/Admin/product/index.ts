@@ -1,4 +1,4 @@
-import { CreateProductSchema, ProductSchema } from "@/model/Product";
+import { CreateProductSchema, ProductSchema, UpdateProductSchema } from "@/model/Product";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -22,6 +22,7 @@ export const add_new_product = async (formData: CreateProductSchema) => {
 export const upload_product_photo = async (photo: File, productId: number) => {
 
   try {
+    console.log("Uploading photo")
     var photoFormData = new FormData();
     photoFormData.append('productImage', photo);
 
@@ -43,8 +44,6 @@ export const upload_product_photo = async (photo: File, productId: number) => {
 
 export const get_all_products = async (params?: { sellerId?: number, categoryId?: number }) => {
   try {
-    let token = Cookies.get('token')
-    if (!token && params?.sellerId) throw new Error('Seller not authenticated')
     let queryParams: Partial<{
       categoryId: number,
       sellerId: number
@@ -81,7 +80,7 @@ export const delete_a_product = async (id: number) => {
 }
 
 
-export const update_a_product = async (formData: any) => {
+export const update_a_product = async (formData: UpdateProductSchema) => {
   try {
     const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateProduct`, JSON.stringify(formData), {
       headers: {

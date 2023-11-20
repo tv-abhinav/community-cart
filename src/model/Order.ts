@@ -16,15 +16,15 @@ export interface OrderItemSchema {
 export interface CreateOrderSchema {
     customerId: number;
     paymentMethod: PaymentMethod;
-    sessionId: string;
+    sessionId?: string;
 }
 
 export interface OrderSchema extends CreateOrderSchema {
     sellerId: number;
     orderId: number,
     paid: boolean;
-    deliveryDate: Date;
-    deliveredAt: Date;
+    deliveryDate: string;
+    deliveredAt: string;
     status: StatusEnum;
     createdAt: Date;
     totalPrice: number;
@@ -37,7 +37,7 @@ export interface OrderSchema extends CreateOrderSchema {
 export interface UpdateOrderSchema {
     orderId: number,
     paid?: boolean;
-    deliveryDate?: Date;
-    deliveredAt?: Date;
+    deliveryDate?: string;
+    deliveredAt?: string;
     status?: StatusEnum;
 }
