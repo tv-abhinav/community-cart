@@ -49,7 +49,6 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
 
     const AddToCart = async () => {
         if (custId && prodData) {
-            // const finalData = { productId: params.id, userId: customer?.customerId }
             const res = await add_to_cart({ product: prodData, quantity: 1 }, custId);
             if (res?.status === 200) {
                 dispatch(setCartUpdate(true))

@@ -80,10 +80,6 @@ export const delete_a_cart_item = async (customerId: number, productId?: number)
       params: productId ? { customerId, productId } : { customerId }
     })
 
-    // const data = {
-    //   message: "Deleted a Cart Items",
-    //   success: true
-    // }
     return res;
   } catch (error) {
     throw new Error('Error in deleting cart items (service) =>'+ error)

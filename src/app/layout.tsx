@@ -12,13 +12,6 @@ const poppin = Poppins({
   subsets: ['latin'],
 })
 
-
-// export const metadata = {
-//   title: 'Ecommerce Next App',
-//   description: 'Developed by Abdullah Moiz',
-//   authors: [{ name: "Abdullah Moiz", url: 'https://abdullahmoiz.vercel.app/' }],
-// }
-
 function initMap(): void { }
 
 declare global {
