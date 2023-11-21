@@ -33,10 +33,6 @@ export default function ProductDataTable() {
     setFilteredData(prodData);
   }, [prodData])
 
-  // const removeProductFromTable = async (productId: number) => {
-  //   setprodData(prodData.filter(prod => prod.productId !== productId));
-  // }
-
   const updateProdData = async (updatedProd: ProductSchema) => {
     dispatch(setProdUpdate(true))
     let copyOfData = JSON.parse(JSON.stringify(data))
@@ -118,26 +114,6 @@ export default function ProductDataTable() {
     }
   }
 
-  // const handleDeleteProduct = async (id: number) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await delete_a_product(id);
-  //     if (res?.status === 200) {
-  //       toast.success("delete success")
-  //       removeProductFromTable(id);
-  //       setIsLoading(false);
-  //       dispatch(setProdUpdate(true))
-  //     }
-  //     else {
-  //       toast.error("Unable to delete product. This might be in cart of some customer.")
-  //       setIsLoading(false);
-  //     }
-  //   } catch {
-  //     toast.error("Unable to delete product. This might be in cart of some customer.")
-  //     setIsLoading(false);
-  //   }
-  // }
-
 
   useEffect(() => {
     if (search === '') {
@@ -145,7 +121,6 @@ export default function ProductDataTable() {
     } else {
       setFilteredData(prodData?.filter((item) => {
         const itemData = item?.productName.toUpperCase();
-        // const itemData = item?.productCategory?.categoryName.toUpperCase();
         const textData = search.toUpperCase();
         return itemData.indexOf(textData) > -1;
       }))
