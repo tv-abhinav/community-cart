@@ -1,4 +1,3 @@
-import { CategorySchema } from "./Category";
 import { AddressSchema } from "./User";
 
 export interface CreateSellerSchema {
