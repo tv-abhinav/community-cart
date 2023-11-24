@@ -27,7 +27,7 @@ export default function PendingOrdersDataTable() {
 
 
   useEffect(() => {
-    const filterPendingOrder = data?.filter((item) => item?.status.toLowerCase() !== 'delivered')
+    const filterPendingOrder = data?.filter((item) => item?.status.toLowerCase() !== 'delivered' && item?.status.toLowerCase() !== 'cancelled')
     setSellerOrders(filterPendingOrder)
   }, [data])
 
@@ -44,7 +44,7 @@ export default function PendingOrdersDataTable() {
       return obj;
     });
 
-    setSellerOrders(newOrders.filter((item) => item?.status.toLowerCase() !== 'delivered'));
+    setSellerOrders(newOrders.filter((item) => item?.status.toLowerCase() !== 'delivered' && item?.status.toLowerCase() !== 'cancelled'));
   }
 
   const getNextStatus = (currentStatus: StatusEnum) => {

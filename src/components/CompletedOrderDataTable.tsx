@@ -28,7 +28,7 @@ export default function CompletedOrderDataTable() {
 
 
   useEffect(() => {
-    const filterPendingOrder = data?.filter((item) => item?.status.toLowerCase() === 'delivered')
+    const filterPendingOrder = data?.filter((item) => item?.status.toLowerCase() === 'delivered' || item?.status.toLowerCase() === 'cancelled')
     setOrderData(filterPendingOrder)
   }, [data])
 

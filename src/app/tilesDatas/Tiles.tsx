@@ -19,7 +19,7 @@ export default function GettingDatasLength() {
   const prodData = useSelector((state: RootState) => state.Seller.product);
 
   const orderData = useSelector((state: RootState) => state.Seller.Order);
-  let noOfCompletedOrders = orderData.filter(order => order.status.toLowerCase() === 'delivered').length
+  let noOfCompletedOrders = orderData.filter(order => order.status.toLowerCase() === 'delivered' || order.status.toLowerCase() === 'cancelled').length
 
   const getFigures = () => {
     return [
