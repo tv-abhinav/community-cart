@@ -8,9 +8,10 @@ import { ProductSchema } from '@/model/Product'
 import { setProductData } from '@/utils/resolvers/SellerSlice'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast, ToastContainer } from 'react-toastify'
 import GetData from '@/components/GetData'
+import { RootState } from '@/Store/store'
 
 interface pageParam {
     id: string
@@ -20,11 +21,18 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
     const dispatch = useDispatch()
     const [thisProduct, setThisProdData] = useState<ProductSchema[] | []>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [catName, setCatName] = useState<string>("");
+    const allCats = useSelector((state: RootState) => state.Customer.categories)
 
     useEffect(() => {
         const getProdByCat = async () => {
             setIsLoading(true)
-            const res = await get_all_products({ categoryId: Number(params.id) });
+            let catId = Number(params.id)
+            let filteredCats = allCats.filter(cat => cat.categoryId === catId)
+            if(filteredCats.length > 0) {
+                setCatName(filteredCats[0].categoryName);
+            }
+            const res = await get_all_products({ categoryId: catId });
             if (res?.status !== 200) toast.error(res?.statusText)
             else {
                 setThisProdData(res.data)
@@ -48,7 +56,7 @@ export default function Page({ params, searchParams }: { params: pageParam, sear
                         </li>
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-4 h-4 mr-2 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            {params.id || "Loading Category"}
+                            {catName || "Loading Category"}
                         </li>
                     </ul>
                 </div>

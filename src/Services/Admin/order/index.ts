@@ -38,3 +38,21 @@ export const update_order_status = async (data: UpdateOrderSchema) => {
   }
 }
 
+export const cancel_order = async (orderId: number) => {
+  try {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cancelOrder`, null, {
+      headers: {
+        'Authorization': `Bearer ${Cookies.get('token')}`,
+        'Content-Type': 'application/json'
+      },
+      params: {
+        orderId
+      }
+    })
+
+    return res;
+  } catch (error) {
+    console.log('Error in updating order status (service) =>', error)
+  }
+}
+

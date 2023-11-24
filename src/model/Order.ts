@@ -1,7 +1,7 @@
 import { AddressSchema } from "./User";
 import { ProductSchema } from "./Product";
 
-export type StatusEnum = "placed" | "packed" | "shipped" | "delivered"
+export type StatusEnum = "placed" | "packed" | "shipped" | "delivered" | "cancelled"
 export type PaymentMethod = "COD" | "ONLINE"
 
 

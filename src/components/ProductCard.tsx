@@ -11,6 +11,7 @@ import { BsCartPlus } from 'react-icons/bs'
 import { MdFavorite } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import StarRating from './StarRating';
 
 
 export default function ProductCard({ item }: { item: ProductSchema }) {
@@ -60,6 +61,7 @@ export default function ProductCard({ item }: { item: ProductSchema }) {
                 <div className="card-body">
                     <h2 className="card-title" onClick={() => router.push(`/product/product-detail/${item.productId}`)}>{item.productName} </h2>
                     <p className='font-semibold' onClick={() => router.push(`/product/product-detail/${item.productId}`)}>{`Rs ${item.productPrice}`}</p>
+                    <StarRating rating={item.rating} />
                     <div className="card-actions justify-end z-20">
                         <button type='button' title='Cart' onClick={AddToCart} className="btn  btn-circle btn-ghost "><BsCartPlus className='text-2xl text-orange-600 font-semibold' /></button>
                         <button type='button' title='Bookmark' onClick={AddToBookmark} className="btn btn-circle btn-ghost absolute top-0 right-0 "><MdFavorite className='text-2xl text-orange-600 font-semibold' /></button>

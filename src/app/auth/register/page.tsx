@@ -305,7 +305,13 @@ export default function Register() {
                 </div>
                 <div className='text-left'>
                   <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900 ">Your phone number</label>
-                  <input onChange={(e) => setFormData({ ...formData, contactPhoneNo: e.target.value })} type="text" name="phoneNumber" id="phoneNumber" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5" placeholder="Phone number" />
+                  <input onChange={
+                    (e) => {
+                      let isValidPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/.test(e.target.value)
+                      if(!isValidPhoneNumber) setError({...error, contactPhoneNo:"Please enter valid phone number"})
+                      else setError({...error, contactPhoneNo:""})
+                      setFormData({ ...formData, contactPhoneNo: e.target.value })
+                    }} type="text" name="phoneNumber" id="phoneNumber" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5" placeholder="Phone number" />
                   {
                     error.contactPhoneNo && <p className="text-sm text-red-500">{error.contactPhoneNo}</p>
                   }

@@ -16,6 +16,7 @@ import { BookmarkSchema } from '@/model/Bookmark';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { ProductSchema } from '@/model/Product';
+import { CustomerSchema } from '@/model/User';
 
 
 export default function Navbar() {
@@ -28,6 +29,7 @@ export default function Navbar() {
     const categories: CategorySchema[] = useSelector((state: RootState) => state.Customer.categories)
     const featuredProducts: ProductSchema[] = useSelector((state: RootState) => state.Customer.featuredProducts)
     const cart: CartViewSchema | null = useSelector((state: RootState) => state.Customer.cart);
+    const customer: CustomerSchema | null = useSelector((state: RootState) => state.Customer.CustomerData);
     const bookmark: BookmarkSchema | null = useSelector((state: RootState) => state.Customer.bookmark);
 
     useEffect(() => {
@@ -104,7 +106,7 @@ export default function Navbar() {
 
     return (
 
-        <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 z-50 w-full">
+        <nav className="relative bg-white border-gray-200 dark:bg-gray-900 fixed top-0 left-0 z-50 w-full">
             <div className="flex flex-wrap items-center justify-between mx-auto p-4">
                 <Link href="/" className="flex items-center">
                     <Image src="/community-cart.jpg" className="h-8 mr-3" alt="Community Cart" width={30} height={20} />
@@ -168,6 +170,11 @@ export default function Navbar() {
                             <button onClick={() => router.push('/auth/login')} className='btn text-white mx-2'>Login</button>
                     }
                 </div>
+            </div>
+            <div className='absolute right-5 top-24'>
+                {
+                    customer ? <span>Welcome {customer?.name}!</span> : ""
+                }
             </div>
 
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
