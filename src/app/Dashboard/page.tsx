@@ -18,6 +18,9 @@ export default function Dashboard() {
   useEffect(() => {
     let usr = JSON.parse(localStorage.getItem('user') || '{}')
     if (!Cookies.get('token') || usr?.role !== 'SELLER') {
+      if(!Cookies.get('token')) {
+        localStorage.removeItem('user')
+      }
       Router.push('/')
     }
     dispatch(setNavActive('Base'))

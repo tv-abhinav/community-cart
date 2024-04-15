@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 export const add_to_cart = async (product: AddToCartSchema, customerId: number) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addtocart`, JSON.stringify(product), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/addtocart`, JSON.stringify(product), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -24,7 +24,7 @@ export const add_to_cart = async (product: AddToCartSchema, customerId: number) 
 
 export const checkout_cart = async (customerId: number) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/checkout`, null, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/checkout`, null, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -40,7 +40,7 @@ export const checkout_cart = async (customerId: number) => {
 
 export const get_all_cart_Items = async (customerId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/viewcart`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/viewcart`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
@@ -55,7 +55,7 @@ export const get_all_cart_Items = async (customerId: number) => {
 
 export const update_cart = async (customerId: number, cartItems: CartItem[]) => {
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateCart`, JSON.stringify(cartItems), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/updateCart`, JSON.stringify(cartItems), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         "Content-Type": "application/json"
@@ -73,7 +73,7 @@ export const update_cart = async (customerId: number, cartItems: CartItem[]) => 
 
 export const delete_a_cart_item = async (customerId: number, productId?: number) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/removeCart`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/removeCart`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },

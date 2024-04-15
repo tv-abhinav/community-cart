@@ -238,7 +238,7 @@ export default function Register() {
 
         const regRes = await register_me(formData, elevation);
         if (formData.profilePhoto && regRes?.status == 201) {
-          await upload_profile_photo(formData.profilePhoto, formData.email);
+          await upload_profile_photo(formData.profilePhoto, formData.email, formData.isSeller);
         }
         if (regRes?.status == 201) {
           setLoding(false);

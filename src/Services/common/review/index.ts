@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 export const add_or_edit_review = async (review: AddReview) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/postReview`, JSON.stringify(review), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/postReview`, JSON.stringify(review), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -19,7 +19,7 @@ export const add_or_edit_review = async (review: AddReview) => {
 
 export const get_can_review = async (customerId: number, productId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/canReview`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/canReview`, {
       params: { customerId, productId }
     });
 
@@ -31,7 +31,7 @@ export const get_can_review = async (customerId: number, productId: number) => {
 
 export const get_reviews_by_product_id = async (productId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getReviews`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/getReviews`, {
       params: { productId }
     });
 
@@ -43,7 +43,7 @@ export const get_reviews_by_product_id = async (productId: number) => {
 
 export const delete_review = async (customerId: number, productId?: number) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/removeCart`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/review/removeCart`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },

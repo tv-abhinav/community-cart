@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 export const add_new_product = async (formData: CreateProductSchema) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addProduct`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/addProduct`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -26,7 +26,7 @@ export const upload_product_photo = async (photo: File, productId: number) => {
     var photoFormData = new FormData();
     photoFormData.append('productImage', photo);
 
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadImage/product`,
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/uploadImage/product`,
       photoFormData,
       {
         headers: {
@@ -53,7 +53,7 @@ export const get_all_products = async (params?: { sellerId?: number, categoryId?
       if (params.sellerId) queryParams.sellerId = params.sellerId;
     }
 
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getProducts`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/getProducts`, {
       params: queryParams
     });
     return res;
@@ -65,7 +65,7 @@ export const get_all_products = async (params?: { sellerId?: number, categoryId?
 
 export const delete_a_product = async (id: number) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteProduct`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/deleteProduct`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
@@ -82,7 +82,7 @@ export const delete_a_product = async (id: number) => {
 
 export const update_a_product = async (formData: UpdateProductSchema) => {
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateProduct`, JSON.stringify(formData), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/updateProduct`, JSON.stringify(formData), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ export const update_a_product = async (formData: UpdateProductSchema) => {
 
 export const get_product_by_id = async (id: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getProduct`,
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/product/getProduct`,
       {
         params: {
           productId: id

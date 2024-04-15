@@ -3,7 +3,7 @@ import axios from 'axios';
 export const get_customer = async (customerId: number) => {
 
     try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getCustomer`,
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/customer/getCustomer`,
             {
                 headers: {
                     'Content-Type': 'application/json'

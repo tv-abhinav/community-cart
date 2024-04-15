@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 export const create_a_new_order = async (formData: CreateOrderSchema) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/placeOrder`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order/placeOrder`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -22,7 +22,7 @@ export const create_a_new_order = async (formData: CreateOrderSchema) => {
 
 export const get_customer_orders = async (customerId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getOrders`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order/getOrders`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -39,7 +39,7 @@ export const get_customer_orders = async (customerId: number) => {
 
 export const get_order_details= async (orderId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getOrderById`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order/getOrderById`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`

@@ -4,7 +4,7 @@ export const register_me = async (formData: any, elevation: number) => {
 
     try {
         formData.address.elevation = elevation;
-        let endpoint = formData.isSeller ? "/addSeller" : "/addCustomer";
+        let endpoint = formData.isSeller ? "/seller/addSeller" : "/customer/addCustomer";
         console.log(formData);
         const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`, JSON.stringify(formData),
             {
@@ -20,13 +20,14 @@ export const register_me = async (formData: any, elevation: number) => {
     }
 }
 
-export const upload_profile_photo = async (photo: File, email: string) => {
+export const upload_profile_photo = async (photo: File, email: string, isSeller: boolean) => {
 
     try {
         var photoFormData = new FormData();
         photoFormData.append('profilePhoto', photo);
 
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploadPhoto/profile`,
+        let endpoint = isSeller ? 'seller/uploadPhoto/profile' : 'customer/uploadPhoto/profile';
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}`,
             photoFormData,
             {
                 params: {
@@ -46,7 +47,7 @@ export const upload_profile_photo = async (photo: File, email: string) => {
 export const login_me = async (formData: any) => {
 
     try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/authenticate`, JSON.stringify(formData), {
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/authenticate`, JSON.stringify(formData), {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -60,7 +61,7 @@ export const login_me = async (formData: any) => {
 
 export const forget_password = async (email: string) => {
     try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/forgotPassword`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/forgotPassword`, {
             params: { email }
         })
 
@@ -72,7 +73,7 @@ export const forget_password = async (email: string) => {
 
 export const change_password = async (formData: any) => {
     try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/changePassword`, JSON.stringify(formData),
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/changePassword`, JSON.stringify(formData),
             {
                 headers: {
                     "Content-Type": "application/json"

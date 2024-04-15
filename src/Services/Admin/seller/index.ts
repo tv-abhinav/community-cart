@@ -12,12 +12,12 @@ export const get_seller = async (params: { categoryId?: number, sellerId?: numbe
       sourceLng: number,
       elevation: number
     }> = {};
-    let endpoint = '/getSeller';
+    let endpoint = '/seller/getSeller';
 
     if (params.sellerId) {
       queryParams.sellerId = params.sellerId;
     } else {
-      endpoint = '/getNearbySellers'
+      endpoint = '/seller/getNearbySellers'
       if (params.sourceLatitude && params.sourceLongitude && params.elevation) {
         queryParams.sourceLat = params.sourceLatitude;
         queryParams.sourceLng = params.sourceLongitude;
@@ -37,7 +37,7 @@ export const get_seller = async (params: { categoryId?: number, sellerId?: numbe
 
 export const get_nearby_sellers = async (sourceLatitude: number, sourceLongitude: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getNearbySellers`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/getNearbySellers`, {
       params: { sourceLatitude, sourceLongitude }
     });
     return res;
@@ -48,7 +48,7 @@ export const get_nearby_sellers = async (sourceLatitude: number, sourceLongitude
 
 export const get_sellers_by_category_id = async (categoryId: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getNearbySellers`, { params: { categoryId } });
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/getNearbySellers`, { params: { categoryId } });
     return res;
   } catch (error) {
     throw new Error('Error in getting all Categories (service) =>' + error)
@@ -57,7 +57,7 @@ export const get_sellers_by_category_id = async (categoryId: number) => {
 
 export const add_new_seller = async (formData: CreateSellerSchema) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addSeller`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/addSeller`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -72,7 +72,7 @@ export const add_new_seller = async (formData: CreateSellerSchema) => {
 
 export const delete_seller = async (id: string) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteSeller`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/deleteSeller`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
@@ -90,7 +90,7 @@ export const delete_seller = async (id: string) => {
 
 export const update_a_seller = async (formData: UpdateSellerSchema) => {
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateSeller`, JSON.stringify(formData), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/updateSeller`, JSON.stringify(formData), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'

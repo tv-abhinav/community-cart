@@ -50,7 +50,7 @@ export const get_category_by_id = async (id: string) => {
 
 export const delete_a_category = async (id: number) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/deleteCategory`, {
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category/deleteCategory`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
@@ -68,7 +68,7 @@ export const delete_a_category = async (id: number) => {
 
 export const update_a_category = async (formData: CategorySchema) => {
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/updateCategory`, JSON.stringify(formData), {
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category/updateCategory`, JSON.stringify(formData), {
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'

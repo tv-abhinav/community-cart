@@ -24,15 +24,7 @@ export default function Login() {
     const [loading, setLoding] = useState<boolean>(false);
     const [name, setName] = useState<string>("");
     const [profilePhotoUrl, setProfilePhotoUrl] = useState<string>("");
-
-    useEffect(() => {
-        const login = async () => {
-            setLoding(true);
-            await loginUser();
-        }
-        if (formData.submitted) login();
-    }, [formData.submitted])
-
+    
     const loginUser = async () => {
         try {
         const res = await login_me(formData);
@@ -64,6 +56,15 @@ export default function Login() {
         toast.error("Unable to login. It might be due to wrong credentials. If problem persist, server may be down.");
     }
     }
+
+    useEffect(() => {
+        const login = async () => {
+            setLoding(true);
+            await loginUser();
+        }
+        if (formData.submitted) login();
+    }, [formData.submitted, loginUser])
+
 
     const handleSso = async (credential: string) => {
         const tokenData: any = jwt_decode(credential);
@@ -157,7 +158,7 @@ export default function Login() {
                                         />
                                     </center>
                                     <p className="text-sm text-black ">
-                                        Don't have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
+                                        Don&apos;t have an account yet? <Link href={"/auth/register"} className="font-medium text-orange-600 hover:underline ">Sign up</Link>
                                     </p>
                                 </form>
                             </div>
