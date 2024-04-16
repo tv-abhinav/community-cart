@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 
 export const get_all_categories = async (sellerId?: number) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getSellerCategories`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/seller/getSellerCategories`, {
       params: sellerId ? { sellerId } : {}
     });
 
@@ -19,7 +19,7 @@ export const get_all_categories = async (sellerId?: number) => {
 
 export const add_new_category = async (formData: CreateCategorySchema, email: string) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/addCategory`, JSON.stringify(formData), {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category/addCategory`, JSON.stringify(formData), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
@@ -35,7 +35,7 @@ export const add_new_category = async (formData: CreateCategorySchema, email: st
 
 export const get_category_by_id = async (id: string) => {
   try {
-    const res = await axios.get<CategorySchema>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/getCategoryById`,
+    const res = await axios.get<CategorySchema>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category/getCategoryById`,
       {
         params: {
           categoryId: id

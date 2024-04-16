@@ -226,6 +226,9 @@ export default function Register() {
       return;
     }
 
+    console.log("Before..");
+    console.log(JSON.stringify(formData));
+    console.log(!formData.address.elevation || initialAddress.latitude !== formData.address.latitude || initialAddress.longitude !== formData.address.longitude);
     if (!formData.address.elevation || initialAddress.latitude !== formData.address.latitude || initialAddress.longitude !== formData.address.longitude) {
       let elevation = await get_elevation(formData.address.latitude, formData.address.longitude)
       if (elevation) {
@@ -236,6 +239,7 @@ export default function Register() {
           }
         });
 
+        console.log(JSON.stringify(formData));
         const regRes = await register_me(formData, elevation);
         if (formData.profilePhoto && regRes?.status == 201) {
           await upload_profile_photo(formData.profilePhoto, formData.email, formData.isSeller);

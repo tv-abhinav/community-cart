@@ -46,6 +46,7 @@ export default function Page() {
         } else {
             toast.error(cartData?.statusText)
         }
+        console.log(JSON.stringify(cartData));
         setLoading(false)
     }
 

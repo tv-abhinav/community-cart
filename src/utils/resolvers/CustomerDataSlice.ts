@@ -55,6 +55,8 @@ export const CustomerSlice = createSlice({
     },
     setCart: (state, action: { payload: CartViewSchema, type: string }) => {
       state.cart = action.payload
+      console.log("CART SET-----------")
+      console.log(state.cart)
     },
     setTotalPrice: (state, action) => {
       state.total = action.payload

@@ -15,7 +15,7 @@ import { setBookmark, setFeaturedProducts, setNearbySellers } from '@/utils/reso
 import { setCart } from '@/utils/resolvers/CustomerDataSlice';
 import { setCategoriesForCustomer, setCustomerData } from '@/utils/resolvers/CustomerDataSlice';
 import { setOrder } from '@/utils/resolvers/CustomerDataSlice';
-import { setAllCategories, setCatUpdate, setCategoriesForSeller, setOrderData, setProdUpdate, setProductData, setSellerData } from '@/utils/resolvers/SellerSlice';
+import { setAllCategories, setCatUpdate, setCategoriesForSeller, setOrderData, setOrderUpdate, setProdUpdate, setProductData, setSellerData } from '@/utils/resolvers/SellerSlice';
 import { setUserData, setUserLocation } from '@/utils/resolvers/UserDataSlice';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -68,7 +68,7 @@ export default function GetData({ children }: { children: React.ReactNode }) {
                 const ordRes = await get_all_orders(sellerId)
                 if (ordRes && ordRes.status === 200) {
                     dispatch(setOrderData(ordRes.data))
-                    dispatch(setProdUpdate(false))
+                    dispatch(setOrderUpdate(false))
                 }
             }
 
