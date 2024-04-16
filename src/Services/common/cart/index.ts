@@ -24,7 +24,7 @@ export const add_to_cart = async (product: AddToCartSchema, customerId: number) 
 
 export const checkout_cart = async (customerId: number) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/checkout`, null, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/order/checkout`, null, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Cookies.get('token')}`
